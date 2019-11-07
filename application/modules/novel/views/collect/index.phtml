@@ -1,0 +1,66 @@
+<!-- DataTables -->
+<link rel="stylesheet" href="/dist/plugins/datatables.net-bs/css/dataTables.bootstrap.min.css">
+<div class="row">
+    <div class="col-xs-12">
+        <div class="box">
+            <div class="box-header">
+                <h3 class="box-title"><?= $title ?></h3>
+                <div class="pull-right box-tools">
+                    <a href="/novel/collect/set.html" class="btn btn-default"><i class="fa fa-plus"></i></a>
+                </div>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+                <table id="example2" class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <th width="20">ID</th>
+                        <th>节点名称</th>
+                        <th>目标网址</th>
+                        <th>编码</th>
+                        <th>状态</th>
+                        <th>更新时间</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?php if (!empty($data)): ?>
+                        <?php foreach ($data as $val): ?>
+                            <tr>
+                                <td><?= $val['id'] ?></td>
+                                <td><?= $val['collect_name'] ?></td>
+                                <td><?= $val['collect_host'] ?></td>
+                                <td><?= $val['collect_iconv'] ?></td>
+                                <td><?= $val['collect_status'] == 0 ? '<span class="red">不可采集</span>' : '<span class="green">可采集</span>' ?></td>
+                                <td><?= $val['update_at'] ?></td>
+                                <td><a href="/novel/collect/start.html?act=one&id=<?= $val['id'] ?>" title="采集">采集</a>&nbsp;
+                                    <a href="/novel/collect/start.html?act=more&id=<?= $val['id'] ?>" title="批量采集">批量采集</a>&nbsp;
+                                    <a href="/novel/collect/set.html?id=<?=$val['id']?>" title="编辑">修改</a>&nbsp;
+                                    <a href="javascript:if(confirm('确定要删除吗？'))location='/novel/collect/del.html?id=<?=$val['id']?>';" title="删除">删除</a>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                    </tbody>
+                </table>
+                <div class="row text-center" id="pageList">
+                </div>
+            </div>
+            <!-- /.box-body -->
+        </div>
+        <!-- /.box -->
+    </div>
+    <!-- /.col -->
+</div>
+<!-- /.row -->
+<script src="/dist/plugins/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="/dist/plugins/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<script>
+    $(function () {
+        pageHtml(<?=$page?>, <?=$totalPage?>, '<?=$pageLink?>');
+        function delsure()
+        {
+
+        }
+    })
+</script>

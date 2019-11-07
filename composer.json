@@ -1,0 +1,10 @@
+{
+    "require": {
+        "woodlsy/phalcon": "^0.1.0",
+        "woodlsy/http-client": "^0.1.2",
+        "ext-iconv": "*",
+        "woodlsy/upload": "^0.2.2",
+        "ext-mbstring": "*",
+        "aliyuncs/oss-sdk-php": "^2.3"
+    }
+}

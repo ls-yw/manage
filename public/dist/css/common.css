@@ -1,0 +1,31 @@
+#alertMsg{
+    top : 30px;
+    position: fixed;
+    margin: 30px auto;
+    z-index: 9999;
+    width: 90%;
+    left: 5%;
+}
+.green{
+    color:green;
+}
+.gray{
+    color: gray;
+}
+.orange {
+    color: orange !important;
+}
+.red{
+    color: red;
+}
+.hidden{
+    display: none;
+}
+h1.t_nav span{
+    float: none;
+}
+.infos code{
+    display: block;
+    padding: 0.5em;
+    background: #F0F0F0;
+}

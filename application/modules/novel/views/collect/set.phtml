@@ -1,0 +1,228 @@
+<style>
+    table tr td{
+        padding: 5px;
+    }
+    table.main{
+        background-color: #d6d6d6;
+        border-spacing:1px;
+        border-collapse: initial;
+        font-family: Monospace;
+    }
+    table tr td,table tr td span{
+        height: 26px;
+        line-height: 26px;
+        font-size: 12px;
+        font-weight: 400;
+    }
+    .td_title_bg {
+        background: url('/dist/img/tbg.gif') repeat-x;
+        font-weight: bold;
+        color: #008000;
+    }
+</style>
+<div class="row">
+    <div class="col-xs-12">
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title">规则说明</h3>
+            </div>
+            <!-- /.box-header -->
+            <!-- form start -->
+                <input type="hidden" name="id" value="<?=$data['id'] ?? 0?>">
+                <div class="box-body">
+                    <p class="orange">系统默认变量：&lt;{articleid}&gt; - 文章序号，&lt;{chapterid}&gt; － 章节序号， &lt;{subarticleid}&gt; － 文章子序号， &lt;{subchapterid}&gt; － 章节子序号。</p>
+                    <p class="orange">系统标签 * 可以替代任意字符串。</p>
+                    <p class="orange">系统标签 ! 可以替代除了&lt;和&gt;以外的任意字符串。</p>
+                    <p class="orange">系统标签 ~ 可以替代除了&lt;&gt;'"以外的任意字符串。</p>
+                    <p class="orange">系统标签 ^ 可以替代除了数字和&lt;&gt;之外字符串。</p>
+                    <p class="orange">系统标签 $ 可以替代数字字符串。</p>
+                    <p class="orange">空格 & nbsp; 可使用@代替</p>
+                    <p class="orange">采集规则中，需要获取的内容部分用四个以上系统标签代替，如 !!!!</p>
+                </div>
+                <!-- /.box-body -->
+
+        </div>
+        <!-- /.box -->
+    </div>
+    <!-- /.col -->
+</div>
+<!-- /.row -->
+
+<div class="row">
+    <div class="col-xs-12">
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title"><?=$title?></h3>
+            </div>
+            <!-- /.box-header -->
+            <!-- form start -->
+            <form class="form-horizontal" method="post" enctype="multipart/form-data" action="">
+                <div class="box-body">
+                    <div class="form-group">
+                        <table cellpadding="3" cellspacing="1" border="0" width="98%" bgcolor="#D6D6D6" align="center" class="main">
+                            <tr>
+                                <td class="td_title_bg text_left">节点基本信息</td>
+                            </tr>
+                            <tr bgcolor="#ffffff">
+                                <td>
+                                    <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                                        <tr>
+                                            <td width="18%">名称：</td>
+                                            <td class="text_left" width="32%"><input type="text" name="collect_name" value="<?=$info['collect_name'] ?? ''?>" size="30" id="collect_name"></td>
+                                            <td width="18%">目标网站：</td>
+                                            <td class="text_left" width="32%"><input type="text" name="collect_host" value="<?=$info['collect_host'] ?? ''?>" size="30" id="collect_host"></td>
+                                        </tr>
+                                        <tr>
+                                            <td width="18%">章节子序号运算方式</td>
+                                            <td class="text_left" width="32%"><input type="text" name="collect_subchapterid" value="<?=$info['collect_subchapterid'] ?? ''?>" size="30" id="collect_subchapterid"> &lt;{subchapterid}&gt;<br/><span class="orange">支持使用<{articleid}>标记的四则运算（+加，-减，*乘，/除，%取余，%%取整） <span class="red">暂只支持一步运算</span></span></td>
+                                            <td width="18%">文章子序号运算方式：</td>
+                                            <td class="text_left" width="32%"><input type="text" name="collect_subarticleid" value="<?=$info['collect_subarticleid'] ?? ''?>" size="30" id="collect_subarticleid"> &lt;{subarticleid}&gt;<br/><span class="orange">支持使用<{articleid}>标记的四则运算（+加，-减，*乘，/除，%取余，%%取整）  <span class="red">暂只支持一步运算</span></span></td>
+                                        </tr>
+                                        <tr>
+                                            <td width="18%">可否采集：</td>
+                                            <td class="text_left" width="32%">
+                                                <label><input type="radio" name="collect_status" value="1" <?php if(!isset($info['collect_status']) || (int)$info['collect_status'] === 1)echo 'checked="checked"'?>> 可采集 </label>
+                                                <label><input type="radio" name="collect_status" value="0" <?php if(isset($info['collect_status']) && (int)$info['collect_status'] === 0)echo 'checked="checked"'?>> 不可采集</label>
+                                            </td>
+                                            <td width="18%">目标网站编码：</td>
+                                            <td class="text_left" width="32%">
+                                                <label><input type="radio" name="collect_iconv" value="UTF-8" <?php if(!isset($info['collect_iconv']) || $info['collect_iconv'] === 'UTF-8')echo 'checked="checked"'?>> UTF8</label>
+                                                <label><input type="radio" name="collect_iconv" value="GBK" <?php if($info['collect_iconv'] === 'GBK')echo 'checked="checked"'?>> GBK</label>
+                                                <label><input type="radio" name="collect_iconv" value="G2312" <?php if($info['collect_iconv'] === 'G2312')echo 'checked="checked"'?>> G2312</label>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="td_title_bg text_left">文章信息页面采集规则</td>
+                            </tr>
+                            <tr bgcolor="#ffffff">
+                                <td>
+                                    <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                                        <tr>
+                                            <td width="18%">文章信息页面地址：</td>
+                                            <td class="text_left" colspan="3"><input type="text" class="text" name="collect_urlarticle" id="collect_urlarticle" size="60" maxlength="250" value="<?=$info['collect_urlarticle'] ?? ''?>" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td width="18%">文章标题采集规则：</td>
+                                            <td class="text_left" width="32%"><textarea class="textarea" name="collect_articletitle" id="collect_articletitle" rows="5" cols="60"><?=$info['collect_articletitle'] ?? ''?></textarea></td>
+                                            <td width="18%">作者采集规则：</td>
+                                            <td class="text_left" width="32%"><textarea class="textarea" name="collect_author" id="collect_author" rows="5" cols="60"><?=$info['collect_author'] ?? ''?></textarea></td>
+                                        </tr>
+                                        <tr>
+                                            <td width="18%">文章类型采集规则：</td>
+                                            <td class="text_left" width="32%"><textarea class="textarea" name="collect_sort" id="collect_sort" rows="5" cols="60"><?=$info['collect_sort'] ?? ''?></textarea></td>
+                                            <td width="18%">文章类型对应关系： <br /><span class="orange">对方类型名称和本站类型序号的用“=>”分割，两个类型之间用“||”分割，类型名称“default”标识默认的类型对应关系</span></td>
+                                            <td class="text_left" width="32%"><input type="text" class="text" name="collect_sortid" id="collect_sortid" size="60" maxlength="10000" value="<?=$info['collect_sortid'] ?? ''?>" /> <span class="orange"><br />本站类型和序号对应关系如下：<br />玄幻魔法=>1||武侠修真=>2||都市言情=>3||历史军事=>4||侦探推理=>5||网游动漫=>6||科幻小说=>7||恐怖灵异=>8||散文诗词=>9||其他类型=>10</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td width="18%">关键字采集规则：</td>
+                                            <td class="text_left" width="32%"><textarea class="textarea" name="collect_keyword" id="collect_keyword" rows="5" cols="60"><?=$info['collect_keyword'] ?? ''?></textarea></td>
+                                            <td width="18%">内容简介采集规则：</td>
+                                            <td class="text_left" width="32%"><textarea class="textarea" name="collect_intro" id="collect_intro" rows="5" cols="60"><?=$info['collect_intro'] ?? ''?></textarea></td>
+                                        </tr>
+                                        <tr>
+                                            <td width="18%">封面图片采集规则：</td>
+                                            <td class="text_left" width="32%"><textarea class="textarea" name="collect_articleimage" id="collect_articleimage" rows="5" cols="60"><?=$info['collect_articleimage'] ?? ''?></textarea></td>
+                                            <td width="18%">过滤的封面图片：</td>
+                                            <td class="text_left" width="32%"><input type="text" class="text" name="collect_filterimage" id="collect_filterimage" size="60" maxlength="250" value="<?=$info['collect_filterimage'] ?? ''?>" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td width="18%">目录页面链接采集规则 ：<br /><span class="orange">本规则采集到的内容将作为标记&lt;{indexlink}&gt;使用，可以应用在下面的“文章目录页面地址”里面。用来获取进入目录列表的链接中的不定indexlink。</span></td>
+                                            <td class="text_left" width="32%"><textarea class="textarea" name="collect_indexlink" id="collect_indexlink" rows="5" cols="60"><?=$info['collect_indexlink'] ?? ''?></textarea></td>
+                                            <td width="18%">全文标记采集规则：<br /><span class="orange">本规则不是采集内容保存，而是匹配就认为是全本，不匹配则认为是连载</span></td>
+                                            <td class="text_left" width="32%"><textarea class="textarea" name="collect_fullarticle" id="collect_fullarticle" rows="5" cols="60"><?=$info['collect_fullarticle'] ?? ''?></textarea></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="td_title_bg text_left">文章目录页面采集规则</td>
+                            </tr>
+                            <tr bgcolor="#ffffff">
+                                <td>
+                                    <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                                        <tr>
+                                            <td width="18%">文章目录页面地址：</td>
+                                            <td class="text_left" width="32%"><input type="text" class="text" name="collect_urlindex" id="collect_urlindex" size="60" maxlength="250" value="<?=$info['collect_urlindex'] ?? ''?>" /></td>
+                                            <td width="18%">分卷名称采集规则：</td>
+                                            <td class="text_left" width="32%"><textarea class="textarea" name="collect_volume" id="collect_volume" rows="5" cols="60"><?=$info['collect_volume'] ?? ''?></textarea></td>
+                                        </tr>
+                                        <tr>
+                                            <td width="18%">章节名称采集规则：</td>
+                                            <td class="text_left" width="32%"><textarea class="textarea" name="collect_chapter" id="collect_chapter" rows="5" cols="60"><?=$info['collect_chapter'] ?? ''?></textarea></td>
+                                            <td width="18%">章节序号采集规则：</td>
+                                            <td class="text_left" width="32%"><textarea class="textarea" name="collect_chapterid" id="collect_chapterid" rows="5" cols="60"><?=$info['collect_chapterid'] ?? ''?></textarea></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="td_title_bg text_left">章节内容页面采集规则</td>
+                            </tr>
+                            <tr bgcolor="#ffffff">
+                                <td>
+                                    <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                                        <tr>
+                                            <td width="18%">章节内容页面地址：</td>
+                                            <td class="text_left" width="32%"><input type="text" class="text" name="collect_urlchapter" id="collect_urlchapter" size="60" maxlength="250" value="<?=$info['collect_urlchapter'] ?? ''?>" /></td>
+                                            <td width="18%">章节内容采集规则：</td>
+                                            <td class="text_left" width="32%"><textarea class="textarea" name="collect_content" id="collect_content" rows="5" cols="60"><?=$info['collect_content'] ?? ''?></textarea></td>
+                                        </tr>
+                                        <tr>
+                                            <td width="18%">章节内容过滤规则 ：<br /><span class="orange">可多个过滤规则，每个规则必须一行，可使用替换标签，如：&lt;div&gt;!&lt;/div&gt;</span>：</td>
+                                            <td class="text_left" width="32%"><textarea class="textarea" name="collect_contentfilter" id="collect_contentfilter" rows="5" cols="60"><?=$info['collect_contentfilter'] ?? ''?></textarea></td>
+                                            <td width="18%">章节内容替换规则 ：<br /><span class="orange">替换规则和过滤规则结合使用，默认本规则留空，表示符合过滤规则的内容全部替换成空，如果要替换成其他内容，则这里每行的替换规则对应上面每行的过滤规则，如符合过滤规则第三行的内容会被替换成本规则第三行内容</span></td>
+                                            <td class="text_left" width="32%"><textarea class="textarea" name="collect_contentreplace" id="collect_contentreplace" rows="5" cols="60"><?=$info['collect_contentreplace'] ?? ''?></textarea></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <!-- /.box-body -->
+
+                <div class="box-footer">
+                    <button type="submit" class="btn btn-primary btnSubmit">保存</button>
+                </div>
+            </form>
+        </div>
+        <!-- /.box -->
+    </div>
+    <!-- /.col -->
+</div>
+<!-- /.row -->
+<script>
+    $(function () {
+        $('.btnSubmit').click(function(){
+            let ishttp = /^(http|https):\/\/(.*)/i;
+            if($('#collect_name').val() == ''){
+                alertMsg('error', '名称不能为空');
+                $('#collect_name').focus();
+                return false;
+            }
+            if($('#collect_host').val() == ''){
+                alertMsg('error', '目标网站');
+                $('#collect_host').focus();
+                return false;
+            }
+            if(!ishttp.test($('#collect_host').val())){
+                alertMsg('error', '请填写正确的目标网站');
+                $('#collect_host').select();
+                return false;
+            }
+            if($('#collect_urlarticle').val() == ''){
+                alertMsg('error', '请填写文章信息页面地址');
+                $('#collect_urlarticle').focus();
+                return false;
+            }
+            if(!ishttp.test($('#collect_urlarticle').val())){
+                alertMsg('error', '请填写正确的文章信息页面地址');
+                $('#collect_urlarticle').select();
+                return false;
+            }
+        });
+    })
+</script>
