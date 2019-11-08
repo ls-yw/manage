@@ -274,6 +274,13 @@ class CollectLogic
             $article['article_sort'] = $from['from_sort'];
             $article_id              = (new Article())->insertData($article);
             if ($article_id) {
+                try {
+                    $bookUrl = (new AliyunOss())->saveString((int)$article['book_id'], (int)$article_id, Helper::doWriteContent($content));
+                } catch (\Exception $e) {
+                    (new Article())->delData(['id' => $article_id]);
+                    throw new ManageException('上传阿里云失败：'.$e->getMessage());
+                }
+
                 $addarticle_error = '';
                 $row = (new Chapter())->updateData(['chapter_articlenum' => 'chapter_articlenum + 1'], ['id' => $article['chapter_id']]);
                 if (empty($row)) {
@@ -284,11 +291,9 @@ class CollectLogic
                     $addarticle_error .= '（小说总文章数更新失败）（小说总字数更新失败）';
                 }
 
-                $bookUrl = (new AliyunOss())->saveString((int)$article['book_id'], (int)$article_id, Helper::doWriteContent($content));
-
                 $msg         = $from['from_title'] . $addarticle_error . ' ';
                 (new CollectFrom())->updateData(['from_state' => 1, 'url' => $bookUrl], ['id' => $from['id']]);
-                (new Book())->updateData(['url' => $bookUrl], ['id' => $bookId]);
+                (new Article())->updateData(['url' => $bookUrl], ['id' => $article_id]);
             }
         } else {
             $msg = '<span class="red">' . $from['from_title'] . '（采集失败内容过少：<a href="' . $from['from_url'] . '" target="_blank">' . $from['from_url'] . '</a>）  </span>';

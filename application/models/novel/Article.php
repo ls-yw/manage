@@ -24,6 +24,7 @@ class Article extends BasicModel
             'book_id'      => '文章所属小说ID',
             'article_sort' => '文章排序',
             'wordnumber'   => '文章字数',
+            'url'          => 'oss地址',
             'create_at'    => '创建时间',
             'update_at'    => '更新时间',
             'create_by'    => '创建人（记录管理员）',

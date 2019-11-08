@@ -11,7 +11,6 @@ use woodlsy\httpClient\HttpCurl;
 use woodlsy\phalcon\library\Helper;
 use woodlsy\phalcon\library\Log;
 use woodlsy\phalcon\library\Redis;
-use woodlsy\upload\Upload;
 
 class CollectController extends BaseController
 {
@@ -175,6 +174,8 @@ class CollectController extends BaseController
      * 采集小说基本信息
      *
      * @author yls
+     * @throws ManageException
+     * @throws \woodlsy\httpClient\HttpClientException
      */
     public function bookAction()
     {
@@ -217,7 +218,7 @@ class CollectController extends BaseController
                 $this->view->collectId = $data['book_collect_id'];
                 $this->view->indexlink = $indexlink;
                 $this->view->title     = '小说采集';
-                $this->view->menuflag = 'novel-collect-index';
+                $this->view->menuflag  = 'novel-collect-index';
 
             } catch (ManageException $e) {
                 Redis::getInstance()->setex('alert_error', 3600, $e->getMessage());
@@ -227,6 +228,25 @@ class CollectController extends BaseController
                 Redis::getInstance()->setex('alert_error', 3600, '系统错误');
                 die('<script>window.history.go(-1);</script>');
             }
+        } else {
+            $id        = (int) $this->get('id', 'int');
+            $collectId = (int) $this->get('collect_id', 'int');
+            $targetId  = (int) $this->get('target_id', 'int');
+
+            $collect = (new CollectLogic())->getById($collectId);
+            if (!$collect) {
+                Redis::getInstance()->setex('alert_error', 3600, '找不到采集节点数据');
+                die('<script>window.history.go(-1);</script>');
+            }
+            $book = (new CollectLogic())->startCollect($targetId, $collect);
+
+            $this->view->act       = 'update';
+            $this->view->targetId  = $targetId;
+            $this->view->collectId = $collectId;
+            $this->view->indexlink = $book['indexlink'];
+            $this->view->id        = $id;
+            $this->view->title     = '小说采集';
+            $this->view->menuflag  = 'novel-collect-bookList';
         }
     }
 
@@ -320,8 +340,8 @@ class CollectController extends BaseController
                     //默认新增章节 默认章节，采集的文章都放入此章节内
                     $chapter                       = [];
                     $chapter['chapter_name']       = '默认章节';
-                    $chapter['book_id']    = $bookId;
-                    $chapter['book_name']  = (new BookLogic())->getBookNameById($bookId);
+                    $chapter['book_id']            = $bookId;
+                    $chapter['book_name']          = (new BookLogic())->getBookNameById($bookId);
                     $chapter['chapter_articlenum'] = 0;
                     $chapter['chapter_order']      = 1;
                     $chapterId                     = (new BookLogic())->saveChapter($chapter);
@@ -332,6 +352,9 @@ class CollectController extends BaseController
                 } else {
                     $chapterId = $chapterArray[0]['id'];
                 }
+
+                //更新最后采集时间
+                (new BookLogic())->updateCollectTime($bookId);
 
                 return $this->ajaxReturn(0, $msg, null, ['url' => '/novel/collect/doArticle.html?act=' . $act . '&book_id=' . $bookId . '&collect_id=' . $collectId . '&chapter_id=' . $chapterId . '&category_id=' . $book['book_category']]);
             } catch (ManageException $e) {
@@ -358,15 +381,15 @@ class CollectController extends BaseController
                 $collectId  = (int) $this->get('collect_id', 'int');
                 $chapterId  = (int) $this->get('chapter_id', 'int');
                 $categoryId = (int) $this->get('category_id', 'int');
-                $fromSort    = (int) $this->get('from_sort', 'int', 0);
+                $fromSort   = (int) $this->get('from_sort', 'int', 0);
 
                 $res = (new CollectLogic())->collectArticle($bookId, $collectId, $chapterId, $categoryId, $fromSort);
 
                 if (empty($res['new_from'])) {
-                    return $this->ajaxReturn(0, $res['msg'].' 采集完成');
+                    return $this->ajaxReturn(0, $res['msg'] . ' 采集完成');
                 }
 
-                return $this->ajaxReturn(0, $res['msg'], null, ['url' => '/novel/collect/doArticle.html?act=' . $act . '&book_id=' . $bookId . '&collect_id=' . $collectId . '&chapter_id=' . $chapterId . '&category_id=' . $categoryId.'&from_sort='.$res['from_sort']]);
+                return $this->ajaxReturn(0, $res['msg'], null, ['url' => '/novel/collect/doArticle.html?act=' . $act . '&book_id=' . $bookId . '&collect_id=' . $collectId . '&chapter_id=' . $chapterId . '&category_id=' . $categoryId . '&from_sort=' . $res['from_sort']]);
             } catch (ManageException $e) {
                 return $this->ajaxReturn(1, $e->getMessage());
             } catch (Exception $e) {
@@ -374,6 +397,20 @@ class CollectController extends BaseController
                 return $this->ajaxReturn(1, '系统错误');
             }
         }
+    }
 
+    /**
+     * 可采集小说列表
+     *
+     * @author yls
+     */
+    public function bookListAction()
+    {
+        $keywords              = $this->get('keywords', 'string');
+        $this->view->data      = (new BookLogic())->getList($keywords, $this->page, $this->size);
+        $this->view->totalPage = ceil((new BookLogic())->getListCount($keywords) / $this->size);
+        $this->view->page      = $this->page;
+        $this->view->pageLink  = '?page={page}&keywords=' . $keywords;
+        $this->view->title     = '采集小说';
     }
 }

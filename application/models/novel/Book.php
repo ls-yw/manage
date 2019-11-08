@@ -41,7 +41,6 @@ class Book extends BasicModel
             'book_is_collect'        => '是否可以继续采集',
             'book_last_collect_time' => '最后采集时间',
             'book_lasttime'          => '小说最后点击时间',
-            'url'                    => 'oss地址',
             'create_at'              => '创建时间',
             'update_at'              => '更新时间',
             'create_by'              => '创建人（记录管理员）',

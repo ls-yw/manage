@@ -90,6 +90,7 @@ class BaseController extends BasicController
                 ]],
                 ['title' => '采集管理', 'link' => '#', 'children' => [
                     ['title' => '采集节点', 'link' => '/novel/collect/index.html', 'flag' => 'novel-collect-index'],
+                    ['title' => '采集小说', 'link' => '/novel/collect/bookList.html', 'flag' => 'novel-collect-bookList'],
                 ]],
                 ['title' => '系统设置', 'link' => '/index/article/index.html', 'flag' => 'article'],
             ]]
