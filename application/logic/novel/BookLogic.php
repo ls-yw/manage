@@ -143,17 +143,21 @@ class BookLogic
      * 可采集小说列表
      *
      * @author yls
-     * @param $keywords
-     * @param $page
-     * @param $row
+     * @param      $keywords
+     * @param null $isCollect
+     * @param null $page
+     * @param null $row
      * @return array|bool
      */
-    public function getList($keywords, $page, $row)
+    public function getList($keywords, $isCollect = null, $page = null, $row = null)
     {
         $offset = ($page - 1) * $row;
-        $where = ['book_collect_id' => ['!=', 0], 'book_is_collect' => 1];
+        $where = ['book_collect_id' => ['!=', 0]];
         if (!empty($keywords)) {
             $where['book_name'] = ['like', '%'.$keywords.'%'];
+        }
+        if ($isCollect) {
+            $where['book_is_collect'] = $isCollect;
         }
         $list   = (new Book())->getList($where, 'id desc', $offset, $row);
         return $list;
@@ -163,14 +167,18 @@ class BookLogic
      * 可采集小说列表总数
      *
      * @author yls
-     * @param $keywords
+     * @param      $keywords
+     * @param null $isCollect
      * @return array|int
      */
-    public function getListCount($keywords)
+    public function getListCount($keywords, $isCollect = null)
     {
-        $where = ['book_collect_id' => ['!=', 0], 'book_is_collect' => 1];
+        $where = ['book_collect_id' => ['!=', 0]];
         if (!empty($keywords)) {
             $where['book_name'] = ['like', '%'.$keywords.'%'];
+        }
+        if ($isCollect) {
+            $where['book_is_collect'] = $isCollect;
         }
         $list   = (new Book())->getCount($where);
         return $list;

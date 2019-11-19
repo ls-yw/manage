@@ -87,6 +87,7 @@ class BaseController extends BasicController
             ['title' => '小说系统', 'icon' => 'fa fa-book', 'link' => '#', 'children' => [
                 ['title' => '内容管理', 'link' => '#', 'children' => [
                     ['title' => '栏目管理', 'link' => '/novel/category/index.html', 'flag' => 'novel-category-index'],
+                    ['title' => '小说管理', 'link' => '/novel/book/index.html', 'flag' => 'novel-book-index'],
                 ]],
                 ['title' => '采集管理', 'link' => '#', 'children' => [
                     ['title' => '采集节点', 'link' => '/novel/collect/index.html', 'flag' => 'novel-collect-index'],

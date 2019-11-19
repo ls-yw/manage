@@ -407,8 +407,8 @@ class CollectController extends BaseController
     public function bookListAction()
     {
         $keywords              = $this->get('keywords', 'string');
-        $this->view->data      = (new BookLogic())->getList($keywords, $this->page, $this->size);
-        $this->view->totalPage = ceil((new BookLogic())->getListCount($keywords) / $this->size);
+        $this->view->data      = (new BookLogic())->getList($keywords, 1, $this->page, $this->size);
+        $this->view->totalPage = ceil((new BookLogic())->getListCount($keywords, 1) / $this->size);
         $this->view->page      = $this->page;
         $this->view->pageLink  = '?page={page}&keywords=' . $keywords;
         $this->view->title     = '采集小说';
