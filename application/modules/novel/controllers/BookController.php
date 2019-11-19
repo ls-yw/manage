@@ -12,7 +12,7 @@ class BookController extends BaseController
     public function indexAction()
     {
         $keywords              = $this->get('keywords', 'string');
-        $this->view->data      = (new BookLogic())->getList($keywords, $this->page, $this->size);
+        $this->view->data      = (new BookLogic())->getList($keywords, null, $this->page, $this->size);
         $this->view->totalPage = ceil((new BookLogic())->getListCount($keywords) / $this->size);
         $this->view->page      = $this->page;
         $this->view->pageLink  = '?page={page}&keywords=' . $keywords;
