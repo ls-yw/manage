@@ -416,8 +416,11 @@ class CollectLogic
     {
         $filter  = explode('|', $filter);
         $replace = explode('|', $replace);
+        if (empty($filter)) {
+            return $content;
+        }
         foreach ($filter as $key => $value) {
-            $content = preg_replace("/$value/i", $replace[$key], $content);
+            $content = preg_replace("/$value/i", ($replace[$key] ?? ''), $content);
         }
         $content = preg_replace("/<a([^>]*)>(.*)<\/a>/", "", $content);
         $content = preg_replace("'<script(.*?)<\/script>'is", "", $content);
