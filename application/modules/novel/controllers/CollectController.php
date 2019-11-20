@@ -290,7 +290,7 @@ class CollectController extends BaseController
                     $new_from = array();
                     $add_from = array();
                     foreach ($data as $key => $value) {
-                        if ($value['from_article_id'] == $from[$key]['from_article_id']) {
+                        if (isset($from[$key]) && $value['from_article_id'] == $from[$key]['from_article_id']) {
                             if ($from[$key]['from_state'] == 0) $new_from[] = $from[$key];
                         } else {
                             $new_from[]     = $value;  //需要重新采集的内容
