@@ -147,8 +147,12 @@ class CollectLogic
         $book['book_sort'] = $result[1];
         $result            = '';
         //获取关键字
-        preg_match('/' . $book_keyword[0] . $book_keyword[3] . $book_keyword[1] . '/i', $html, $result);
-        $book['book_keyword'] = $result[1];
+        if (!empty($book_keyword)) {
+            preg_match('/' . $book_keyword[0] . $book_keyword[3] . $book_keyword[1] . '/i', $html, $result);
+            $book['book_keyword'] = $result[1];
+        } else {
+            $book['book_keyword'] = '';
+        }
         $result               = '';
         //获取简介
         preg_match('/' . $book_intro[0] . $book_intro[3] . $book_intro[1] . '/i', $html, $result);

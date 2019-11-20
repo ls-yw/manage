@@ -6,6 +6,9 @@ class Helper
 {
     public static function dealRegular($str)
     {
+        if (empty($str)) {
+            return $str;
+        }
         $str = addslashes($str);
         $str = preg_replace('/\//', '\/', $str);
         $str = preg_replace('/\(/', '\(', $str);
@@ -62,7 +65,7 @@ class Helper
 
         $search = array("|^http://" . preg_quote($host) . "|i",
                         "|^(\/)|i",
-                        "|^(?!http://)(?!mailto:)|i",
+                        "|^(?!http://)(?!https://)(?!mailto:)|i",
                         "|/\./|",
                         "|/[^\/]+/\.\./|"
         );
