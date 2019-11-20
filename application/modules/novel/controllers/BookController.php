@@ -48,6 +48,9 @@ class BookController extends BaseController
             Redis::getInstance()->setex('alert_success', 3600, '保存成功');
             return $this->response->redirect('/novel/book/index.html');
         } else {
+
+            $this->view->moduleName = $this->router->getModuleName();
+            $this->view->config = $this->config;
             $this->view->category = (new BookLogic())->getCategoryPairs();
             $this->view->book     = $book;
             $this->view->title    = '编辑《' . $book['book_name'] . '》';
