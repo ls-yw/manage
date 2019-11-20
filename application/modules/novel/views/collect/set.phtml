@@ -102,37 +102,37 @@
                                     <table cellpadding="0" cellspacing="0" border="0" width="100%">
                                         <tr>
                                             <td width="18%">文章信息页面地址：</td>
-                                            <td class="text_left" colspan="3"><input type="text" class="text" name="collect_urlarticle" id="collect_urlarticle" size="60" maxlength="250" value="<?=$info['collect_urlarticle'] ?? ''?>" /></td>
+                                            <td class="text_left" colspan="3"><input type="text" class="text" name="collect_urlarticle" id="collect_urlarticle" size="60" maxlength="250" value="<?=$info['collect_urlarticle'] ?? ''?>" /> <p class="gray">例：https://www.x23us.com/book/<{articleid}></p></td>
                                         </tr>
                                         <tr>
                                             <td width="18%">文章标题采集规则：</td>
-                                            <td class="text_left" width="32%"><textarea class="textarea" name="collect_articletitle" id="collect_articletitle" rows="5" cols="60"><?=$info['collect_articletitle'] ?? ''?></textarea></td>
+                                            <td class="text_left" width="32%"><textarea class="textarea" name="collect_articletitle" id="collect_articletitle" rows="5" cols="60"><?=$info['collect_articletitle'] ?? ''?></textarea> <p class="gray">例：&lt;dd&gt;&lt;h1&gt;!!!! 全文阅读&lt;/h1&gt;&lt;/dd&gt;</p></td>
                                             <td width="18%">作者采集规则：</td>
-                                            <td class="text_left" width="32%"><textarea class="textarea" name="collect_author" id="collect_author" rows="5" cols="60"><?=$info['collect_author'] ?? ''?></textarea></td>
+                                            <td class="text_left" width="32%"><textarea class="textarea" name="collect_author" id="collect_author" rows="5" cols="60"><?=$info['collect_author'] ?? ''?></textarea> <p class="gray">例：&lt;th&gt;文章作者&lt;/th&gt;&lt;td&gt;@!!!!&lt;/td&gt;</p></td>
                                         </tr>
                                         <tr>
                                             <td width="18%">文章类型采集规则：</td>
-                                            <td class="text_left" width="32%"><textarea class="textarea" name="collect_sort" id="collect_sort" rows="5" cols="60"><?=$info['collect_sort'] ?? ''?></textarea></td>
+                                            <td class="text_left" width="32%"><textarea class="textarea" name="collect_sort" id="collect_sort" rows="5" cols="60"><?=$info['collect_sort'] ?? ''?></textarea> <p class="gray">例：&lt;a href="/class/$_$.html"&gt;!!!!&lt;/a&gt;</p></td>
                                             <td width="18%">文章类型对应关系： <br /><span class="orange">对方类型名称和本站类型序号的用“=>”分割，两个类型之间用“||”分割，类型名称“default”标识默认的类型对应关系</span></td>
                                             <td class="text_left" width="32%"><input type="text" class="text" name="collect_sortid" id="collect_sortid" size="60" maxlength="10000" value="<?=$info['collect_sortid'] ?? ''?>" /> <span class="orange"><br />本站类型和序号对应关系如下：<br />玄幻魔法=>1||武侠修真=>2||都市言情=>3||历史军事=>4||侦探推理=>5||网游动漫=>6||科幻小说=>7||恐怖灵异=>8||散文诗词=>9||其他类型=>10</span></td>
                                         </tr>
                                         <tr>
                                             <td width="18%">关键字采集规则：</td>
-                                            <td class="text_left" width="32%"><textarea class="textarea" name="collect_keyword" id="collect_keyword" rows="5" cols="60"><?=$info['collect_keyword'] ?? ''?></textarea></td>
+                                            <td class="text_left" width="32%"><textarea class="textarea" name="collect_keyword" id="collect_keyword" rows="5" cols="60"><?=$info['collect_keyword'] ?? ''?></textarea> <p class="gray">例：关键字：&lt;u&gt;!!!!&lt;/u&gt;</p></td>
                                             <td width="18%">内容简介采集规则：</td>
-                                            <td class="text_left" width="32%"><textarea class="textarea" name="collect_intro" id="collect_intro" rows="5" cols="60"><?=$info['collect_intro'] ?? ''?></textarea></td>
+                                            <td class="text_left" width="32%"><textarea class="textarea" name="collect_intro" id="collect_intro" rows="5" cols="60"><?=$info['collect_intro'] ?? ''?></textarea> <p class="gray">例：&lt;p&gt;****&lt;/p&gt;&lt;p style="display:none" id="sidename"&gt;</p></td>
                                         </tr>
                                         <tr>
                                             <td width="18%">封面图片采集规则：</td>
-                                            <td class="text_left" width="32%"><textarea class="textarea" name="collect_articleimage" id="collect_articleimage" rows="5" cols="60"><?=$info['collect_articleimage'] ?? ''?></textarea></td>
+                                            <td class="text_left" width="32%"><textarea class="textarea" name="collect_articleimage" id="collect_articleimage" rows="5" cols="60"><?=$info['collect_articleimage'] ?? ''?></textarea> <p class="gray">例：&lt;img style="padding:7px; border:1px solid #E4E4E4; width:120px; height:150px; margin:0 25px 0 15px;" alt="!" src="!!!!"/&gt;</p></td>
                                             <td width="18%">过滤的封面图片：</td>
                                             <td class="text_left" width="32%"><input type="text" class="text" name="collect_filterimage" id="collect_filterimage" size="60" maxlength="250" value="<?=$info['collect_filterimage'] ?? ''?>" /></td>
                                         </tr>
                                         <tr>
                                             <td width="18%">目录页面链接采集规则 ：<br /><span class="orange">本规则采集到的内容将作为标记&lt;{indexlink}&gt;使用，可以应用在下面的“文章目录页面地址”里面。用来获取进入目录列表的链接中的不定indexlink。</span></td>
-                                            <td class="text_left" width="32%"><textarea class="textarea" name="collect_indexlink" id="collect_indexlink" rows="5" cols="60"><?=$info['collect_indexlink'] ?? ''?></textarea></td>
+                                            <td class="text_left" width="32%"><textarea class="textarea" name="collect_indexlink" id="collect_indexlink" rows="5" cols="60"><?=$info['collect_indexlink'] ?? ''?></textarea> <p class="gray">例：&lt;a class="read" href="https://www.x23us.com/html/$$$$/<{articleid}>/" title="!"&gt;章节列表&lt;/a&gt;</p></td>
                                             <td width="18%">全文标记采集规则：<br /><span class="orange">本规则不是采集内容保存，而是匹配就认为是全本，不匹配则认为是连载</span></td>
-                                            <td class="text_left" width="32%"><textarea class="textarea" name="collect_fullarticle" id="collect_fullarticle" rows="5" cols="60"><?=$info['collect_fullarticle'] ?? ''?></textarea></td>
+                                            <td class="text_left" width="32%"><textarea class="textarea" name="collect_fullarticle" id="collect_fullarticle" rows="5" cols="60"><?=$info['collect_fullarticle'] ?? ''?></textarea> <p class="gray">例：&lt;th&gt;文章状态&lt;/th&gt;&lt;td&gt;@已完成&lt;/td>&lt;/tr&gt;</p></td>
                                         </tr>
                                     </table>
                                 </td>
@@ -145,15 +145,15 @@
                                     <table cellpadding="0" cellspacing="0" border="0" width="100%">
                                         <tr>
                                             <td width="18%">文章目录页面地址：</td>
-                                            <td class="text_left" width="32%"><input type="text" class="text" name="collect_urlindex" id="collect_urlindex" size="60" maxlength="250" value="<?=$info['collect_urlindex'] ?? ''?>" /></td>
+                                            <td class="text_left" width="32%"><input type="text" class="text" name="collect_urlindex" id="collect_urlindex" size="60" maxlength="250" value="<?=$info['collect_urlindex'] ?? ''?>" /><p class="gray">例：https://www.x23us.com/html/<{indexlink}>/<{articleid}>/</p></td>
                                             <td width="18%">分卷名称采集规则：</td>
-                                            <td class="text_left" width="32%"><textarea class="textarea" name="collect_volume" id="collect_volume" rows="5" cols="60"><?=$info['collect_volume'] ?? ''?></textarea></td>
+                                            <td class="text_left" width="32%"><textarea class="textarea" name="collect_volume" id="collect_volume" rows="5" cols="60"><?=$info['collect_volume'] ?? ''?></textarea><p class="gray">例：&lt;tr&gt;&lt;th colspan="4"&gt;!!!!&lt;/td&gt;&lt;/tr&gt;</p></td>
                                         </tr>
                                         <tr>
                                             <td width="18%">章节名称采集规则：</td>
-                                            <td class="text_left" width="32%"><textarea class="textarea" name="collect_chapter" id="collect_chapter" rows="5" cols="60"><?=$info['collect_chapter'] ?? ''?></textarea></td>
+                                            <td class="text_left" width="32%"><textarea class="textarea" name="collect_chapter" id="collect_chapter" rows="5" cols="60"><?=$info['collect_chapter'] ?? ''?></textarea><p class="gray">例：&lt;td class="L"&gt;&lt;a href="$.html"&gt;!!!!&lt;/a&gt;&lt;/td&gt;</p></td>
                                             <td width="18%">章节序号采集规则：</td>
-                                            <td class="text_left" width="32%"><textarea class="textarea" name="collect_chapterid" id="collect_chapterid" rows="5" cols="60"><?=$info['collect_chapterid'] ?? ''?></textarea></td>
+                                            <td class="text_left" width="32%"><textarea class="textarea" name="collect_chapterid" id="collect_chapterid" rows="5" cols="60"><?=$info['collect_chapterid'] ?? ''?></textarea><p class="gray">例：&lt;td class="L"&gt;&lt;a href="$$$$.html"&gt;!&lt;/a&gt;&lt;/td&gt;</p></td>
                                         </tr>
                                     </table>
                                 </td>
@@ -166,15 +166,15 @@
                                     <table cellpadding="0" cellspacing="0" border="0" width="100%">
                                         <tr>
                                             <td width="18%">章节内容页面地址：</td>
-                                            <td class="text_left" width="32%"><input type="text" class="text" name="collect_urlchapter" id="collect_urlchapter" size="60" maxlength="250" value="<?=$info['collect_urlchapter'] ?? ''?>" /></td>
+                                            <td class="text_left" width="32%"><input type="text" class="text" name="collect_urlchapter" id="collect_urlchapter" size="60" maxlength="250" value="<?=$info['collect_urlchapter'] ?? ''?>" /><p class="gray">例：https://www.x23us.com/html/<{indexlink}>/<{articleid}>/<{chapterid}>.html</p></td>
                                             <td width="18%">章节内容采集规则：</td>
-                                            <td class="text_left" width="32%"><textarea class="textarea" name="collect_content" id="collect_content" rows="5" cols="60"><?=$info['collect_content'] ?? ''?></textarea></td>
+                                            <td class="text_left" width="32%"><textarea class="textarea" name="collect_content" id="collect_content" rows="5" cols="60"><?=$info['collect_content'] ?? ''?></textarea><p class="gray">例：&lt;dd id="contents"&gt;****&lt;/dd&gt;&lt;div class="adhtml"&gt;&lt;script&gt;show_htm2();&lt;/script&gt;&lt;/div&gt;</p></td>
                                         </tr>
                                         <tr>
                                             <td width="18%">章节内容过滤规则 ：<br /><span class="orange">可多个过滤规则，每个规则必须一行，可使用替换标签，如：&lt;div&gt;!&lt;/div&gt;</span>：</td>
-                                            <td class="text_left" width="32%"><textarea class="textarea" name="collect_contentfilter" id="collect_contentfilter" rows="5" cols="60"><?=$info['collect_contentfilter'] ?? ''?></textarea></td>
+                                            <td class="text_left" width="32%"><textarea class="textarea" name="collect_contentfilter" id="collect_contentfilter" rows="5" cols="60"><?=$info['collect_contentfilter'] ?? ''?></textarea><p class="gray">例：顶点|x23us</p></td>
                                             <td width="18%">章节内容替换规则 ：<br /><span class="orange">替换规则和过滤规则结合使用，默认本规则留空，表示符合过滤规则的内容全部替换成空，如果要替换成其他内容，则这里每行的替换规则对应上面每行的过滤规则，如符合过滤规则第三行的内容会被替换成本规则第三行内容</span></td>
-                                            <td class="text_left" width="32%"><textarea class="textarea" name="collect_contentreplace" id="collect_contentreplace" rows="5" cols="60"><?=$info['collect_contentreplace'] ?? ''?></textarea></td>
+                                            <td class="text_left" width="32%"><textarea class="textarea" name="collect_contentreplace" id="collect_contentreplace" rows="5" cols="60"><?=$info['collect_contentreplace'] ?? ''?></textarea><p class="gray">例：woodlsy|woodlsy</p></td>
                                         </tr>
                                     </table>
                                 </td>
