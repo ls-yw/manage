@@ -28,16 +28,18 @@ class BookController extends BaseController
             die('<script>window.history.go(-1);</script>');
         }
         if ($this->request->isPost()) {
-            $data      = [
-                'id' => $id,
-                'book_name'            => trim($this->post('book_name', 'string')),
-                'book_category'        => (int)$this->post('book_category', 'int'),
-                'book_author'          => trim($this->post('book_author', 'string')),
-                'book_state'           => $this->post('book_state', 'int'),
-                'book_keyword'         => trim($this->post('book_keyword', 'string')),
-                'book_intro'           => trim($this->post('book_intro', 'string')),
-                'book_is_collect'      => $this->post('monitoring', 'int'),
-                'book_img'             => trim($this->post('book_img', 'string')),
+            $data = [
+                'id'              => $id,
+                'book_name'       => trim($this->post('book_name', 'string')),
+                'book_category'   => (int) $this->post('book_category', 'int'),
+                'book_author'     => trim($this->post('book_author', 'string')),
+                'book_state'      => $this->post('book_state', 'int'),
+                'book_keyword'    => trim($this->post('book_keyword', 'string')),
+                'book_intro'      => trim($this->post('book_intro', 'string')),
+                'book_is_collect' => $this->post('monitoring', 'int'),
+                'book_img'        => trim($this->post('book_img', 'string')),
+                'is_recommend'    => (int) $this->post('is_recommend', 'int'),
+                'quality'         => (int) $this->post('quality', 'int'),
             ];
 
             $row = (new BookLogic())->save($data);
@@ -50,11 +52,11 @@ class BookController extends BaseController
         } else {
 
             $this->view->moduleName = $this->router->getModuleName();
-            $this->view->config = $this->config;
-            $this->view->category = (new BookLogic())->getCategoryPairs();
-            $this->view->book     = $book;
-            $this->view->title    = '编辑《' . $book['book_name'] . '》';
-            $this->view->menuflag = 'novel-book-index';
+            $this->view->config     = $this->config;
+            $this->view->category   = (new BookLogic())->getCategoryPairs();
+            $this->view->book       = $book;
+            $this->view->title      = '编辑《' . $book['book_name'] . '》';
+            $this->view->menuflag   = 'novel-book-index';
         }
     }
 
