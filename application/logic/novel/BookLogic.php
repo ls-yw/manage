@@ -2,9 +2,11 @@
 namespace application\logic\novel;
 
 use application\library\ManageException;
+use application\models\novel\Article;
 use application\models\novel\Book;
 use application\models\novel\Category;
 use application\models\novel\Chapter;
+use application\models\novel\CollectFrom;
 use woodlsy\phalcon\library\Helper;
 
 class BookLogic
@@ -234,5 +236,57 @@ class BookLogic
     public function updateCollectTime($bookId)
     {
         return (new Book())->updateData(['book_last_collect_time' => Helper::now()], ['id' => $bookId]);
+    }
+
+    /**
+     * 获取采集文章数量
+     *
+     * @author woodlsy
+     * @param int      $bookId
+     * @param int|null $status
+     * @return array|int
+     */
+    public function getCollectFromCount(int $bookId, int $status = null)
+    {
+        $where = ['from_book_id' => $bookId];
+        if (null !== $status) {
+            $where['from_state'] = $status;
+        }
+        return (new CollectFrom())->getCount($where);
+    }
+
+    /**
+     * 获取oss文章数量
+     *
+     * @author woodlsy
+     * @param int      $bookId
+     * @param int|null $isOss
+     * @return array|int
+     */
+    public function getArticleByOssCount(int $bookId, int $isOss = null)
+    {
+        $where = ['book_id' => $bookId];
+        if (null !== $isOss) {
+            $where['is_oss'] = $isOss;
+        }
+        return (new Article())->getCount($where);
+    }
+
+    /**
+     * 获取oss文章列表
+     *
+     * @author woodlsy
+     * @param int      $bookId
+     * @param int|null $isOss
+     * @param string   $order
+     * @return array|bool
+     */
+    public function getArticleByOssAll(int $bookId, int $isOss = null, string $order = 'article_sort asc')
+    {
+        $where = ['book_id' => $bookId];
+        if (null !== $isOss) {
+            $where['is_oss'] = $isOss;
+        }
+        return (new Article())->getAll($where, ['id', 'title', 'book_id'], $order);
     }
 }

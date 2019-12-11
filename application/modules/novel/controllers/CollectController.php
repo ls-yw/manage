@@ -407,10 +407,69 @@ class CollectController extends BaseController
     public function bookListAction()
     {
         $keywords              = $this->get('keywords', 'string');
-        $this->view->data      = (new BookLogic())->getList($keywords, 1, $this->page, $this->size);
+        $data = (new BookLogic())->getList($keywords, 1, $this->page, $this->size);
+        if (!empty($data)) {
+            foreach ($data as &$val) {
+                $val['waitArticleNum'] = (new BookLogic())->getCollectFromCount($val['id'], 0);
+                $val['ossArticleNum'] = (new BookLogic())->getArticleByOssCount($val['id'], 0);
+            }
+        }
+
+        $this->view->data      = $data;
         $this->view->totalPage = ceil((new BookLogic())->getListCount($keywords, 1) / $this->size);
         $this->view->page      = $this->page;
         $this->view->pageLink  = '?page={page}&keywords=' . $keywords;
         $this->view->title     = '采集小说';
+    }
+
+    /**
+     * 阿里oss上传
+     *
+     * @author woodlsy
+     * @return \Phalcon\Http\ResponseInterface
+     */
+    public function ossAction()
+    {
+        $bookId = (int)$this->get('book_id');
+        $key = 'wait_oss_'.$bookId;
+        if ($this->request->isAjax()) {
+            try {
+                $index = (int)$this->get('key');
+                if (!Redis::getInstance()->exists($key)) {
+                    return $this->ajaxReturn(1, '不存在待上传的文章缓存');
+                }
+
+                $articles = Helper::jsonDecode(Redis::getInstance()->get($key));
+                if (!isset($articles[$index])) {
+                    return $this->ajaxReturn(0, '上传结束');
+                }
+
+                (new CollectLogic())->uploadOss($bookId, $articles[$index]);
+                return $this->ajaxReturn(0, $articles[$index]['title'], null, ['url' => '/novel/collect/oss.html?book_id=' . $bookId . '&key=' . ($index+1)]);
+            } catch (ManageException $e) {
+                return $this->ajaxReturn(1, $e->getMessage());
+            } catch (Exception $e) {
+                Log::write($this->controllerName . '|' . $this->actionName, $e->getMessage() . $e->getFile() . $e->getLine(), 'error');
+                return $this->ajaxReturn(1, '系统错误');
+            }
+        } else {
+            if (empty($bookId)) {
+                Redis::getInstance()->setex('alert_error', 3600, '小说不存在');
+                die('<script>window.history.go(-1);</script>');
+            }
+
+            $ossArticles = (new BookLogic())->getArticleByOssAll($bookId, 0, 'article_sort asc');
+            if (empty($ossArticles)) {
+                Redis::getInstance()->setex('alert_error', 3600, '该小说无可上传文章');
+                die('<script>window.history.go(-1);</script>');
+            }
+
+            Redis::getInstance()->setex($key, 3600, Helper::jsonEncode($ossArticles));
+
+            $this->view->ossArticleNum     = count($ossArticles);
+            $this->view->menuflag  = 'novel-collect-bookList';
+            $this->view->title     = '上传OSS';
+            $this->view->bookId     = $bookId;
+        }
     }
 }

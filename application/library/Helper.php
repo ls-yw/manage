@@ -101,22 +101,69 @@ class Helper
         return $content;
     }
 
+    /**
+     * 保存到本地
+     *
+     * @author woodlsy
+     * @param $categoryId
+     * @param $bookId
+     * @param $articleId
+     * @param $content
+     */
     public static function writeBookText($categoryId, $bookId, $articleId, $content)
     {
-        $body = stripslashes($content);
-        $ipath = "./Public/booktext";
-        $spath = "/$sort_id";
-        $bpath = "/$book_id";
+        $ipath = APP_PATH."/../public/booktext";
+        $spath = "/$categoryId";
+        $bpath = "/$bookId";
         if(!is_dir($ipath)) mkdir($ipath);
         if(!is_dir($ipath.$spath)) mkdir($ipath.$spath);
         if(!is_dir($ipath.$spath.$bpath)) mkdir($ipath.$spath.$bpath);
-        $bookfile = $ipath.$spath.$bpath."/bk_$article_id.inc";
-        $body = "<"."?php error_reporting(0); exit();\r\n".$body."\r\n?".">";
-        @$fp = fopen($bookfile,'w');
-        @flock($fp);
-        @fwrite($fp,$body);
-        @fclose($fp);
+        $bookfile = $ipath.$spath.$bpath."/$articleId.inc";
+        $fp = fopen($bookfile,'w');
+        flock($fp, LOCK_EX);
+        fwrite($fp,$content);
+        fclose($fp);
+    }
 
+    /**
+     * 读取小说内容
+     *
+     * @author woodlsy
+     * @param $categoryId
+     * @param $bookId
+     * @param $articleId
+     * @return string
+     */
+    public static function getBookText($categoryId,$bookId,$articleId)
+    {
+        $bookfile = APP_PATH."/../public/booktext/".$categoryId.'/'.$bookId."/{$articleId}.inc";
+        if(!file_exists($bookfile))
+        {
+            return '';
+        }
+        else
+        {
+            return file_get_contents($bookfile);
+        }
+    }
 
+    /**
+     * 删除文章内容inc文件
+     *
+     * @author woodlsy
+     * @param $categoryId
+     * @param $bookId
+     * @param $articleId
+     * @return bool
+     */
+    public static function delBookText($categoryId,$bookId,$articleId)
+    {
+        $path = APP_PATH."/../public/booktext/".$categoryId.'/'.$bookId."/{$articleId}.inc";
+        if(!file_exists($path))return false;
+        if(unlink($path)){
+            return true;
+        }else{
+            return false;
+        }
     }
 }
