@@ -1,13 +1,13 @@
 <?php
 namespace application\logic\novel;
 
+use application\library\HelperExtend;
 use application\library\ManageException;
 use application\models\novel\Article;
 use application\models\novel\Book;
 use application\models\novel\Category;
 use application\models\novel\Chapter;
 use application\models\novel\CollectFrom;
-use woodlsy\phalcon\library\Helper;
 
 class BookLogic
 {
@@ -235,7 +235,7 @@ class BookLogic
      */
     public function updateCollectTime($bookId)
     {
-        return (new Book())->updateData(['book_last_collect_time' => Helper::now()], ['id' => $bookId]);
+        return (new Book())->updateData(['book_last_collect_time' => HelperExtend::now()], ['id' => $bookId]);
     }
 
     /**

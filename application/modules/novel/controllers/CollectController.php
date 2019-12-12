@@ -3,12 +3,12 @@
 namespace application\modules\novel\controllers;
 
 use application\base\BaseController;
+use application\library\HelperExtend;
 use application\library\ManageException;
 use application\logic\novel\BookLogic;
 use application\logic\novel\CollectLogic;
 use Exception;
 use woodlsy\httpClient\HttpCurl;
-use woodlsy\phalcon\library\Helper;
 use woodlsy\phalcon\library\Log;
 use woodlsy\phalcon\library\Redis;
 
@@ -193,7 +193,7 @@ class CollectController extends BaseController
                     'book_is_collect'      => $this->post('monitoring', 'int'),
                     'book_collect_id'      => trim($this->post('id', 'string')),
                     'book_from_article_id' => $this->post('target_id', 'string'),
-                    'book_img'             => $this->config->uploadPath . '/' . Helper::jsonDecode($res)['url'],
+                    'book_img'             => $this->config->uploadPath . '/' . HelperExtend::jsonDecode($res)['url'],
                 ];
                 $indexlink = $this->post('indexlink', 'int');
 
@@ -439,7 +439,7 @@ class CollectController extends BaseController
                     return $this->ajaxReturn(1, '不存在待上传的文章缓存');
                 }
 
-                $articles = Helper::jsonDecode(Redis::getInstance()->get($key));
+                $articles = HelperExtend::jsonDecode(Redis::getInstance()->get($key));
                 if (!isset($articles[$index])) {
                     return $this->ajaxReturn(0, '上传结束');
                 }
@@ -464,7 +464,7 @@ class CollectController extends BaseController
                 die('<script>window.history.go(-1);</script>');
             }
 
-            Redis::getInstance()->setex($key, 3600, Helper::jsonEncode($ossArticles));
+            Redis::getInstance()->setex($key, 3600, HelperExtend::jsonEncode($ossArticles));
 
             $this->view->ossArticleNum     = count($ossArticles);
             $this->view->menuflag  = 'novel-collect-bookList';

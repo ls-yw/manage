@@ -1,0 +1,98 @@
+<!-- DataTables -->
+<link rel="stylesheet" href="/dist/plugins/datatables.net-bs/css/dataTables.bootstrap.min.css">
+<div class="row">
+    <div class="col-xs-12">
+        <div class="box">
+            <div class="box-header">
+                <h3 class="box-title"><?= $title ?></h3>
+                <div class="pull-right box-tools">
+                    <!--                    <a href="/novel/collect/set.html" class="btn btn-default"><i class="fa fa-plus"></i></a>-->
+                </div>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="dataTables_length" id="example1_length">
+                            <label>buckets:
+                                <?php if (!empty($buckets)):?>
+                                <select id="bucket" style="width: 220px;display: inline-block;" class="form-control input-sm">
+                                    <?php foreach ($buckets as $key => $val):?>
+                                    <option value="<?=$key?>"><?=$val?></option>
+                                    <?php endforeach;?>
+                                </select>
+                                <?php endif;?>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div id="example1_filter" class="dataTables_filter text-right">
+                            <?php if (!empty($prefix)):?>
+                            <a href="?bucket=<?=$bucket?>&path=<?=$backPrefix?>">返回上一层</a>
+                            <?php endif;?>
+                        </div>
+                    </div>
+                </div>
+                <table id="example2" class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <th width="20">ID</th>
+                        <th>文件名</th>
+                        <th>文件大小</th>
+                        <th>存储类型</th>
+                        <th>更新时间</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?php if (!empty($dirData)): ?>
+                        <?php foreach ($dirData as $val): ?>
+                            <tr>
+                                <td></td>
+                                <td><a href="?bucket=<?=$bucket?>&path=<?= $val->getPrefix() ?>"> <?= $val->getPrefix() ?></a></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><a href="/novel/book/set.html?id=" title="编辑">编辑</a></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                    <?php if (!empty($fileData)): ?>
+                        <?php foreach ($fileData as $val): ?>
+                            <tr>
+                                <td></td>
+                                <td><?= $val->getKey() ?></td>
+                                <td><?= round($val->getSize()/1024, 2) ?>KB</td>
+                                <td><?= $val->getStorageClass() === 'Standard' ? '标准存储' : $val->getStorageClass() ?></td>
+                                <td><?= \application\library\HelperExtend::now(null, strtotime($val->getLastModified())) ?></td>
+                                <td></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                    </tbody>
+                </table>
+                <div class="row text-center" id="pageList">
+                    <div class="dataTables_paginate paging_simple_numbers">
+                        <ul class="pagination">
+<!--                            <li class="paginate_button previous --><?php //if ($page === 1)echo 'disabled'?><!--"><a href="#">上一页</a></li>-->
+                            <?php if ($isNext === 'true'):?>
+                            <li class="paginate_button next <?php if ($isNext === 'false')echo 'disabled'?>"><a href="?bucket=<?=$bucket?>&path=<?= $prefix ?>&offset=<?=$marker?>&page=<?=$page+1?>">下一页</a></li>
+                            <?php endif;?>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- /.box-body -->
+        </div>
+        <!-- /.box -->
+    </div>
+    <!-- /.col -->
+</div>
+<!-- /.row -->
+<script>
+    $(function () {
+        $('#bucket').change(function () {
+            window.location.href = '?bucket='+$(this).val();
+        });
+    });
+</script>

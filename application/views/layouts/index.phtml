@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>博客后台</title>
+    <title>管理后台</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <!-- Bootstrap 3.3.7 -->
@@ -217,7 +217,7 @@
                 <?= $title ?? ''; ?>
             </h1>
             <ol class="breadcrumb">
-                <li><a href="/admin/index/index.html"><i class="fa fa-dashboard"></i> 首页</a></li>
+                <li><a href="/"><i class="fa fa-dashboard"></i> 首页</a></li>
                 <li class="active"><?= $title ?? ''; ?></li>
             </ol>
         </section>
@@ -259,10 +259,13 @@
 <script src="/dist/js/adminlte.min.js"></script>
 <script src="/dist/js/common.js"></script>
 <script type="text/javascript">
-    $('.sidebar-menu ul.treeview-menu li.active').parent().closest('li').addClass('active');
+    $('.sidebar-menu ul.treeview-menu li.active').parent().closest('li').addClass('active').parent().closest('li').addClass('active');
     $(function () {
         <?php if (isset($alertError) && !empty($alertError)):?>
         alertMsg('error', '<?=$alertError?>');
+        <?php endif;?>
+        <?php if (isset($alertSuccess) && !empty($alertSuccess)):?>
+        alertMsg('success', '<?=$alertSuccess?>');
         <?php endif;?>
     });
 </script>

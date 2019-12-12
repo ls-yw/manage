@@ -2,7 +2,9 @@
 
 namespace application\library;
 
-class Helper
+use woodlsy\phalcon\library\Helper;
+
+class HelperExtend extends Helper
 {
     public static function dealRegular($str)
     {

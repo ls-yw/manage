@@ -40,12 +40,12 @@ class AliyunOss
      * @throws Exception
      * @throws OssException
      */
-    public function upload(string $fieldName) : ?string
+    /*public function upload(string $fieldName) : ?string
     {
         $data = $this->uploadLocal($fieldName);
 
         return $this->uploadAliyun($data);
-    }
+    }*/
 
     /**
      * 上传到本地
@@ -55,13 +55,13 @@ class AliyunOss
      * @return array|mixed
      * @throws Exception
      */
-    private function uploadLocal(string $fieldName)
+    /*private function uploadLocal(string $fieldName)
     {
         $size     = '1M';         //上传文件最大尺寸
         $path     = $this->ossConfig->uploadPath;    //上传文件保存地址
         $fileName = time();       //上传文件名称，可不填，自动生成唯一文件名
         return (new Upload())->setFieldName($fieldName)->setMaxSize($size)->setUploadPath($path)->upload($fileName);
-    }
+    }*/
 
     /**
      * 阿里云保存字符串
@@ -78,7 +78,7 @@ class AliyunOss
         // 存储空间名称
         $bucket = "woodlsy-novel";
         // 文件名称
-        $object = 'book/'.$bookId . '/'.$articleId.'.txt';
+        $object = 'book/' . $bookId . '/' . $articleId . '.txt';
 
         $ossClient = new OssClient($this->ossConfig->accessKeyId, $this->ossConfig->accessKeySecret, $this->ossConfig->endpoint);
 
@@ -88,5 +88,45 @@ class AliyunOss
             return $file['oss-request-url'];
         }
         return null;
+    }
+
+    /**
+     * 获取bucket列表
+     *
+     * @author woodlsy
+     * @return \OSS\Model\BucketInfo[]
+     * @throws OssException
+     */
+    public function getBuckets()
+    {
+        $ossClient = new OssClient($this->ossConfig->accessKeyId, $this->ossConfig->accessKeySecret, $this->ossConfig->endpoint);
+
+        $bucketListInfo = $ossClient->listBuckets();
+        $bucketList     = $bucketListInfo->getBucketList();
+        return $bucketList;
+    }
+
+    /**
+     * 获取文件列表
+     *
+     * @author woodlsy
+     * @param string $bucket
+     * @param string $prefix
+     * @param string $marker
+     * @param int    $row
+     * @return \OSS\Model\ObjectListInfo
+     * @throws OssException
+     */
+    public function getFiles(string $bucket, string $prefix, string $marker, int $row)
+    {
+        $ossClient = new OssClient($this->ossConfig->accessKeyId, $this->ossConfig->accessKeySecret, $this->ossConfig->endpoint);
+
+        $options        = array(
+            'prefix'   => $prefix,
+            'marker'   => $marker,
+            'max-keys' => $row,
+        );
+        $listObjectInfo = $ossClient->listObjects($bucket, $options);
+        return $listObjectInfo;
     }
 }

@@ -3,7 +3,7 @@
 namespace application\logic\novel;
 
 use application\library\AliyunOss;
-use application\library\Helper;
+use application\library\HelperExtend;
 use application\library\ManageException;
 use application\models\novel\Article;
 use application\models\novel\Book;
@@ -124,14 +124,14 @@ class CollectLogic
         }
 
         $indexlink    = $this->getUrl($collect, $targetId, 'collect_indexlink');
-        $book_name    = Helper::dealRegular($collect['collect_articletitle']);
-        $book_author  = Helper::dealRegular($collect['collect_author']);
-        $book_sort    = Helper::dealRegular($collect['collect_sort']);
-        $book_keyword = Helper::dealRegular($collect['collect_keyword']);
-        $book_intro   = Helper::dealRegular($collect['collect_intro']);
-        $book_img     = Helper::dealRegular($collect['collect_articleimage']);
-        $indexlink    = Helper::dealRegular($indexlink);
-        $fullarticle  = Helper::dealRegular($collect['collect_fullarticle']);
+        $book_name    = HelperExtend::dealRegular($collect['collect_articletitle']);
+        $book_author  = HelperExtend::dealRegular($collect['collect_author']);
+        $book_sort    = HelperExtend::dealRegular($collect['collect_sort']);
+        $book_keyword = HelperExtend::dealRegular($collect['collect_keyword']);
+        $book_intro   = HelperExtend::dealRegular($collect['collect_intro']);
+        $book_img     = HelperExtend::dealRegular($collect['collect_articleimage']);
+        $indexlink    = HelperExtend::dealRegular($indexlink);
+        $fullarticle  = HelperExtend::dealRegular($collect['collect_fullarticle']);
 
         $book = array();
         //获取小说名称
@@ -197,8 +197,8 @@ class CollectLogic
 
         $html      = (new HttpCurl())->setUrl($urlindex)->setHeader('Referer: ' . $collect['collect_host'])->get();
         $html      = iconv($collect['collect_iconv'], 'UTF-8', $html);
-        $chapter   = Helper::dealRegular($collect['collect_chapter']);
-        $chapterid = Helper::dealRegular($collect['collect_chapterid']);
+        $chapter   = HelperExtend::dealRegular($collect['collect_chapter']);
+        $chapterid = HelperExtend::dealRegular($collect['collect_chapterid']);
 
         preg_match_all('/' . $chapter[0] . $chapter[3] . $chapter[1] . '/i', $html, $result);
         preg_match_all('/' . $chapterid[0] . $chapterid[3] . $chapterid[1] . '/i', $html, $resultId);
@@ -207,7 +207,7 @@ class CollectLogic
         $result[2] = preg_replace('/(.*)(href=\")([^\"]+)(\"[\s\S]*)/i', '$3', $result[0]);
 
         //补全链接地址    $link[0]为超链接地址 $link[1]为章节序号 $link[2]为章节名称
-        $link[0] = Helper::expandlinks($result[2], $urlindex, $collect['collect_host']);
+        $link[0] = HelperExtend::expandlinks($result[2], $urlindex, $collect['collect_host']);
         $link[1] = $resultId[1];
         $link[2] = $result[1];
 
@@ -253,7 +253,7 @@ class CollectLogic
 
         $html         = (new HttpCurl())->setUrl($from['from_url'])->setHeader('Referer: ' . $collect['collect_host'])->get();
         $html         = iconv($collect['collect_iconv'], 'UTF-8', $html);
-        $content_preg = Helper::dealRegular($collect['collect_content']);
+        $content_preg = HelperExtend::dealRegular($collect['collect_content']);
         preg_match_all('/' . $content_preg[0] . $content_preg[3] . $content_preg[1] . '/i', $html, $match);
         if ($match[1] == '') {
             $msg = '<span class="red">' . $from['from_title'] . '（文章内容获取失败：<a href="' . $from['from_url'] . '" target="_blank">' . $from['from_url'] . '</a>）  </span>';
@@ -280,9 +280,9 @@ class CollectLogic
             if ($article_id) {
 
                 // 先保存到本地，确认没问题，再从后台上传到aliyun
-                Helper::writeBookText($categoryId, $bookId, (int)$article_id, Helper::doWriteContent($content));
+                HelperExtend::writeBookText($categoryId, $bookId, (int)$article_id, HelperExtend::doWriteContent($content));
 //                try {
-//                    $bookUrl = (new AliyunOss())->saveString((int)$article['book_id'], (int)$article_id, Helper::doWriteContent($content));
+//                    $bookUrl = (new AliyunOss())->saveString((int)$article['book_id'], (int)$article_id, HelperExtend::doWriteContent($content));
 //                } catch (\Exception $e) {
 //                    (new Article())->delData(['id' => $article_id]);
 //                    throw new ManageException('上传阿里云失败：'.$e->getMessage());
@@ -449,11 +449,11 @@ class CollectLogic
         if (!$book) {
             throw new ManageException('小说不存在');
         }
-        $content = Helper::getBookText($book['book_category'], $bookId, $article['id']);
+        $content = HelperExtend::getBookText($book['book_category'], $bookId, $article['id']);
         try {
-            $bookUrl = (new AliyunOss())->saveString((int)$bookId, (int)$article['id'], Helper::doWriteContent($content));
+            $bookUrl = (new AliyunOss())->saveString((int)$bookId, (int)$article['id'], HelperExtend::doWriteContent($content));
             (new Article())->updateData(['is_oss' => 1, 'url' => $bookUrl], ['id' => $article['id']]);
-            Helper::delBookText($book['book_category'], $bookId, $article['id']);
+            HelperExtend::delBookText($book['book_category'], $bookId, $article['id']);
             return $bookUrl;
         } catch (\Exception $e) {
             throw new ManageException('上传阿里云失败：'.$e->getMessage());

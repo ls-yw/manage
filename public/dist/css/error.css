@@ -1,0 +1,281 @@
+@CHARSET "UTF-8";
+*{
+	font-size:12px;
+	font-weight:normal;
+	margin:0;
+	padding:0;
+}
+li{
+	list-style:none;
+}
+.left{
+	float:left !important;
+}
+.right{
+	float:right !important;
+}
+.clear{
+	float:none !important;
+}
+.right .main{
+	height:100%
+}
+.text_left{
+	text-align:left !important;
+}
+.text_right{
+	text-align:right !important;
+}
+.text_center{
+	text-align:center !important;
+}
+.border_none{
+	border:none !important;
+}
+.img_center img{
+	vertical-align:middle;
+}
+a{
+	text-decoration:none;
+	color: #000000;
+}
+a:hover{
+	color:red;
+}
+select {
+    padding: 3px;
+}
+img{
+	border:0;
+}
+.orange{
+	color:#ff8000;
+}
+.red{
+	color:#ff0000;
+}
+
+.here{
+	width:98%;
+	margin:0 auto;
+	margin-top:10px;
+}
+.hidden{
+	display:none;
+}
+.coolbg {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background: url("../../images/admin/allbtbg2.gif") repeat scroll 0 0 #ccc;
+    border-color: -moz-use-text-color #acacac #acacac -moz-use-text-color;
+    border-image: none;
+    border-style: none solid solid none;
+    border-width: medium 1px 1px medium;
+    cursor: pointer;
+    padding: 2px 5px;
+}
+input[type="button"], input[type="submit"], input[type="reset"] {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background: url("../images/admin/allbtbg2.gif") repeat scroll 0 0 #eff7d0;
+    border-color: -moz-use-text-color #acacac #acacac -moz-use-text-color;
+    border-image: none;
+    border-style: none solid solid none;
+    border-width: medium 1px 1px medium;
+    cursor: pointer;
+    padding: 2px 5px;
+}
+button[type="button"], button[type="submit"], button[type="reset"] {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background: url("../../images/admin/allbtbg2.gif") repeat scroll 0 0 #eff7d0;
+    border-color: -moz-use-text-color #acacac #acacac -moz-use-text-color;
+    border-image: none;
+    border-style: none solid solid none;
+    border-width: medium 1px 1px medium;
+    cursor: pointer;
+    padding: 2px 5px;
+}
+input[type="text"], input[type="password"] {
+    border-color: #707070 #cecece #cecece #707070;
+    border-style: solid;
+    border-width: 1px;
+    height: 18px;
+    line-height: 18px;
+    padding: 2px 4px;
+    vertical-align: middle;
+}
+input[type="text"]:focus, input[type="password"]:focus {
+    border-color: #a5c760;
+    box-shadow: 0 0 3px #0000ff;;;;
+    color: #333;
+    outline: medium none;
+}
+textarea {
+    background: url("../../images/admin/input.png") repeat-x scroll 0 0 #fff;
+    border-color: #707070 #cecece #cecece #707070;
+    border-style: solid;
+    border-width: 1px;
+    line-height: 16px;
+    overflow: auto;
+    padding: 2px 4px;
+    vertical-align: middle;
+}
+table.main{
+	margin:0 auto;
+	margin-top:10px;
+	margin-bottom:30px;
+}
+table.main tr th{
+	height:26px;
+	line-height:26px;
+	padding:2px;
+}
+table.main tr td{
+	height:26px;
+	padding:2px;
+	line-height:26px;
+}
+table.main tr td .handle{
+	margin:0 auto
+}
+table.main tr td .handle tr td{
+	text-align:left;
+}
+table.main tr td.text_left{
+	text-align:left;
+	padding-left:10px;
+}
+.td_title_bg{
+	background:url(../../images/admin/tbg.gif) repeat-x;
+	font-weight:bold;
+	color:#008000;
+}
+/*
+* 弹出框
+*/
+.popupcredit{margin:0 auto;z-index:10000;position:absolute;display:none;}
+.pc_l, .pc_c, .pc_inner, .pc_r { width: 29px; height: 56px; line-height: 56px; background: url(../../images/admin/popupcredit_bg.gif) no-repeat 0 0; }
+.pc_c { width: 200px; background-position: 0 -56px; background-repeat: repeat-x; }
+.pc_inner { white-space: nowrap; text-align: center; width: auto; background-position: 50% -112px;color:#fff; }
+.pc_inner span { margin-right: 15px; color: #FFEA97; font-size: 14px; font-weight: 700; }
+* html .pc_inner span { display: inline-block; }
+.pc_inner span a { color: #FFEA97; text-decoration: underline; }
+.pc_inner span u { font-size: 10px; text-decoration: none; }
+.pc_inner span em.desc { color: #930; }
+.pc_btn img { opacity: 0.5; }
+.pc_btn:hover img { opacity: 1; }
+.pc_r { background-position: -30px 0; }
+
+/* 分页 */
+.page{
+	text-align:right;
+	padding-right:10px;
+	line-height:15px;
+}
+.page a {
+    border: 1px solid #666;
+    margin: 0 2px;
+    padding: 4px 5px 2px 5px;
+}
+.page a:hover{
+	background:#3b6ea5;
+	color:#ffffff;
+}
+.page .current{
+	border: 1px solid #666;
+	padding: 4px 5px 2px 5px;
+	margin: 0 2px;
+	background:#3b6ea5;
+	color:#ffffff;
+}
+
+.search{
+	width:98%;
+	margin:0 auto;
+	margin-top:10px;
+	height:30px;
+	line-height: 28px;
+}
+.search{
+	border:1px solid #D6D6D6;
+}
+.search input{
+	height:16px;
+}
+.search img{
+	vertical-align:middle;
+}
+/* 跳转提示 */
+.jump{
+	width:100%;
+	margin-top:50px;
+}
+.jump .box{
+	width:500px;
+	margin:0 auto;
+	border:1px solid #c0c0c0;
+	border-radius: 5px;
+    box-shadow: 5px 5px 20px #666;
+	background:#ffffff;
+}
+.jump .box .ul{
+	width:400px;
+	margin:30px auto;
+}
+.jump .box .ul h3{
+	font-size:24.5px;
+	font-weight:bold;
+	-moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    border-color: -moz-use-text-color -moz-use-text-color #e5e5e5;
+    border-image: none;
+    border-style: none none solid;
+    border-width: 0 0 1px;
+    color: #333333;
+    display: block;
+    line-height: 40px;
+    margin-bottom: 20px;
+
+}
+.jump .box .alert{
+	background-color: #fcf8e3;
+    border: 1px solid #fbeed5;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    padding: 8px 35px 8px 14px;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+.jump .box .alert-error{
+	background-color: #f2dede;
+    border-color: #eed3d7;
+    color: #b94a48;
+}
+.jump .box .alert-success{
+	background-color: #dff0d8;
+    border-color: #d6e9c6;
+    color: #468847;
+}
+.jump .box p{
+	font-size:14px;
+}
+.jump .box p a{
+	font-size:14px;
+	color:#0000ff;
+}
+.jump .box p a:hover{
+	color:red;;
+}
+.jump .box p #wait{
+	font-size:14px;
+	font-weight:bold;
+}
+/* 跳转提示end */

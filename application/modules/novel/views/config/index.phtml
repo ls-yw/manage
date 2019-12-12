@@ -1,0 +1,74 @@
+<div class="row">
+    <div class="col-xs-12">
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title"><?=$title?></h3>
+            </div>
+            <!-- /.box-header -->
+            <!-- form start -->
+            <form class="form-horizontal" method="post" action="/novel/config/system.html">
+                <div class="box-body">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">域名</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="host" class="form-control" value="<?=$systemConfig['host'] ?? ''?>" size="40"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">网站名</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="host_name" class="form-control" value="<?=$systemConfig['host_name'] ?? ''?>" size="40"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">SEO标题</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="host_seo_name" class="form-control" value="<?=$systemConfig['host_seo_name'] ?? ''?>" size="40"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">SEO关键词</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="host_seo_keywords" class="form-control" value="<?=$systemConfig['host_seo_keywords'] ?? ''?>" size="40"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">SEO简介</label>
+                        <div class="col-sm-10">
+                            <textarea name="host_seo_description" class="form-control" rows="5"><?=$systemConfig['host_seo_description'] ?? ''?></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">底部说明</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="powerby" class="form-control" value="<?=$systemConfig['powerby'] ?? ''?>" size="40"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">备案号</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="record" class="form-control" value="<?=$systemConfig['record'] ?? ''?>" size="40"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">公告</label>
+                        <div class="col-sm-10">
+                            <textarea name="notice" class="form-control" rows="5"><?=$systemConfig['notice'] ?? ''?></textarea>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.box-body -->
+
+                <div class="box-footer">
+                    <div class="col-sm-2"></div>
+                    <div class="col-sm-10">
+                        <button type="submit" class="btn btn-primary btnSubmit">保存</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!-- /.box -->
+    </div>
+    <!-- /.col -->
+</div>
+<!-- /.row -->

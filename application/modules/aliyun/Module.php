@@ -1,6 +1,6 @@
 <?php
 
-namespace application\modules\novel;
+namespace application\modules\aliyun;
 
 use Phalcon\DiInterface;
 use Phalcon\Mvc\Dispatcher;
@@ -25,7 +25,7 @@ class Module implements ModuleDefinitionInterface
             function () {
                 $dispatcher = new Dispatcher();
 
-                $dispatcher->setDefaultNamespace("application\\modules\\novel\\controllers");
+                $dispatcher->setDefaultNamespace("application\\modules\\aliyun\\controllers");
 
                 return $dispatcher;
             }
@@ -35,7 +35,7 @@ class Module implements ModuleDefinitionInterface
             function () {
                 $view = new View();
 
-                $view->setViewsDir("../application/modules/novel/views/");
+                $view->setViewsDir("../application/modules/aliyun/views/");
                 $view->setLayout('index');
                 $view->setLayoutsDir(APP_PATH.'/views/layouts/');
                 return $view;

@@ -3,7 +3,7 @@ namespace application\logic\manage;
 
 use application\library\ManageException;
 use application\models\manage\Admin;
-use woodlsy\phalcon\library\Helper;
+use woodlsy\phalcon\library\HelperExtend;
 use woodlsy\phalcon\library\Redis;
 
 class AdminLogic
@@ -30,7 +30,7 @@ class AdminLogic
             throw new ManageException('密码错误');
         }
 
-        Redis::getInstance()->setex($token, ($remember ? 86400 * 30 : 86400), Helper::jsonEncode($admin));
+        Redis::getInstance()->setex($token, ($remember ? 86400 * 30 : 86400), HelperExtend::jsonEncode($admin));
         return $token;
     }
 }

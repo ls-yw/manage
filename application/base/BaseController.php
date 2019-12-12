@@ -2,9 +2,9 @@
 
 namespace application\base;
 
+use application\library\HelperExtend;
 use Exception;
 use woodlsy\phalcon\basic\BasicController;
-use woodlsy\phalcon\library\Helper;
 use woodlsy\phalcon\library\Redis;
 
 class BaseController extends BasicController
@@ -61,7 +61,7 @@ class BaseController extends BasicController
         }
         if (Redis::getInstance()->exists($this->token)) {
             $admin       = Redis::getInstance()->get($this->token);
-            $this->admin = Helper::jsonDecode($admin);
+            $this->admin = HelperExtend::jsonDecode($admin);
         }
     }
 
@@ -93,8 +93,11 @@ class BaseController extends BasicController
                     ['title' => '采集节点', 'link' => '/novel/collect/index.html', 'flag' => 'novel-collect-index'],
                     ['title' => '采集小说', 'link' => '/novel/collect/bookList.html', 'flag' => 'novel-collect-bookList'],
                 ]],
-                ['title' => '系统设置', 'link' => '/index/article/index.html', 'flag' => 'article'],
-            ]]
+                ['title' => '系统设置', 'link' => '/novel/config/index.html', 'flag' => 'novel-config-index'],
+            ]],
+            ['title' => 'OSS', 'icon' => 'fa fa-folder', 'link' => '#', 'children' => [
+                ['title' => '文件管理', 'link' => '/aliyun/oss/index.html', 'flag' => 'aliyun-oss-index'],
+            ]],
         ];
     }
 }

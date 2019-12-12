@@ -1,7 +1,9 @@
 <?php
+
 namespace application\modules\index\controllers;
 
 use application\base\BaseController;
+use Phalcon\Mvc\View;
 
 class IndexController extends BaseController
 {
@@ -9,6 +11,22 @@ class IndexController extends BaseController
     public function indexAction()
     {
         echo 111;
+    }
+
+    public function errorAction()
+    {
+        $message    = $this->get('msg', 'string', '404');
+        $url        = $this->get('url', 'string', '/');
+        $waitSecond = $this->get('s', 'int', 2);
+        $this->view->disableLevel(
+            View::LEVEL_MAIN_LAYOUT
+        );
+        if ('-1' === $url) {
+            $url = 'javascript:history.go(-1)';
+        }
+        $this->view->message    = $message;
+        $this->view->url        = $url;
+        $this->view->waitSecond = $waitSecond;
     }
 
 }
