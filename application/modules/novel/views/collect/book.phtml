@@ -42,7 +42,7 @@
         }
     }
     function invalid(id, obj) {
-        $.get('novel/collect/confirmFrom?id'+id,function (res) {
+        $.get('/novel/collect/confirmFrom?id='+id,function (res) {
             if (res.code == 0) {
                 obj.innerHTML = '已确认';
             } else {
