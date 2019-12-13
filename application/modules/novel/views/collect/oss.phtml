@@ -29,13 +29,4 @@
             setTimeout(post_url(result.url),100);
         }
     }
-    function invalid(id, obj) {
-        $.get('novel/collect/confirmFrom?id'+id,function (res) {
-            if (res.code == 0) {
-                obj.innerHTML = '已确认';
-            } else {
-                alertMsg('error', res.msg)
-            }
-        });
-    }
 </script>
