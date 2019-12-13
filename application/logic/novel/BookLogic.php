@@ -362,6 +362,7 @@ class BookLogic
             if (empty($articleId)) {
                 throw new ManageException('插入数据失败');
             }
+            (new Book())->updateData(['book_articlenum' => ['+', 1], 'book_wordsnumber' => ['+', $data['wordnumber']]], ['id' => $data['book_id']]);
         } else {
             $oldArticle = (new Article())->getById($articleId);
             if ((int)$oldArticle['article_sort'] !== (int)$data['article_sort']) {
