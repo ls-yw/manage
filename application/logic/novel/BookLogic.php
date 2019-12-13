@@ -329,13 +329,16 @@ class BookLogic
      * @param int  $id
      * @param bool $getContent
      * @return array|mixed
-     * @throws ManageException
      */
     public function getArticleById(int $id, bool $getContent = false)
     {
         $article = (new Article())->getById($id);
         if (!empty($article) && $getContent) {
-            $article['content'] = (new AliyunOss())->getString($article['book_id'], $id);
+            try {
+                $article['content'] = (new AliyunOss())->getString($article['book_id'], $id);
+            } catch (Exception $e) {
+                $article['content'] = '';
+            }
         }
         return $article;
     }
