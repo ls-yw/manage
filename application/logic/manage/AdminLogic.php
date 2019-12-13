@@ -1,9 +1,9 @@
 <?php
 namespace application\logic\manage;
 
+use application\library\HelperExtend;
 use application\library\ManageException;
 use application\models\manage\Admin;
-use woodlsy\phalcon\library\HelperExtend;
 use woodlsy\phalcon\library\Redis;
 
 class AdminLogic
