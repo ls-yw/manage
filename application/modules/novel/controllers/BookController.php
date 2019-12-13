@@ -117,7 +117,7 @@ class BookController extends BaseController
                     throw new ManageException('保存失败');
                 }
                 Redis::getInstance()->setex('alert_success', 3600, '保存成功');
-                return $this->response->redirect('/novel/book/article.html');
+                return $this->response->redirect('/novel/book/article.html?book_id='.$bookId);
             } catch (ManageException $e) {
                 Redis::getInstance()->setex('alert_error', 3600, $e->getMessage());
                 die('<script>window.history.go(-1);</script>');

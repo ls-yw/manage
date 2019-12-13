@@ -31,7 +31,7 @@
                                 <td><?= $val['title'] ?></td>
                                 <td><?= $chapters[$val['chapter_id']] ?? '' ?></td>
                                 <td><?= $val['article_sort'] ?></td>
-                                <td><?= $val['is_oss'] == 0 ? '<span class="red">否</span>' : '<span class="green">是</span>' ?></td>
+                                <td><?= (int)$val['is_oss'] === 0 ? '<span class="red">否</span>' : '<span class="green">是</span>' ?></td>
                                 <td><?= $val['update_at'] ?></td>
                                 <td>
                                     <a href="/novel/book/setArticle.html?book_id=<?=$book_id?>&id=<?= $val['id'] ?>" title="编辑">编辑</a>
