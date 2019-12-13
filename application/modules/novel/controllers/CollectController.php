@@ -259,12 +259,12 @@ class CollectController extends BaseController
     public function articleAction()
     {
         if ($this->request->isAjax()) {
+            $act       = $this->get('act', 'string');
+            $bookId    = (int) $this->get('book_id', 'int');
+            $targetId  = (int) $this->get('target_id', 'int');
+            $indexlink = (int) $this->get('indexlink', 'string');
+            $collectId = (int) $this->get('collect_id', 'int');
             try {
-                $act       = $this->get('act', 'string');
-                $bookId    = (int) $this->get('book_id', 'int');
-                $targetId  = (int) $this->get('target_id', 'int');
-                $indexlink = (int) $this->get('indexlink', 'string');
-                $collectId = (int) $this->get('collect_id', 'int');
 
                 if (empty($bookId) || empty($targetId) || empty($collectId)) {
                     $msg = '小说ID不能为空,目标文章ID不能为空,采集节点ID不能为空';
@@ -375,13 +375,13 @@ class CollectController extends BaseController
     public function doArticleAction()
     {
         if ($this->request->isAjax()) {
+            $act        = $this->get('act', 'string');
+            $bookId     = (int) $this->get('book_id', 'int');
+            $collectId  = (int) $this->get('collect_id', 'int');
+            $chapterId  = (int) $this->get('chapter_id', 'int');
+            $categoryId = (int) $this->get('category_id', 'int');
+            $fromSort   = (int) $this->get('from_sort', 'int', 0);
             try {
-                $act        = $this->get('act', 'string');
-                $bookId     = (int) $this->get('book_id', 'int');
-                $collectId  = (int) $this->get('collect_id', 'int');
-                $chapterId  = (int) $this->get('chapter_id', 'int');
-                $categoryId = (int) $this->get('category_id', 'int');
-                $fromSort   = (int) $this->get('from_sort', 'int', 0);
 
                 $res = (new CollectLogic())->collectArticle($bookId, $collectId, $chapterId, $categoryId, $fromSort);
 
@@ -394,7 +394,7 @@ class CollectController extends BaseController
                 return $this->ajaxReturn(1, $e->getMessage());
             } catch (Exception $e) {
                 Log::write($this->controllerName . '|' . $this->actionName, $e->getMessage() . $e->getFile() . $e->getLine(), 'error');
-                return $this->ajaxReturn(1, '系统错误');
+                return $this->ajaxReturn(1, '系统错误 <span class="orange" onclick="post_url(\'/novel/collect/doArticle.html?act=' . $act . '&book_id=' . $bookId . '&collect_id=' . $collectId . '&chapter_id=' . $chapterId . '&category_id=' . $categoryId . '&from_sort=' . $fromSort.'\')">重新发起</span>');
             }
         }
     }
