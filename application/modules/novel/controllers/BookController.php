@@ -3,7 +3,12 @@
 namespace application\modules\novel\controllers;
 
 use application\base\BaseController;
+use application\library\AliyunOss;
+use application\library\HelperExtend;
+use application\library\ManageException;
 use application\logic\novel\BookLogic;
+use Exception;
+use woodlsy\phalcon\library\Log;
 use woodlsy\phalcon\library\Redis;
 
 class BookController extends BaseController
@@ -57,6 +62,81 @@ class BookController extends BaseController
             $this->view->book       = $book;
             $this->view->title      = '编辑《' . $book['book_name'] . '》';
             $this->view->menuflag   = 'novel-book-index';
+        }
+    }
+
+    /**
+     * 文章列表
+     *
+     * @author woodlsy
+     */
+    public function articleAction()
+    {
+        $bookId = (int) $this->get('book_id');
+
+        $this->view->data      = (new BookLogic())->getArticleList($bookId, 'article_sort asc', $this->page, $this->size);
+        $this->view->totalPage = ceil((new BookLogic())->getArticleListCount($bookId) / $this->size);
+        $this->view->page      = $this->page;
+        $this->view->title     = '文章管理 ';
+        $this->view->chapters  = HelperExtend::arrayToKeyValue((new BookLogic())->getChapter($bookId), 'id', 'chapter_name');
+        $this->view->pageLink  = '?page={page}&book_id=' . $bookId;
+        $this->view->book_id   = $bookId;
+        $this->view->menuflag  = 'novel-book-index';
+    }
+
+    /**
+     * 编辑文章
+     *
+     * @author woodlsy
+     * @return \Phalcon\Http\ResponseInterface
+     * @throws ManageException
+     */
+    public function setArticleAction()
+    {
+        $bookId    = (int) $this->get('book_id');
+        $articleId = (int) $this->get('id');
+        if ($this->request->isPost()) {
+
+            try {
+
+                $data = [
+                    'title' => $this->post('title'),
+                    'chapter_id' => $this->post('chapter_id'),
+                    'article_sort' => $this->post('article_sort'),
+                    'content' => $this->post('content'),
+                    'book_id' => $bookId,
+                ];
+                $data['wordnumber'] = mb_strlen(strip_tags($data['content']), mb_detect_encoding($data['content']));
+                if (empty($data['content'])) {
+                    Redis::getInstance()->setex('alert_error', 3600, '文章内容不能为空');
+                    die('<script>window.history.go(-1);</script>');
+                }
+
+                $row = (new BookLogic())->saveArticle($data, $articleId);
+                if (empty($row)) {
+                    throw new ManageException('保存失败');
+                }
+                Redis::getInstance()->setex('alert_success', 3600, '保存成功');
+                return $this->response->redirect('/novel/book/article.html');
+            } catch (ManageException $e) {
+                Redis::getInstance()->setex('alert_error', 3600, $e->getMessage());
+                die('<script>window.history.go(-1);</script>');
+            } catch (Exception $e) {
+                Log::write($this->controllerName . '|' . $this->actionName, $e->getMessage() . $e->getFile() . $e->getLine(), 'error');
+                Redis::getInstance()->setex('alert_error', 3600, '系统错误');
+                die('<script>window.history.go(-1);</script>');
+            }
+
+        } else {
+            $article = [];
+            if (!empty($articleId)) {
+                $article = (new BookLogic())->getArticleById($articleId, true);
+            }
+
+            $this->view->article  = $article;
+            $this->view->chapters = HelperExtend::arrayToKeyValue((new BookLogic())->getChapter($bookId), 'id', 'chapter_name');
+            $this->view->title    = '编辑文章';
+            $this->view->menuflag = 'novel-book-index';
         }
     }
 

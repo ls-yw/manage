@@ -1,6 +1,7 @@
 <?php
 namespace application\logic\novel;
 
+use application\library\AliyunOss;
 use application\library\HelperExtend;
 use application\library\ManageException;
 use application\models\novel\Article;
@@ -8,6 +9,7 @@ use application\models\novel\Book;
 use application\models\novel\Category;
 use application\models\novel\Chapter;
 use application\models\novel\CollectFrom;
+use Exception;
 
 class BookLogic
 {
@@ -288,5 +290,112 @@ class BookLogic
             $where['is_oss'] = $isOss;
         }
         return (new Article())->getAll($where, ['id', 'title', 'book_id'], $order);
+    }
+
+    /**
+     * 获取文章列表
+     *
+     * @author woodlsy
+     * @param int    $bookId
+     * @param string $order
+     * @param int    $page
+     * @param int    $row
+     * @return array|bool
+     */
+    public function getArticleList(int $bookId, string $order, int $page, int $row)
+    {
+        $offset = ($page - 1) * $row;
+        $where = ['book_id' => $bookId];
+        return (new Article())->getList($where, $order, $offset, $row);
+    }
+
+    /**
+     * 获取文章列表数量
+     *
+     * @author woodlsy
+     * @param int $bookId
+     * @return array|int
+     */
+    public function getArticleListCount(int $bookId)
+    {
+        $where = ['book_id' => $bookId];
+        return (new Article())->getCount($where);
+    }
+
+    /**
+     * 获取文章详情
+     *
+     * @author woodlsy
+     * @param int  $id
+     * @param bool $getContent
+     * @return array|mixed
+     * @throws ManageException
+     */
+    public function getArticleById(int $id, bool $getContent = false)
+    {
+        $article = (new Article())->getById($id);
+        if (!empty($article) && $getContent) {
+            $article['content'] = (new AliyunOss())->getString($article['book_id'], $id);
+        }
+        return $article;
+    }
+
+    /**
+     * 保存文章
+     *
+     * @author woodlsy
+     * @param array $data
+     * @param int   $articleId
+     * @return bool|int
+     * @throws ManageException
+     * @throws \OSS\Core\OssException
+     */
+    public function saveArticle(array $data, int $articleId)
+    {
+        $content = $data['content'];
+        unset($data['content']);
+        if (empty($articleId)) {
+            // 判断是否要更新article_sort
+            $this->updateArticleSort((int)$data['book_id'], (int)$data['article_sort']);
+
+            $articleId =  (new Article())->insertData($data);
+            if (empty($articleId)) {
+                throw new ManageException('插入数据失败');
+            }
+        } else {
+            $oldArticle = (new Article())->getById($articleId);
+            if ((int)$oldArticle['article_sort'] !== (int)$data['article_sort']) {
+                $this->updateArticleSort((int)$data['book_id'], (int)$data['article_sort']);
+            }
+            try{
+                (new AliyunOss())->delFile((int)$data['book_id'], $articleId);
+            } catch (Exception $e) {
+                throw new ManageException('删除oss上文章内容失败'.$e->getMessage());
+            }
+            $data['bk_article'] = 0;
+            $data['url'] = '';
+            $row = (new Article())->updateData($data, ['id' => $articleId]);
+            if (empty($row)) {
+                throw new ManageException('更新数据失败');
+            }
+        }
+
+        $url = (new AliyunOss())->saveString($data['book_id'], $articleId, $content);
+        return (new Article())->updateData(['url' => $url, 'is_oss' => 1], ['id' => $articleId]);
+    }
+
+    /**
+     * 更新文章排序
+     *
+     * @author woodlsy
+     * @param int $bookId
+     * @param int $articleSort
+     */
+    protected function updateArticleSort(int $bookId, int $articleSort)
+    {
+        $existSort = (new Article())->getCount(['book_id' => $bookId, 'article_sort' => $articleSort]);
+        if (!empty($existSort)) {
+            (new Article())->updateData(['article_sort' => ['+', 1]], ['book_id' => $bookId, 'article_sort' => ['>=', $articleSort]]);
+        }
     }
 }

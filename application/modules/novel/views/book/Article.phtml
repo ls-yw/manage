@@ -6,7 +6,7 @@
             <div class="box-header">
                 <h3 class="box-title"><?= $title ?></h3>
                 <div class="pull-right box-tools">
-                    <a href="/novel/collect/set.html" class="btn btn-default"><i class="fa fa-plus"></i></a>
+                    <a href="/novel/book/setArticle.html?book_id=<?=$book_id?>" class="btn btn-default"><i class="fa fa-plus"></i></a>
                 </div>
             </div>
             <!-- /.box-header -->
@@ -15,10 +15,10 @@
                     <thead>
                     <tr>
                         <th width="20">ID</th>
-                        <th>节点名称</th>
-                        <th>目标网址</th>
-                        <th>编码</th>
-                        <th>状态</th>
+                        <th>文章标题</th>
+                        <th>所属章节</th>
+                        <th>文章排序</th>
+                        <th>是否OSS</th>
                         <th>更新时间</th>
                         <th>操作</th>
                     </tr>
@@ -28,15 +28,13 @@
                         <?php foreach ($data as $val): ?>
                             <tr>
                                 <td><?= $val['id'] ?></td>
-                                <td><?= $val['collect_name'] ?></td>
-                                <td><a href="<?= $val['collect_host'] ?>" target="_blank"><?= $val['collect_host'] ?></a></td>
-                                <td><?= $val['collect_iconv'] ?></td>
-                                <td><?= $val['collect_status'] == 0 ? '<span class="red">不可采集</span>' : '<span class="green">可采集</span>' ?></td>
+                                <td><?= $val['title'] ?></td>
+                                <td><?= $chapters[$val['chapter_id']] ?? '' ?></td>
+                                <td><?= $val['article_sort'] ?></td>
+                                <td><?= $val['is_oss'] == 0 ? '<span class="red">否</span>' : '<span class="green">是</span>' ?></td>
                                 <td><?= $val['update_at'] ?></td>
-                                <td><a href="/novel/collect/start.html?act=one&id=<?= $val['id'] ?>" title="采集">采集</a>&nbsp;
-                                    <a href="/novel/collect/start.html?act=more&id=<?= $val['id'] ?>" title="批量采集">批量采集</a>&nbsp;
-                                    <a href="/novel/collect/set.html?id=<?=$val['id']?>" title="编辑">修改</a>&nbsp;
-                                    <a href="javascript:if(confirm('确定要删除吗？'))location='/novel/collect/del.html?id=<?=$val['id']?>';" title="删除">删除</a>
+                                <td>
+                                    <a href="/novel/book/setArticle.html?book_id=<?=$book_id?>&id=<?= $val['id'] ?>" title="编辑">编辑</a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>

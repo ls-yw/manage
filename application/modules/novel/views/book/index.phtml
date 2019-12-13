@@ -37,7 +37,9 @@
                                 <td><?= $val['book_collect_id'] ?></td>
                                 <td><?= $val['book_from_article_id'] ?></td>
                                 <td><?= $val['book_last_collect_time'] == '1970-01-01 08:00:00' ? '' : $val['book_last_collect_time'] ?></td>
-                                <td><a href="/novel/book/set.html?id=<?= $val['id'] ?>" title="编辑">编辑</a></td>
+                                <td><a href="/novel/book/set.html?id=<?= $val['id'] ?>" title="编辑">编辑</a>
+                                    <a href="/novel/book/article.html?book_id=<?= $val['id'] ?>" title="章节">章节</a>
+                                </td>
                             </tr>
                         <?php endforeach; ?>
                     <?php endif; ?>

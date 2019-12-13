@@ -5,6 +5,7 @@ namespace application\library;
 use OSS\Core\OssException;
 use OSS\OssClient;
 use Phalcon\DI;
+use woodlsy\phalcon\library\Log;
 use woodlsy\upload\Upload;
 use Exception;
 
@@ -128,5 +129,51 @@ class AliyunOss
         );
         $listObjectInfo = $ossClient->listObjects($bucket, $options);
         return $listObjectInfo;
+    }
+
+    /**
+     * 获取文件内容
+     *
+     * @author woodlsy
+     * @param int $bookId
+     * @param int $articleId
+     * @return string
+     * @throws ManageException
+     */
+    public function getString(int $bookId, int $articleId)
+    {
+        try{
+            // 存储空间名称
+            $bucket = "woodlsy-novel";
+            // 文件名称
+            $object = 'book/'.$bookId . '/'.$articleId.'.txt';
+
+            $ossClient = new OssClient($this->ossConfig->accessKeyId, $this->ossConfig->accessKeySecret, $this->ossConfig->endpoint);
+
+            $content = $ossClient->getObject($bucket, $object);
+            return $content;
+        } catch(OssException $e) {
+            Log::write('content', $e->getMessage(), 'aliyun');
+            throw new ManageException('获取小说内容失败');
+        }
+    }
+
+    /**
+     * 删除文件
+     *
+     * @author woodlsy
+     * @param int $bookId
+     * @param int $articleId
+     * @throws OssException
+     */
+    public function delFile(int $bookId, int $articleId)
+    {
+        // 存储空间名称
+        $bucket = "woodlsy-novel";
+        // 文件名称
+        $object = 'book/'.$bookId . '/'.$articleId.'.txt';
+
+        $ossClient = new OssClient($this->ossConfig->accessKeyId, $this->ossConfig->accessKeySecret, $this->ossConfig->endpoint);
+        $ossClient->deleteObject($bucket, $object);
     }
 }
