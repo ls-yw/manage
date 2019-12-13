@@ -303,7 +303,7 @@ class CollectLogic
 //                (new Article())->updateData(['url' => $bookUrl], ['id' => $article_id]);
             }
         } else {
-            $msg = '<span class="red">' . $from['from_title'] . '（采集失败内容过少：<a href="' . $from['from_url'] . '" target="_blank">' . $from['from_url'] . '</a>）  </span>';
+            $msg = '<span class="red">' . $from['from_title'] . '（采集失败内容过少：<a href="' . $from['from_url'] . '" target="_blank">' . $from['from_url'] . '</a>）[<span class="orange" onclick="invalid('.$from['id'].', this)">确认</span>]  </span>';
             $content       .= "\r\n========================================================================\r\n";
             Log::write($from['from_book_id'], $content, 'errorArticle');
 
@@ -458,5 +458,17 @@ class CollectLogic
         } catch (\Exception $e) {
             throw new ManageException('上传阿里云失败：'.$e->getMessage());
         }
+    }
+
+    /**
+     * 确认已采集
+     *
+     * @author woodlsy
+     * @param int $id
+     * @return bool|int
+     */
+    public function confirmFrom(int $id)
+    {
+        return (new CollectFrom())->updateData(['from_state' => 1], ['id' => $id]);
     }
 }

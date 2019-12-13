@@ -472,4 +472,30 @@ class CollectController extends BaseController
             $this->view->bookId     = $bookId;
         }
     }
+
+    /**
+     * 确认是否已采集
+     *
+     * @author woodlsy
+     * @return \Phalcon\Http\ResponseInterface
+     */
+    public function confirmFromAction()
+    {
+        try {
+            $id = (int)$this->get('id');
+            if (empty($id)) {
+                throw new ManageException('参数错误');
+            }
+            $row = (new CollectLogic())->confirmFrom($id);
+            if (!$row) {
+                throw new ManageException('确认失败');
+            }
+            return $this->ajaxReturn(0, 'ok');
+        } catch (ManageException $e) {
+            return $this->ajaxReturn(1, $e->getMessage());
+        } catch (Exception $e) {
+            Log::write($this->controllerName . '|' . $this->actionName, $e->getMessage() . $e->getFile() . $e->getLine(), 'error');
+            return $this->ajaxReturn(1, '系统错误');
+        }
+    }
 }
