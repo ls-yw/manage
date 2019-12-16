@@ -7,7 +7,7 @@
             <!-- /.box-header -->
             <!-- form start -->
             <input type="hidden" name="id" value="<?=$data['id'] ?? 0?>">
-            <div class="box-body main">
+            <div class="box-body main row">
                 共有<?=$ossArticleNum?>篇文章需上传：<br/>
             </div>
             <!-- /.box-body -->
@@ -24,7 +24,7 @@
         $.get(url,echoresult);
     }
     function echoresult(result){
-        $('.main').append(result.msg);
+        $('.main').append('<div class="col-xs-4">'+result.msg+'</div>');
         if(result.url != '' && result.url != null){
             setTimeout(post_url(result.url),100);
         }
