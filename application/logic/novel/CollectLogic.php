@@ -309,7 +309,7 @@ class CollectLogic
 
         }
 
-        $nextFrom = (new CollectFrom())->getCount(['from_book_id' => $bookId, 'from_sort' => ['>', $from['from_sort'], 'from_state' => 0]]);
+        $nextFrom = (new CollectFrom())->getCount(['from_book_id' => $bookId, 'from_sort' => ['>', $from['from_sort']], 'from_state' => 0]);
 
         return ['msg' => $msg, 'new_from' => $nextFrom, 'from_sort' =>$from['from_sort']];
     }
