@@ -271,7 +271,12 @@ class CollectController extends BaseController
                     return $this->ajaxReturn(1, $msg);
                 }
 
-                $data = (new CollectLogic())->article($collectId, $targetId, $indexlink, $bookId);
+                $key = 'collect_'.$collectId.'_'.$targetId.'_'.$indexlink.'_'.$bookId;
+                if (!Redis::getInstance()->exists($key)) {
+                    $data = (new CollectLogic())->article($collectId, $targetId, $indexlink, $bookId);
+                    Redis::getInstance()->setex($key, 600, HelperExtend::jsonEncode($data));
+                }
+                $data = HelperExtend::jsonDecode(Redis::getInstance()->get($key));
 
                 if ('add' === $act) {
                     // 判断是否已采集
@@ -283,7 +288,7 @@ class CollectController extends BaseController
                     (new CollectLogic())->addCollectFrom($data);
                     $result        = [];
                     $result['url'] = '/novel/collect/chapter.html?act=add&book_id=' . $bookId . '&collect_id=' . $collectId;
-                    return $this->ajaxReturn(0, '共有' . count($data) . '篇文章需采集：', null, $result);
+                    return $this->ajaxReturn(0, '共有' . count($data) . '篇文章需采集：<br/>', null, $result);
                 } elseif ('update' === $act) {
                     $from = (new CollectLogic())->getCollectFrom($bookId);
 
@@ -306,7 +311,7 @@ class CollectController extends BaseController
                         throw new ManageException('无新内容可采集');
                     }
 
-                    return $this->ajaxReturn(0, '共有' . count($new_from) . '篇文章需采集：', null, ['url' => '/novel/collect/chapter.html?act=update&book_id=' . $bookId . '&collect_id=' . $collectId]);
+                    return $this->ajaxReturn(0, '共有' . count($new_from) . '篇文章需采集：<br/>', null, ['url' => '/novel/collect/chapter.html?act=update&book_id=' . $bookId . '&collect_id=' . $collectId]);
                 }
 
             } catch (ManageException $e) {
@@ -346,9 +351,9 @@ class CollectController extends BaseController
                     $chapter['chapter_order']      = 1;
                     $chapterId                     = (new BookLogic())->saveChapter($chapter);
                     if (empty($chapterId)) {
-                        throw new ManageException('章节新增失败');
+                        throw new ManageException('<div class="col-xs-4">章节新增失败</div>');
                     }
-                    $msg = '新增默认章节  ';
+                    $msg = '<div class="col-xs-4">新增默认章节</div>';
                 } else {
                     $chapterId = $chapterArray[0]['id'];
                 }
@@ -386,15 +391,15 @@ class CollectController extends BaseController
                 $res = (new CollectLogic())->collectArticle($bookId, $collectId, $chapterId, $categoryId, $fromSort);
 
                 if (empty($res['new_from'])) {
-                    return $this->ajaxReturn(0, $res['msg'] . ' 采集完成');
+                    return $this->ajaxReturn(0, '<div class="col-xs-4">'.$res['msg'] . '</div> <div class="col-xs-4">采集完成</div>');
                 }
 
-                return $this->ajaxReturn(0, $res['msg'], null, ['url' => '/novel/collect/doArticle.html?act=' . $act . '&book_id=' . $bookId . '&collect_id=' . $collectId . '&chapter_id=' . $chapterId . '&category_id=' . $categoryId . '&from_sort=' . $res['from_sort']]);
+                return $this->ajaxReturn(0, '<div class="col-xs-4">'.$res['msg'].'</div>', null, ['url' => '/novel/collect/doArticle.html?act=' . $act . '&book_id=' . $bookId . '&collect_id=' . $collectId . '&chapter_id=' . $chapterId . '&category_id=' . $categoryId . '&from_sort=' . $res['from_sort']]);
             } catch (ManageException $e) {
-                return $this->ajaxReturn(1, $e->getMessage());
+                return $this->ajaxReturn(1, '<div class="col-xs-4">'.$e->getMessage().'</div>');
             } catch (Exception $e) {
                 Log::write($this->controllerName . '|' . $this->actionName, $e->getMessage() . $e->getFile() . $e->getLine(), 'error');
-                return $this->ajaxReturn(1, '系统错误 <span class="orange" onclick="post_url(\'/novel/collect/doArticle.html?act=' . $act . '&book_id=' . $bookId . '&collect_id=' . $collectId . '&chapter_id=' . $chapterId . '&category_id=' . $categoryId . '&from_sort=' . $fromSort.'\')">重新发起</span>');
+                return $this->ajaxReturn(1, '<div class="col-xs-4">系统错误 <span class="orange" onclick="post_url(\'/novel/collect/doArticle.html?act=' . $act . '&book_id=' . $bookId . '&collect_id=' . $collectId . '&chapter_id=' . $chapterId . '&category_id=' . $categoryId . '&from_sort=' . $fromSort.'\')">重新发起</span></div>');
             }
         }
     }

@@ -36,7 +36,7 @@
         $.get(url,echoresult);
     }
     function echoresult(result){
-        if (result.msg != '')$('.main').append('<div class="col-xs-4">'+result.msg+'</div>');
+        if (result.msg != '')$('.main').append(result.msg);
         if(result.url != '' && result.url != null){
             setTimeout(post_url(result.url),100);
         }
