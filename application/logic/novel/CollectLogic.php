@@ -303,7 +303,7 @@ class CollectLogic
 //                (new Article())->updateData(['url' => $bookUrl], ['id' => $article_id]);
             }
         } else {
-            $msg = '<span class="red">' . $from['from_title'] . '（采集失败内容过少：<a href="' . $from['from_url'] . '" target="_blank">' . $from['from_url'] . '</a>）['.$from['from_sort'].'][<span class="orange" onclick="invalid('.$from['id'].', this)">确认</span>]  </span>';
+            $msg = '<span class="red"><a href="' . $from['from_url'] . '" target="_blank">' . $from['from_title'] . '</a>（采集失败内容过少）['.$from['from_sort'].'][<span class="orange" onclick="invalid('.$from['id'].', this)">确认</span>]  </span>';
             $content       .= "\r\n========================================================================\r\n";
             Log::write($from['from_book_id'], $content, 'errorArticle');
 

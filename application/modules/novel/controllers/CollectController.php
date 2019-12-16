@@ -283,7 +283,7 @@ class CollectController extends BaseController
                     (new CollectLogic())->addCollectFrom($data);
                     $result        = [];
                     $result['url'] = '/novel/collect/chapter.html?act=add&book_id=' . $bookId . '&collect_id=' . $collectId;
-                    return $this->ajaxReturn(0, '共有' . count($data) . '篇文章需采集：<br/>', null, $result);
+                    return $this->ajaxReturn(0, '共有' . count($data) . '篇文章需采集：', null, $result);
                 } elseif ('update' === $act) {
                     $from = (new CollectLogic())->getCollectFrom($bookId);
 
@@ -306,7 +306,7 @@ class CollectController extends BaseController
                         throw new ManageException('无新内容可采集');
                     }
 
-                    return $this->ajaxReturn(0, '共有' . count($new_from) . '篇文章需采集：<br/>', null, ['url' => '/novel/collect/chapter.html?act=update&book_id=' . $bookId . '&collect_id=' . $collectId]);
+                    return $this->ajaxReturn(0, '共有' . count($new_from) . '篇文章需采集：', null, ['url' => '/novel/collect/chapter.html?act=update&book_id=' . $bookId . '&collect_id=' . $collectId]);
                 }
 
             } catch (ManageException $e) {
