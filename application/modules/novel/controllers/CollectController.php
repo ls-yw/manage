@@ -389,7 +389,7 @@ class CollectController extends BaseController
                     return $this->ajaxReturn(0, $res['msg'] . ' 采集完成');
                 }
 
-                return $this->ajaxReturn(0, $res['msg'], null, ['url' => '/novel/collect/doArticle.html?act=' . $act . '&book_id=' . $bookId . '&collect_id=' . $collectId . '&chapter_id=' . $chapterId . '&category_id=' . $categoryId . '&from_sort=' . $res['from_sort']]);
+                return $this->ajaxReturn(0, $res['msg'], null, ['url' => '/novel/collect/doArticle.html?act=' . $act . '&book_id=' . $bookId . '&collect_id=' . $collectId . '&chapter_id=' . $chapterId . '&category_id=' . $categoryId . '&from_sort=' . $res['from_sort'], 'test' => $res]);
             } catch (ManageException $e) {
                 return $this->ajaxReturn(1, $e->getMessage());
             } catch (Exception $e) {
