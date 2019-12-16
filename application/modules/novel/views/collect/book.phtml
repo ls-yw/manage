@@ -7,7 +7,7 @@
             <!-- /.box-header -->
             <!-- form start -->
             <input type="hidden" name="id" value="<?=$data['id'] ?? 0?>">
-            <div class="box-body main">
+            <div class="box-body main row">
                 <div class="col-xs-5"></div>
                 <div class="col-xs-7">
                     <?php if ('update' === $act):?>
@@ -36,7 +36,7 @@
         $.get(url,echoresult);
     }
     function echoresult(result){
-        $('.main').append(result.msg);
+        $('.main').append('<div class="col-xs-4">'+result.msg+'</div>');
         if(result.url != '' && result.url != null){
             setTimeout(post_url(result.url),100);
         }
