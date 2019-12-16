@@ -45,6 +45,8 @@
         $.get('/novel/collect/confirmFrom.html?id='+id,function (res) {
             if (res.code == 0) {
                 obj.innerHTML = '已确认';
+                obj.classList.remove("orange");
+                obj.classList.add("gray");
             } else {
                 alertMsg('error', res.msg)
             }
