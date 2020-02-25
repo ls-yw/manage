@@ -176,4 +176,26 @@ class AliyunOss
         $ossClient = new OssClient($this->ossConfig->accessKeyId, $this->ossConfig->accessKeySecret, $this->ossConfig->endpoint);
         $ossClient->deleteObject($bucket, $object);
     }
+
+    /**
+     * 批量删除文章
+     *
+     * @author woodlsy
+     * @param int   $bookId
+     * @param array $articleIdArray
+     * @throws OssException
+     */
+    public function delFiles(int $bookId, array $articleIdArray)
+    {
+        // 存储空间名称
+        $bucket = "woodlsy-novel";
+        // 文件名称
+        $objects = [];
+        foreach ($articleIdArray as $val) {
+            $objects[] = 'book/'.$bookId . '/'.$val.'.txt';
+        }
+
+        $ossClient = new OssClient($this->ossConfig->accessKeyId, $this->ossConfig->accessKeySecret, $this->ossConfig->endpoint);
+        $ossClient->deleteObjects($bucket, $objects);
+    }
 }

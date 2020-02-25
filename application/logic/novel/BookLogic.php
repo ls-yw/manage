@@ -293,6 +293,38 @@ class BookLogic
     }
 
     /**
+     * 获取定量的oss文章列表
+     *
+     * @author woodlsy
+     * @param int      $bookId
+     * @param int|null $isOss
+     * @param int      $row
+     * @param string   $order
+     * @return array|bool
+     */
+    public function getArticleByOssRow(int $bookId, int $isOss = null , int $row = 50, string $order = 'article_sort asc')
+    {
+        $where = ['book_id' => $bookId];
+        if (null !== $isOss) {
+            $where['is_oss'] = $isOss;
+        }
+        return (new Article())->getList($where, $order, 0, $row, ['id', 'title', 'book_id']);
+    }
+
+    /**
+     * 更新文章阿里云状态
+     *
+     * @author woodlsy
+     * @param     $articleId
+     * @param int $isOss
+     * @return bool|int
+     */
+    public function updateArticleOssState($articleId, int $isOss)
+    {
+        return (new Article())->updateData(['is_oss' => $isOss], ['id' => $articleId]);
+    }
+
+    /**
      * 获取文章列表
      *
      * @author woodlsy
@@ -330,7 +362,7 @@ class BookLogic
      * @param bool $getContent
      * @return array|mixed
      */
-    public function getArticleById(int $id, bool $getContent = false)
+    public function getArticleById(int $id, bool $getContent = null)
     {
         $article = (new Article())->getById($id);
         if (!empty($article) && $getContent) {
@@ -401,5 +433,53 @@ class BookLogic
         if (!empty($existSort)) {
             (new Article())->updateData(['article_sort' => ['+', 1]], ['book_id' => $bookId, 'article_sort' => ['>=', $articleSort]]);
         }
+    }
+
+    /**
+     * 物理删除文章
+     *
+     * @author woodlsy
+     * @param int $bookId
+     * @return bool|int
+     */
+    public function delArticleByBookId(int $bookId)
+    {
+        return (new Article())->delData(['book_id' => $bookId]);
+    }
+
+    /**
+     * 更新小说章节数和字数
+     *
+     * @author woodlsy
+     * @param int $bookId
+     * @return bool|int
+     */
+    public function updateBookArticleNumAndWordsNumber(int $bookId)
+    {
+        $articleCount = (new Article())->getCount(['book_id' => $bookId]);
+        $wordsNumber = (new Article())->getSum(['book_id' => $bookId], ['article_wordnumber']);
+        if(empty($wordsNumber)){
+            $wordsNumber['article_wordnumber_sum'] = 0;
+        }
+        return (new Book())->updateData(['book_articlenum' => $articleCount, 'book_wordsnumber' => $wordsNumber['article_wordnumber_sum']], ['id' => $bookId]);
+    }
+
+    /**
+     * 删除小说
+     *
+     * @author woodlsy
+     * @param int $bookId
+     * @return bool|int
+     * @throws ManageException
+     */
+    public function delBook(int $bookId)
+    {
+        $articleNum = (new BookLogic())->getArticleListCount($bookId);
+        if (!empty($articleNum)) {
+            throw new ManageException('该小说章节未清空，不能删除小说');
+        }
+
+        (new Chapter())->delData(['book_id'=>$bookId]);
+        return (new Book())->delData(['id'=>$bookId]);
     }
 }

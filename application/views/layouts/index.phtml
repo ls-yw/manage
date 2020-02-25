@@ -213,11 +213,11 @@
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
-            <h1>
-                <?= $title ?? ''; ?>
-            </h1>
-            <ol class="breadcrumb">
+            <ol class="breadcrumb" style="float: none;position:initial">
                 <li><a href="/"><i class="fa fa-dashboard"></i> 首页</a></li>
+                <?php if (isset($crumbs) && !empty($crumbs) && is_array($crumbs)):foreach ($crumbs as $val):?>
+                    <li><a <?=isset($val['url']) && !empty($val['url']) ? "href='{$val['url']}'" : ''?>><?=$val['name']?></a></li>
+                <?php endforeach;endif;?>
                 <li class="active"><?= $title ?? ''; ?></li>
             </ol>
         </section>

@@ -99,12 +99,12 @@ class BookController extends BaseController
 
             try {
 
-                $data = [
-                    'title' => $this->post('title'),
-                    'chapter_id' => $this->post('chapter_id'),
+                $data               = [
+                    'title'        => $this->post('title'),
+                    'chapter_id'   => $this->post('chapter_id'),
                     'article_sort' => $this->post('article_sort'),
-                    'content' => $this->post('content'),
-                    'book_id' => $bookId,
+                    'content'      => $this->post('content'),
+                    'book_id'      => $bookId,
                 ];
                 $data['wordnumber'] = mb_strlen(strip_tags($data['content']), mb_detect_encoding($data['content']));
                 if (empty($data['content'])) {
@@ -117,7 +117,7 @@ class BookController extends BaseController
                     throw new ManageException('保存失败');
                 }
                 Redis::getInstance()->setex('alert_success', 3600, '保存成功');
-                return $this->response->redirect('/novel/book/article.html?book_id='.$bookId);
+                return $this->response->redirect('/novel/book/article.html?book_id=' . $bookId);
             } catch (ManageException $e) {
                 Redis::getInstance()->setex('alert_error', 3600, $e->getMessage());
                 die('<script>window.history.go(-1);</script>');
@@ -140,4 +140,84 @@ class BookController extends BaseController
         }
     }
 
+    /**
+     * 情况小说文章
+     *
+     * @author woodlsy
+     * @return \Phalcon\Http\ResponseInterface
+     */
+    public function clearArticleAction()
+    {
+        $bookId = (int) $this->post('id');
+        if (empty($bookId)) {
+            return $this->ajaxReturn(1, '参数错误');
+        }
+
+        // 先删除oss文件
+        $list = (new BookLogic())->getArticleByOssRow($bookId, 1, 100);
+        if (!empty($list)) {
+            $articleIdArray = [];
+            foreach ($list as $val) {
+                $articleIdArray[] = $val['id'];
+            }
+            $msg = '<p>开始删除oss文件 文章ID：' . current($articleIdArray) . ' - ' . end($articleIdArray) . "</p>";
+            try {
+                (new AliyunOss())->delFiles($bookId, $articleIdArray);
+            } catch (Exception $e) {
+                $msg .= "<p>oss文件删除失败</p>";
+                return $this->ajaxReturn(1, $msg . $e->getMessage());
+            }
+            $msg .= "<p>oss文件删除成功</p>";
+            $row = (new BookLogic())->updateArticleOssState($articleIdArray, 0);
+            if (empty($row)) {
+                $msg .= "<p>oss状态更新失败</p>";
+                return $this->ajaxReturn(1, $msg);
+            } else {
+                $msg .= "<p>oss状态更新成功</p>";
+                return $this->ajaxReturn(200, $msg);
+            }
+        }
+
+        // 再删除本地文章数据
+        $book   = (new BookLogic())->getById($bookId);
+        $delRes = HelperExtend::delBookDir($book['book_category'], $bookId);
+        if (!$delRes) {
+            return $this->ajaxReturn(1, "<p>本地小说文件夹删除失败</p>");
+        }
+        $msg = "<p>本地小说文件夹删除成功</p>";
+        $row = (new BookLogic())->delArticleByBookId($bookId);
+        (new BookLogic())->updateBookArticleNumAndWordsNumber($bookId);
+        if (empty($row)) {
+            return $this->ajaxReturn(1, $msg . "<p>删除数据库文章数据失败</p>");
+        } else {
+            return $this->ajaxReturn(0, $msg . "<p>删除数据库文章数据成功</p>");
+        }
+
+    }
+
+    /**
+     * 删除小说
+     *
+     * @author woodlsy
+     * @return mixed
+     */
+    public function delAction()
+    {
+        $bookId = (int) $this->get('book_id');
+        if (empty($bookId)) {
+            $this->breakError('参数错误');
+        }
+
+        try {
+            $row = (new BookLogic())->delBook($bookId);
+            if (empty($row)) {
+                $this->breakError('删除失败');
+            }
+            Redis::getInstance()->setex('alert_success', 3600, '删除成功');
+            return $this->response->redirect('/novel/book/index.html');
+        } catch (ManageException $e) {
+            $this->breakError($e->getMessage());
+        }
+
+    }
 }

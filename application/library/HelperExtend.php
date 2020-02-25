@@ -168,4 +168,47 @@ class HelperExtend extends Helper
             return false;
         }
     }
+
+    /**
+     * 删除小说文件夹
+     *
+     * @author woodlsy
+     * @param $categoryId
+     * @param $bookId
+     * @return bool
+     */
+    public static function delBookDir($categoryId,$bookId)
+    {
+        $path = APP_PATH."/../public/booktext/".$categoryId.'/'.$bookId;
+        if (!is_dir($path)) {
+            return true;
+        }
+
+        return self::delDir($path);
+    }
+
+    /**
+     * 删除文件夹
+     *
+     * @author woodlsy
+     * @param $dirname
+     * @return bool
+     */
+    public static function delDir($dirname)
+    {
+        if (!is_dir($dirname)) {
+            return false;
+        }
+        $handle = opendir($dirname); //打开目录
+        while (($file = readdir($handle)) !== false) {
+            if ($file != '.' && $file != '..') {
+                //排除"."和"."
+                $dir = $dirname .'/' . $file;
+                is_dir($dir) ? self::delDir($dir) : unlink($dir);
+            }
+        }
+        closedir($handle);
+        $result = rmdir($dirname) ? true : false;
+        return $result;
+    }
 }

@@ -271,7 +271,7 @@ class CollectController extends BaseController
                     return $this->ajaxReturn(1, $msg);
                 }
 
-                $key = 'collect_'.$collectId.'_'.$targetId.'_'.$indexlink.'_'.$bookId;
+                $key = 'collect_' . $collectId . '_' . $targetId . '_' . $indexlink . '_' . $bookId;
                 if (!Redis::getInstance()->exists($key)) {
                     $data = (new CollectLogic())->article($collectId, $targetId, $indexlink, $bookId);
                     Redis::getInstance()->setex($key, 600, HelperExtend::jsonEncode($data));
@@ -391,15 +391,15 @@ class CollectController extends BaseController
                 $res = (new CollectLogic())->collectArticle($bookId, $collectId, $chapterId, $categoryId, $fromSort);
 
                 if (empty($res['new_from'])) {
-                    return $this->ajaxReturn(0, '<div class="col-xs-4">'.$res['msg'] . '</div> <div class="col-xs-4">采集完成</div>');
+                    return $this->ajaxReturn(0, '<div class="col-xs-4">' . $res['msg'] . '</div> <div class="col-xs-4">采集完成</div>');
                 }
 
-                return $this->ajaxReturn(0, '<div class="col-xs-4">'.$res['msg'].'</div>', null, ['url' => '/novel/collect/doArticle.html?act=' . $act . '&book_id=' . $bookId . '&collect_id=' . $collectId . '&chapter_id=' . $chapterId . '&category_id=' . $categoryId . '&from_sort=' . $res['from_sort']]);
+                return $this->ajaxReturn(0, '<div class="col-xs-4">' . $res['msg'] . '</div>', null, ['url' => '/novel/collect/doArticle.html?act=' . $act . '&book_id=' . $bookId . '&collect_id=' . $collectId . '&chapter_id=' . $chapterId . '&category_id=' . $categoryId . '&from_sort=' . $res['from_sort']]);
             } catch (ManageException $e) {
-                return $this->ajaxReturn(1, '<div class="col-xs-4">'.$e->getMessage().'</div>');
+                return $this->ajaxReturn(1, '<div class="col-xs-4">' . $e->getMessage() . '</div>');
             } catch (Exception $e) {
                 Log::write($this->controllerName . '|' . $this->actionName, $e->getMessage() . $e->getFile() . $e->getLine(), 'error');
-                return $this->ajaxReturn(1, '<div class="col-xs-4">系统错误 <span class="orange" onclick="post_url(\'/novel/collect/doArticle.html?act=' . $act . '&book_id=' . $bookId . '&collect_id=' . $collectId . '&chapter_id=' . $chapterId . '&category_id=' . $categoryId . '&from_sort=' . $fromSort.'\')">重新发起</span></div>');
+                return $this->ajaxReturn(1, '<div class="col-xs-4">系统错误 <span class="orange" onclick="post_url(\'/novel/collect/doArticle.html?act=' . $act . '&book_id=' . $bookId . '&collect_id=' . $collectId . '&chapter_id=' . $chapterId . '&category_id=' . $categoryId . '&from_sort=' . $fromSort . '\')">重新发起</span></div>');
             }
         }
     }
@@ -411,12 +411,12 @@ class CollectController extends BaseController
      */
     public function bookListAction()
     {
-        $keywords              = $this->get('keywords', 'string');
-        $data = (new BookLogic())->getList($keywords, 1, $this->page, $this->size);
+        $keywords = $this->get('keywords', 'string');
+        $data     = (new BookLogic())->getList($keywords, 1, $this->page, $this->size);
         if (!empty($data)) {
             foreach ($data as &$val) {
                 $val['waitArticleNum'] = (new BookLogic())->getCollectFromCount($val['id'], 0);
-                $val['ossArticleNum'] = (new BookLogic())->getArticleByOssCount($val['id'], 0);
+                $val['ossArticleNum']  = (new BookLogic())->getArticleByOssCount($val['id'], 0);
             }
         }
 
@@ -435,11 +435,11 @@ class CollectController extends BaseController
      */
     public function ossAction()
     {
-        $bookId = (int)$this->get('book_id');
-        $key = 'wait_oss_'.$bookId;
+        $bookId = (int) $this->get('book_id');
+        $key    = 'wait_oss_' . $bookId;
         if ($this->request->isAjax()) {
             try {
-                $index = (int)$this->get('key');
+                $index = (int) $this->get('key');
                 if (!Redis::getInstance()->exists($key)) {
                     return $this->ajaxReturn(1, '不存在待上传的文章缓存');
                 }
@@ -450,7 +450,7 @@ class CollectController extends BaseController
                 }
 
                 (new CollectLogic())->uploadOss($bookId, $articles[$index]);
-                return $this->ajaxReturn(0, $articles[$index]['title'], null, ['url' => '/novel/collect/oss.html?book_id=' . $bookId . '&key=' . ($index+1)]);
+                return $this->ajaxReturn(0, $articles[$index]['title'], null, ['url' => '/novel/collect/oss.html?book_id=' . $bookId . '&key=' . ($index + 1)]);
             } catch (ManageException $e) {
                 return $this->ajaxReturn(1, $e->getMessage());
             } catch (Exception $e) {
@@ -471,10 +471,10 @@ class CollectController extends BaseController
 
             Redis::getInstance()->setex($key, 3600, HelperExtend::jsonEncode($ossArticles));
 
-            $this->view->ossArticleNum     = count($ossArticles);
-            $this->view->menuflag  = 'novel-collect-bookList';
-            $this->view->title     = '上传OSS';
-            $this->view->bookId     = $bookId;
+            $this->view->ossArticleNum = count($ossArticles);
+            $this->view->menuflag      = 'novel-collect-bookList';
+            $this->view->title         = '上传OSS';
+            $this->view->bookId        = $bookId;
         }
     }
 
@@ -487,7 +487,7 @@ class CollectController extends BaseController
     public function confirmFromAction()
     {
         try {
-            $id = (int)$this->get('id');
+            $id = (int) $this->get('id');
             if (empty($id)) {
                 throw new ManageException('参数错误');
             }
@@ -502,5 +502,34 @@ class CollectController extends BaseController
             Log::write($this->controllerName . '|' . $this->actionName, $e->getMessage() . $e->getFile() . $e->getLine(), 'error');
             return $this->ajaxReturn(1, '系统错误');
         }
+    }
+
+    /**
+     * 待采集章节列表
+     *
+     * @author woodlsy
+     */
+    public function waitCollectArticleAction()
+    {
+        $bookId    = (int) $this->get('id');
+        $collectId = (int) $this->get('collect_id');
+
+        if (empty($bookId) || empty($collectId)) {
+            $this->breakError('参数错误');
+        }
+
+        $book = (new BookLogic())->getById($bookId);
+
+        $crumbs = [];
+        $crumbs[] = ['url' => '/novel/collect/bookList.html', 'name' => '采集小说'];
+        $crumbs[] = ['url' => '', 'name' => $book['book_name']];
+
+        $this->view->data      = (new CollectLogic())->getCollectFormListByBook($bookId, $collectId, true, $this->page, $this->size);
+        $this->view->totalPage = ceil((new CollectLogic())->getCollectFormListByBookCount($bookId, $collectId, true) / $this->size);
+        $this->view->page      = $this->page;
+        $this->view->title     = '待采集章节';
+        $this->view->pageLink  = '?page={page}';
+        $this->view->menuflag  = 'novel-collect-bookList';
+        $this->view->crumbs    = $crumbs;
     }
 }

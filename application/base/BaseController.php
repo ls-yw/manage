@@ -100,4 +100,16 @@ class BaseController extends BasicController
             ]],
         ];
     }
+
+    /**
+     * 错误返回上一页
+     *
+     * @author woodlsy
+     * @param string $msg
+     */
+    protected function breakError(string $msg)
+    {
+        Redis::getInstance()->setex('alert_error', 3600, $msg);
+        die('<script>window.history.go(-1);</script>');
+    }
 }

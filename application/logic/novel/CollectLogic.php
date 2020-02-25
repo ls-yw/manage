@@ -153,7 +153,7 @@ class CollectLogic
         } else {
             $book['book_keyword'] = '';
         }
-        $result               = '';
+        $result = '';
         //获取简介
         preg_match('/' . $book_intro[0] . $book_intro[3] . $book_intro[1] . '/i', $html, $result);
         $book['book_intro'] = $result[1];
@@ -280,7 +280,7 @@ class CollectLogic
             if ($article_id) {
 
                 // 先保存到本地，确认没问题，再从后台上传到aliyun
-                HelperExtend::writeBookText($categoryId, $bookId, (int)$article_id, HelperExtend::doWriteContent($content));
+                HelperExtend::writeBookText($categoryId, $bookId, (int) $article_id, HelperExtend::doWriteContent($content));
 //                try {
 //                    $bookUrl = (new AliyunOss())->saveString((int)$article['book_id'], (int)$article_id, HelperExtend::doWriteContent($content));
 //                } catch (\Exception $e) {
@@ -289,7 +289,7 @@ class CollectLogic
 //                }
 
                 $addarticle_error = '';
-                $row = (new Chapter())->updateData(['chapter_articlenum' => ['+', 1]], ['id' => $article['chapter_id']]);
+                $row              = (new Chapter())->updateData(['chapter_articlenum' => ['+', 1]], ['id' => $article['chapter_id']]);
                 if (empty($row)) {
                     $addarticle_error = '（章节文章数更新失败）';
                 }
@@ -298,20 +298,20 @@ class CollectLogic
                     $addarticle_error .= '（小说总文章数更新失败）（小说总字数更新失败）';
                 }
 
-                $msg         = $from['from_title'] . $addarticle_error . ' ';
+                $msg = $from['from_title'] . $addarticle_error . ' ';
                 (new CollectFrom())->updateData(['from_state' => 1], ['id' => $from['id']]);
 //                (new Article())->updateData(['url' => $bookUrl], ['id' => $article_id]);
             }
         } else {
-            $msg = '<span class="red"><a href="' . $from['from_url'] . '" target="_blank">' . $from['from_title'] . '</a>（采集失败内容过少）['.$from['from_sort'].'][<span class="orange" onclick="invalid('.$from['id'].', this)">确认</span>]  </span>';
-            $content       .= "\r\n========================================================================\r\n";
+            $msg     = '<span class="red"><a href="' . $from['from_url'] . '" target="_blank">' . $from['from_title'] . '</a>（采集失败内容过少）[' . $from['from_sort'] . '][<span class="orange" onclick="invalid(' . $from['id'] . ', this)">确认</span>]  </span>';
+            $content .= "\r\n========================================================================\r\n";
             Log::write($from['from_book_id'], $content, 'errorArticle');
 
         }
 
         $nextFrom = (new CollectFrom())->getCount(['from_book_id' => $bookId, 'from_sort' => ['>', $from['from_sort']], 'from_state' => 0]);
 
-        return ['msg' => $msg, 'new_from' => $nextFrom, 'from_sort' =>$from['from_sort']];
+        return ['msg' => $msg, 'new_from' => $nextFrom, 'from_sort' => $from['from_sort']];
     }
 
     /**
@@ -451,12 +451,12 @@ class CollectLogic
         }
         $content = HelperExtend::getBookText($book['book_category'], $bookId, $article['id']);
         try {
-            $bookUrl = (new AliyunOss())->saveString((int)$bookId, (int)$article['id'], HelperExtend::doWriteContent($content));
+            $bookUrl = (new AliyunOss())->saveString((int) $bookId, (int) $article['id'], HelperExtend::doWriteContent($content));
             (new Article())->updateData(['is_oss' => 1, 'url' => $bookUrl], ['id' => $article['id']]);
             HelperExtend::delBookText($book['book_category'], $bookId, $article['id']);
             return $bookUrl;
         } catch (\Exception $e) {
-            throw new ManageException('上传阿里云失败：'.$e->getMessage());
+            throw new ManageException('上传阿里云失败：' . $e->getMessage());
         }
     }
 
@@ -470,5 +470,50 @@ class CollectLogic
     public function confirmFrom(int $id)
     {
         return (new CollectFrom())->updateData(['from_state' => 1], ['id' => $id]);
+    }
+
+    /**
+     * 采集文章列表
+     *
+     * @author woodlsy
+     * @param int  $bookId
+     * @param int  $collectId
+     * @param bool $wait
+     * @param int  $page
+     * @param int  $row
+     * @return array|bool
+     */
+    public function getCollectFormListByBook(int $bookId, int $collectId, bool $wait, int $page, int $row)
+    {
+        $offset = ($page - 1) * $row;
+        $where  = ['from_book_id' => $bookId, 'from_collect_id' => $collectId];
+        if (true === $wait) {
+            $where['from_state'] = 0;
+        } elseif (false === $wait) {
+            $where['from_state'] = 1;
+        }
+        $list = (new CollectFrom())->getList($where, 'from_sort asc', $offset, $row);
+        return $list;
+    }
+
+    /**
+     * 采集文章列表条数
+     *
+     * @author woodlsy
+     * @param int  $bookId
+     * @param int  $collectId
+     * @param bool $wait
+     * @return array|int
+     */
+    public function getCollectFormListByBookCount(int $bookId, int $collectId, bool $wait)
+    {
+        $where  = ['from_book_id' => $bookId, 'from_collect_id' => $collectId];
+        if (true === $wait) {
+            $where['from_state'] = 0;
+        } elseif (false === $wait) {
+            $where['from_state'] = 1;
+        }
+        $count = (new CollectFrom())->getCount($where);
+        return $count;
     }
 }
