@@ -15,15 +15,16 @@
                     <thead>
                     <tr>
                         <th width="20">ID</th>
-                        <th>小说封面</th>
+                        <th width="80">小说封面</th>
                         <th>小说名称</th>
-                        <th>章节数</th>
-                        <th>状态</th>
+                        <th width="60">章节数</th>
+                        <th width="60">浏览量</th>
+                        <th width="60">状态</th>
                         <th width="60">采集ID</th>
-                        <th>来源ID</th>
+                        <th width="80">来源ID</th>
                         <th width="60">质量</th>
-                        <th>采集时间</th>
-                        <th>操作</th>
+                        <th width="140">采集时间</th>
+                        <th width="80">操作</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -34,6 +35,7 @@
                                 <td><img src="<?= empty($val['book_img']) ? '/dist/img/booknopic.gif' : $val['book_img'] ?>" width="40"></td>
                                 <td><?= $val['book_name'] ?></td>
                                 <td><a href="/novel/book/article.html?book_id=<?= $val['id'] ?>" title="章节"><?= $val['book_articlenum'] ?></a></td>
+                                <td><?= $val['book_click'] ?></td>
                                 <td><?= $val['book_state'] == 0 ? '<span class="red">连载</span>' : '<span class="green">完本</span>' ?></td>
                                 <td><?= $val['book_collect_id'] ?></td>
                                 <td><?= $val['book_from_article_id'] ?></td>
