@@ -457,11 +457,11 @@ class BookLogic
     public function updateBookArticleNumAndWordsNumber(int $bookId)
     {
         $articleCount = (new Article())->getCount(['book_id' => $bookId]);
-        $wordsNumber = (new Article())->getSum(['book_id' => $bookId], ['article_wordnumber']);
+        $wordsNumber = (new Article())->getSum(['book_id' => $bookId], ['wordnumber']);
         if(empty($wordsNumber)){
-            $wordsNumber['article_wordnumber_sum'] = 0;
+            $wordsNumber['wordnumber_sum'] = 0;
         }
-        return (new Book())->updateData(['book_articlenum' => $articleCount, 'book_wordsnumber' => $wordsNumber['article_wordnumber_sum']], ['id' => $bookId]);
+        return (new Book())->updateData(['book_articlenum' => $articleCount, 'book_wordsnumber' => $wordsNumber['wordnumber_sum']], ['id' => $bookId]);
     }
 
     /**
