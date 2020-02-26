@@ -33,8 +33,11 @@
                                 <td><?= $val['collect_iconv'] ?></td>
                                 <td><?= $val['collect_status'] == 0 ? '<span class="red">不可采集</span>' : '<span class="green">可采集</span>' ?></td>
                                 <td><?= $val['update_at'] ?></td>
-                                <td><a href="/novel/collect/start.html?act=one&id=<?= $val['id'] ?>" title="采集">采集</a>&nbsp;
+                                <td>
+                                    <?php if ($val['collect_status'] == 1):?>
+                                    <a href="/novel/collect/start.html?act=one&id=<?= $val['id'] ?>" title="采集">采集</a>&nbsp;
                                     <a href="/novel/collect/start.html?act=more&id=<?= $val['id'] ?>" title="批量采集">批量采集</a>&nbsp;
+                                    <?php endif;?>
                                     <a href="/novel/collect/set.html?id=<?=$val['id']?>" title="编辑">修改</a>&nbsp;
                                     <a href="javascript:if(confirm('确定要删除吗？'))location='/novel/collect/del.html?id=<?=$val['id']?>';" title="删除">删除</a>
                                 </td>
