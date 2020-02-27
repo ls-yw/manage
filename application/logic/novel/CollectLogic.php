@@ -118,7 +118,8 @@ class CollectLogic
 
         $url  = $this->getUrl($collect, $targetId, 'collect_urlarticle');
         $html = (new HttpCurl())->setUrl($url)->setHeader('Referer: ' . $collect['collect_host'])->get();
-        $html = iconv($collect['collect_iconv'], 'UTF-8', $html);
+        $iconv = mb_detect_encoding($html, array("ASCII", "UTF-8", "GB2312", "GBK", "BIG5"));
+        $html = iconv($iconv, 'UTF-8', $html);
         if (empty($html)) {
             throw new ManageException('采集错误URL：' . $url);
         }
@@ -515,5 +516,93 @@ class CollectLogic
         }
         $count = (new CollectFrom())->getCount($where);
         return $count;
+    }
+
+    /**
+     * 采集测试
+     *
+     * @author woodlsy
+     * @param $collectId
+     * @param $act
+     * @param $url
+     * @return array
+     * @throws ManageException
+     * @throws \woodlsy\httpClient\HttpClientException
+     */
+    public function testCollect($collectId, $act, $url)
+    {
+        $collect = $this->getById($collectId);
+
+        $html = (new HttpCurl())->setUrl($url)->setHeader('Referer: ' . $collect['collect_host'])->get();
+        $iconv = mb_detect_encoding($html, array("ASCII", "UTF-8", "GB2312", "GBK", "BIG5"));
+        $html = iconv($iconv, 'UTF-8', $html);
+        if (empty($html)) {
+            throw new ManageException('采集错误URL：' . $url);
+        }
+        switch ($act){
+            case 1: //信息页
+                $book_name    = HelperExtend::dealRegular($collect['collect_articletitle']);
+                $book_author  = HelperExtend::dealRegular($collect['collect_author']);
+                $book_sort    = HelperExtend::dealRegular($collect['collect_sort']);
+                $book_keyword = HelperExtend::dealRegular($collect['collect_keyword']);
+                $book_intro   = HelperExtend::dealRegular($collect['collect_intro']);
+                $book_img     = HelperExtend::dealRegular($collect['collect_articleimage']);
+                $fullarticle  = HelperExtend::dealRegular($collect['collect_fullarticle']);
+
+                $book = array();
+                //获取小说名称
+                preg_match('/' . $book_name[0] . $book_name[3] . $book_name[1] . '/i', $html, $result);
+                $book['book_name'] = $result['1'];
+                $result            = '';
+                //获取作者
+                preg_match('/' . $book_author[0] . $book_author[3] . $book_author[1] . '/i', $html, $result);
+                $book['book_author'] = $result[1];
+                $result              = '';
+                //获取分类名称
+                preg_match('/' . $book_sort[0] . $book_sort[3] . $book_sort[1] . '/i', $html, $result);
+                $book['book_sort'] = $result[1];
+                $result            = '';
+                //获取关键字
+                if (!empty($book_keyword)) {
+                    preg_match('/' . $book_keyword[0] . $book_keyword[3] . $book_keyword[1] . '/i', $html, $result);
+                    $book['book_keyword'] = $result[1];
+                } else {
+                    $book['book_keyword'] = '';
+                }
+                $result = '';
+                //获取简介
+                preg_match('/' . $book_intro[0] . $book_intro[3] . $book_intro[1] . '/i', $html, $result);
+                $book['book_intro'] = $result[1];
+                $result             = '';
+                //获取小说封面
+                preg_match('/' . $book_img[0] . $book_img[3] . $book_img[1] . '/i', $html, $result);
+                ($result[1] == $collect['collect_filterimage']) ? $book['book_img'] = '' : $book['book_img'] = $result[1];
+                if (!empty($book['book_img'])) {
+                    if (!preg_match('/^(http|https):\/\//i', $book['book_img'])) {
+                        $book['book_img'] = $collect['collect_host'] . $book['book_img'];
+                    }
+                }
+                //获取小说连载状态
+                $book['book_state'] = preg_match('/' . $fullarticle . '/i', $html);
+                return $book;
+                    break;
+            case 2:
+                break;
+            case 3:
+                $content_preg = HelperExtend::dealRegular($collect['collect_content']);
+                preg_match_all('/' . $content_preg[0] . $content_preg[3] . $content_preg[1] . '/i', $html, $match);
+                if ($match[1] == '') {
+                    return ['content' => ''];
+                }
+                $content = $this->pregContent($collect['collect_contentfilter'], $collect['collect_contentreplace'], $match[1][0]);
+
+                $content_code = mb_detect_encoding($content);
+                if (mb_detect_encoding($content) != 'UTF-8') {
+                    $content = iconv($content_code, 'UTF-8', $content);
+                }
+                $content = htmlspecialchars_decode($content);
+                return ['content' => $content];
+                break;
+        }
     }
 }

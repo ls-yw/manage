@@ -1,0 +1,70 @@
+
+<div class="row">
+    <div class="col-xs-12">
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title"><?=$title?></h3>
+            </div>
+            <!-- /.box-header -->
+            <!-- form start -->
+            <form class="form-horizontal" method="post" action="">
+                <div class="box-body">
+                    <div class="form-group">
+                        <label for="inputEmail3" class="col-sm-2 control-label">网址类型</label>
+                        <div class="col-sm-10">
+                            <label><input type="radio" name="act" class="act" value="1"> 信息页</label>
+                            <label><input type="radio" name="act" class="act" value="2"> 章节页</label>
+                            <label><input type="radio" name="act" class="act" value="3"> 内容页</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputEmail3" class="col-sm-2 control-label">网址</label>
+                        <div class="col-sm-6">
+                            <input type="text" name="url" class="form-control url"  size="40"/>
+                        </div>
+                        <div class="col-sm-2">
+                            <button type="button" class="btn btn-primary btnSubmit">测试</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputEmail3" class="col-sm-2 control-label">内容</label>
+                        <div class="col-sm-10 novelContent">
+
+                        </div>
+                    </div>
+                </div>
+                <!-- /.box-body -->
+
+            </form>
+        </div>
+        <!-- /.box -->
+    </div>
+    <!-- /.col -->
+</div>
+<!-- /.row -->
+<script>
+    $(function () {
+        $('.btnSubmit').click(function(){
+            let act = $('.act:checked').val();
+            let url = $('.url').val();
+            if (!act) {
+                alertMsg('error', '请选择网址类型');
+                return false;
+            }
+            if (url == '') {
+                alertMsg('error', '请输入网址');
+                return false;
+            }
+            $('.novelContent').html('');
+            $.post('/novel/collect/test.html?id=<?=$id?>', {act:act, url:url}, function(res){
+                if (res.code == 0) {
+                    for (i in res.data) {
+                        $('.novelContent').append('<div class="row"><div class="col-sm-2 green">'+i+'</div><div class="col-sm-10 orange">'+res.data[i]+'</div></div>');
+                    }
+                } else {
+                    alertMsg('error', res.msg);
+                }
+            });
+        });
+    })
+</script>

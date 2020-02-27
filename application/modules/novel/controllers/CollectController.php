@@ -532,4 +532,21 @@ class CollectController extends BaseController
         $this->view->menuflag  = 'novel-collect-bookList';
         $this->view->crumbs    = $crumbs;
     }
+
+    public function testAction()
+    {
+        $id = $this->get('id');
+        if ($this->request->isAjax()) {
+            $act = $this->post('act');
+            $url = $this->post('url');
+
+            $content = (new CollectLogic())->testCollect($id, $act, $url);
+            return $this->ajaxReturn(0, 'ok', $content);
+        } else {
+
+            $this->view->menuflag  = 'novel-collect-index';
+            $this->view->id = $id;
+            $this->view->title = '采集测试';
+        }
+    }
 }
