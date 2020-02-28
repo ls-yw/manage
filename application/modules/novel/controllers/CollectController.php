@@ -182,7 +182,7 @@ class CollectController extends BaseController
         if ($this->request->isPost()) {
             try {
                 $url       = $this->config->uploadPath . '/upload/urlImg?project=' . $this->router->getModuleName() . '&url=' . trim($this->post('book_img', 'string'));
-                $res       = (new HttpCurl())->setUrl($url)->get();
+                $res       = (new HttpCurl())->setUrl($url)->isZip()->get();
                 $data      = [
                     'book_name'            => trim($this->post('book_name', 'string')),
                     'book_category'        => trim($this->post('book_sort', 'string')),

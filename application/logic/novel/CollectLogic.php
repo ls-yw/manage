@@ -117,11 +117,11 @@ class CollectLogic
         }
 
         $url  = $this->getUrl($collect, $targetId, 'collect_urlarticle');
-        $html = (new HttpCurl())->setUrl($url)->setHeader('Referer: ' . $collect['collect_host'])->get();
+        $html = (new HttpCurl())->setUrl($url)->setHeader('Referer: ' . $collect['collect_host'])->isZip()->get();
         $iconv = mb_detect_encoding($html, array("ASCII", "UTF-8", "GB2312", "GBK", "BIG5"));
         $html = iconv($iconv, 'UTF-8', $html);
         if (empty($html)) {
-            throw new ManageException('采集错误URL：' . $url);
+            throw new ManageException($iconv.'采集错误URL：' . $url);
         }
 
         $indexlink    = $this->getUrl($collect, $targetId, 'collect_indexlink');
@@ -196,7 +196,7 @@ class CollectLogic
         $urlindex = $this->getUrl($collect, $targetId, 'collect_urlindex');
         $urlindex = preg_replace('/<{indexlink}>/i', $indexlink, $urlindex);
 
-        $html      = (new HttpCurl())->setUrl($urlindex)->setHeader('Referer: ' . $collect['collect_host'])->get();
+        $html      = (new HttpCurl())->setUrl($urlindex)->setHeader('Referer: ' . $collect['collect_host'])->isZip()->get();
         $html      = iconv($collect['collect_iconv'], 'UTF-8', $html);
         $chapter   = HelperExtend::dealRegular($collect['collect_chapter']);
         $chapterid = HelperExtend::dealRegular($collect['collect_chapterid']);
@@ -252,7 +252,7 @@ class CollectLogic
 
         $from = (new CollectFrom())->getOne(['from_book_id' => $bookId, 'from_sort' => ['>', $fromSort], 'from_state' => 0], null, 'from_sort asc');
 
-        $html         = (new HttpCurl())->setUrl($from['from_url'])->setHeader('Referer: ' . $collect['collect_host'])->get();
+        $html         = (new HttpCurl())->setUrl($from['from_url'])->setHeader('Referer: ' . $collect['collect_host'])->isZip()->get();
         $html         = iconv($collect['collect_iconv'], 'UTF-8', $html);
         $content_preg = HelperExtend::dealRegular($collect['collect_content']);
         preg_match_all('/' . $content_preg[0] . $content_preg[3] . $content_preg[1] . '/i', $html, $match);
@@ -533,7 +533,7 @@ class CollectLogic
     {
         $collect = $this->getById($collectId);
 
-        $html = (new HttpCurl())->setUrl($url)->setHeader('Referer: ' . $collect['collect_host'])->get();
+        $html = (new HttpCurl())->setUrl($url)->setHeader('Referer: ' . $collect['collect_host'])->isZip()->get();
         $iconv = mb_detect_encoding($html, array("ASCII", "UTF-8", "GB2312", "GBK", "BIG5"));
         $html = iconv($iconv, 'UTF-8', $html);
         if (empty($html)) {
