@@ -528,7 +528,7 @@ class CollectController extends BaseController
         $this->view->totalPage = ceil((new CollectLogic())->getCollectFormListByBookCount($bookId, $collectId, true) / $this->size);
         $this->view->page      = $this->page;
         $this->view->title     = '待采集章节';
-        $this->view->pageLink  = '?page={page}&collect_id='.$collectId;
+        $this->view->pageLink  = '?page={page}&collect_id='.$collectId.'&id='.$bookId;
         $this->view->menuflag  = 'novel-collect-bookList';
         $this->view->crumbs    = $crumbs;
     }

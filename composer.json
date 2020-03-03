@@ -6,5 +6,8 @@
         "woodlsy/upload": "^0.2.2",
         "ext-mbstring": "*",
         "aliyuncs/oss-sdk-php": "^2.3"
+    },
+    "require-dev": {
+        "phalcon/ide-stubs": "^4.0"
     }
 }
