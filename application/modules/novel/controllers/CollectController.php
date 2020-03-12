@@ -411,8 +411,16 @@ class CollectController extends BaseController
      */
     public function bookListAction()
     {
-        $keywords = $this->get('keywords', 'string');
-        $data     = (new BookLogic())->getList($keywords, 1, $this->page, $this->size);
+        $type    = $this->get('type');
+        $keyword = $this->get('keyword', 'string');
+
+        if ('author' === $type) {
+            $searchType = 'book_author';
+        } else {
+            $searchType = 'book_name';
+        }
+
+        $data = (new BookLogic())->getList($searchType, $keyword, 1, $this->page, $this->size);
         if (!empty($data)) {
             foreach ($data as &$val) {
                 $val['waitArticleNum'] = (new BookLogic())->getCollectFromCount($val['id'], 0);
@@ -421,10 +429,12 @@ class CollectController extends BaseController
         }
 
         $this->view->data      = $data;
-        $this->view->totalPage = ceil((new BookLogic())->getListCount($keywords, 1) / $this->size);
+        $this->view->totalPage = ceil((new BookLogic())->getListCount($searchType, $keyword, 1) / $this->size);
         $this->view->page      = $this->page;
-        $this->view->pageLink  = '?page={page}&keywords=' . $keywords;
+        $this->view->pageLink  = '?page={page}&keyword=' . $keyword . '&type=' . $type;
         $this->view->title     = '采集小说';
+        $this->view->type      = $type;
+        $this->view->keyword   = $keyword;
     }
 
     /**
@@ -520,7 +530,7 @@ class CollectController extends BaseController
 
         $book = (new BookLogic())->getById($bookId);
 
-        $crumbs = [];
+        $crumbs   = [];
         $crumbs[] = ['url' => '/novel/collect/bookList.html', 'name' => '采集小说'];
         $crumbs[] = ['url' => '', 'name' => $book['book_name']];
 
@@ -528,7 +538,7 @@ class CollectController extends BaseController
         $this->view->totalPage = ceil((new CollectLogic())->getCollectFormListByBookCount($bookId, $collectId, true) / $this->size);
         $this->view->page      = $this->page;
         $this->view->title     = '待采集章节';
-        $this->view->pageLink  = '?page={page}&collect_id='.$collectId.'&id='.$bookId;
+        $this->view->pageLink  = '?page={page}&collect_id=' . $collectId . '&id=' . $bookId;
         $this->view->menuflag  = 'novel-collect-bookList';
         $this->view->crumbs    = $crumbs;
     }
@@ -544,9 +554,9 @@ class CollectController extends BaseController
             return $this->ajaxReturn(0, 'ok', $content);
         } else {
 
-            $this->view->menuflag  = 'novel-collect-index';
-            $this->view->id = $id;
-            $this->view->title = '采集测试';
+            $this->view->menuflag = 'novel-collect-index';
+            $this->view->id       = $id;
+            $this->view->title    = '采集测试';
         }
     }
 }

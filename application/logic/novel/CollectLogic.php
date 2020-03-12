@@ -223,7 +223,7 @@ class CollectLogic
             $data[$key]['from_state']      = 0;
         }
         if (!is_array($data['0'])) {
-            $msg = '请确认链接采集规则正确，或目标网站访问正常 <a href="' . $urlindex . ' target="_blank">' . $urlindex . '</a>';
+            $msg = '请确认链接采集规则正确，或目标网站访问正常 <a href="' . $urlindex . '" target="_blank">' . $urlindex . '</a>';
             throw new ManageException($msg);
         }
 

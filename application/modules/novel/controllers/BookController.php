@@ -16,12 +16,23 @@ class BookController extends BaseController
 
     public function indexAction()
     {
-        $keywords              = $this->get('keywords', 'string');
-        $this->view->data      = (new BookLogic())->getList($keywords, null, $this->page, $this->size);
-        $this->view->totalPage = ceil((new BookLogic())->getListCount($keywords) / $this->size);
+        $type    = $this->get('type');
+        $keyword = $this->get('keyword', 'string');
+
+        if ('author' === $type) {
+            $searchType = 'book_author';
+        } else {
+            $searchType = 'book_name';
+        }
+
+        $this->view->data      = (new BookLogic())->getList($searchType, $keyword, null, $this->page, $this->size);
+        $this->view->totalPage = ceil((new BookLogic())->getListCount($searchType, $keyword) / $this->size);
         $this->view->page      = $this->page;
-        $this->view->pageLink  = '?page={page}&keywords=' . $keywords;
+        $this->view->pageLink  = '?page={page}&keyword=' . $keyword.'&type='.$type;
         $this->view->title     = '小说管理';
+
+        $this->view->type = $type;
+        $this->view->keyword = $keyword;
     }
 
     public function setAction()
