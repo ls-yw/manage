@@ -49,8 +49,9 @@
                 obj.classList.add("gray");
                 obj.parentNode.classList.remove("red");
                 obj.parentNode.classList.add("gray");
-                obj.nextSbiling.classList.remove("green");
-                obj.nextSbiling.classList.add("gray");
+                obj.nextSbiling.nextSbiling.classList.remove("green");
+                obj.nextSbiling.nextSbiling.classList.add("gray");
+                obj.previousSbiling.previousSbiling.classList.add("gray");
             } else {
                 alertMsg('error', res.msg)
             }
