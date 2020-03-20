@@ -47,6 +47,10 @@
                 obj.innerHTML = '已确认';
                 obj.classList.remove("orange");
                 obj.classList.add("gray");
+                obj.parentNode.classList.remove("red");
+                obj.parentNode.classList.add("gray");
+                obj.nextSbiling.classList.remove("green");
+                obj.nextSbiling.classList.add("gray");
             } else {
                 alertMsg('error', res.msg)
             }

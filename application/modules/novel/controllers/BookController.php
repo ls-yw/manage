@@ -85,6 +85,11 @@ class BookController extends BaseController
     {
         $bookId = (int) $this->get('book_id');
 
+        $book = (new BookLogic())->getById($bookId);
+
+        $crumbs   = [];
+        $crumbs[] = ['url' => '/novel/book/index.html', 'name' => $book['book_name']];
+
         $this->view->data      = (new BookLogic())->getArticleList($bookId, 'article_sort asc', $this->page, $this->size);
         $this->view->totalPage = ceil((new BookLogic())->getArticleListCount($bookId) / $this->size);
         $this->view->page      = $this->page;
@@ -93,6 +98,7 @@ class BookController extends BaseController
         $this->view->pageLink  = '?page={page}&book_id=' . $bookId;
         $this->view->book_id   = $bookId;
         $this->view->menuflag  = 'novel-book-index';
+        $this->view->crumbs    = $crumbs;
     }
 
     /**
@@ -140,11 +146,16 @@ class BookController extends BaseController
 
         } else {
             $title   = $this->get('title');
-            $sort    = (int)$this->get('sort', 'int');
+            $sort    = (int) $this->get('sort', 'int');
             $article = [];
             if (!empty($articleId)) {
                 $article = (new BookLogic())->getArticleById($articleId, true);
             }
+
+            $book = (new BookLogic())->getById($bookId);
+
+            $crumbs   = [];
+            $crumbs[] = ['url' => '/novel/book/index.html', 'name' => $book['book_name']];
 
             $this->view->articleTitle = $title;
             $this->view->sort         = $sort;
@@ -152,6 +163,7 @@ class BookController extends BaseController
             $this->view->chapters     = HelperExtend::arrayToKeyValue((new BookLogic())->getChapter($bookId), 'id', 'chapter_name');
             $this->view->title        = '编辑文章';
             $this->view->menuflag     = 'novel-book-index';
+            $this->view->crumbs       = $crumbs;
         }
     }
 
