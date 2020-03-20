@@ -28,10 +28,10 @@ class BookController extends BaseController
         $this->view->data      = (new BookLogic())->getList($searchType, $keyword, null, $this->page, $this->size);
         $this->view->totalPage = ceil((new BookLogic())->getListCount($searchType, $keyword) / $this->size);
         $this->view->page      = $this->page;
-        $this->view->pageLink  = '?page={page}&keyword=' . $keyword.'&type='.$type;
+        $this->view->pageLink  = '?page={page}&keyword=' . $keyword . '&type=' . $type;
         $this->view->title     = '小说管理';
 
-        $this->view->type = $type;
+        $this->view->type    = $type;
         $this->view->keyword = $keyword;
     }
 
@@ -139,15 +139,19 @@ class BookController extends BaseController
             }
 
         } else {
+            $title   = $this->get('title');
+            $sort    = (int)$this->get('sort', 'int');
             $article = [];
             if (!empty($articleId)) {
                 $article = (new BookLogic())->getArticleById($articleId, true);
             }
 
-            $this->view->article  = $article;
-            $this->view->chapters = HelperExtend::arrayToKeyValue((new BookLogic())->getChapter($bookId), 'id', 'chapter_name');
-            $this->view->title    = '编辑文章';
-            $this->view->menuflag = 'novel-book-index';
+            $this->view->articleTitle = $title;
+            $this->view->sort         = $sort;
+            $this->view->article      = $article;
+            $this->view->chapters     = HelperExtend::arrayToKeyValue((new BookLogic())->getChapter($bookId), 'id', 'chapter_name');
+            $this->view->title        = '编辑文章';
+            $this->view->menuflag     = 'novel-book-index';
         }
     }
 

@@ -11,7 +11,7 @@
                     <div class="form-group">
                         <label for="inputEmail3" class="col-sm-2 control-label">文章标题</label>
                         <div class="col-sm-10">
-                            <input type="text" name="title" id="title" class="form-control" value="<?=$article['title'] ?? ''?>" size="40"/>
+                            <input type="text" name="title" id="title" class="form-control" value="<?=$article['title'] ?? $articleTitle?>" size="40"/>
                         </div>
                     </div>
                     <div class="form-group">
@@ -28,7 +28,7 @@
                     <div class="form-group">
                         <label for="inputEmail3" class="col-sm-2 control-label">文章排序</label>
                         <div class="col-sm-10">
-                            <input type="text" name="article_sort" id="article_sort" class="form-control" value="<?=$article['article_sort'] ?? ''?>"/>
+                            <input type="text" name="article_sort" id="article_sort" class="form-control" value="<?=$article['article_sort'] ?? $sort?>"/>
                         </div>
                     </div>
                     <div class="form-group">
