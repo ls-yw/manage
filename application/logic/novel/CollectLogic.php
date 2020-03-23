@@ -127,14 +127,20 @@ class CollectLogic
             throw new ManageException($iconv.'采集错误URL：' . $url);
         }
 
-        $indexlink    = $this->getUrl($collect, $targetId, 'collect_indexlink');
+        if (!empty($collect['collect_indexlink'])) {
+            $indexlink    = $this->getUrl($collect, $targetId, 'collect_indexlink');
+        } else {
+            $indexlink = false;
+        }
         $book_name    = HelperExtend::dealRegular($collect['collect_articletitle']);
         $book_author  = HelperExtend::dealRegular($collect['collect_author']);
         $book_sort    = HelperExtend::dealRegular($collect['collect_sort']);
         $book_keyword = HelperExtend::dealRegular($collect['collect_keyword']);
         $book_intro   = HelperExtend::dealRegular($collect['collect_intro']);
         $book_img     = HelperExtend::dealRegular($collect['collect_articleimage']);
-        $indexlink    = HelperExtend::dealRegular($indexlink);
+        if (false !== $indexlink) {
+            $indexlink    = HelperExtend::dealRegular($indexlink);
+        }
         $fullarticle  = HelperExtend::dealRegular($collect['collect_fullarticle']);
 
         $book = array();
@@ -170,10 +176,12 @@ class CollectLogic
                 $book['book_img'] = $collect['collect_host'] . $book['book_img'];
             }
         }
-        $result = '';
-        //获取<{indexlink}>
-        preg_match('/' . $indexlink[0] . $indexlink[3] . $indexlink[1] . '/i', $html, $result);
-        $book['indexlink'] = $result[1];
+        if (false !== $indexlink) {
+            $result = '';
+            //获取<{indexlink}>
+            preg_match('/' . $indexlink[0] . $indexlink[3] . $indexlink[1] . '/i', $html, $result);
+            $book['indexlink'] = $result[1];
+        }
         $result            = '';
         //获取小说连载状态
         $book['book_state'] = preg_match('/' . $fullarticle . '/i', $html);
@@ -200,10 +208,10 @@ class CollectLogic
         $urlindex = preg_replace('/<{indexlink}>/i', $indexlink, $urlindex);
 
         $yuanHtml      = (new HttpCurl())->setUrl($urlindex)->setHeader('Referer: ' . $collect['collect_host'])->isZip()->get();
-        $html      = iconv($collect['collect_iconv'], 'UTF-8', $yuanHtml);
-        if (empty($html)) {
+//        $html      = iconv($collect['collect_iconv'], 'UTF-8', $yuanHtml);
+//        if (empty($html)) {
             $html = mb_convert_encoding($yuanHtml, 'UTF-8', $collect['collect_iconv']);
-        }
+//        }
         $chapter   = HelperExtend::dealRegular($collect['collect_chapter']);
         $chapterid = HelperExtend::dealRegular($collect['collect_chapterid']);
 
@@ -259,10 +267,10 @@ class CollectLogic
         $from = (new CollectFrom())->getOne(['from_book_id' => $bookId, 'from_sort' => ['>', $fromSort], 'from_state' => 0], null, 'from_sort asc');
 
         $yuanHtml         = (new HttpCurl())->setUrl($from['from_url'])->setHeader('Referer: ' . $collect['collect_host'])->isZip()->get();
-        $html         = iconv($collect['collect_iconv'], 'UTF-8', $yuanHtml);
-        if (empty($html)) {
+//        $html         = iconv($collect['collect_iconv'], 'UTF-8', $yuanHtml);
+//        if (empty($html)) {
             $html = mb_convert_encoding($yuanHtml, 'UTF-8', $collect['collect_iconv']);
-        }
+//        }
         $content_preg = HelperExtend::dealRegular($collect['collect_content']);
         preg_match_all('/' . $content_preg[0] . $content_preg[3] . $content_preg[1] . '/i', $html, $match);
         if ($match[1] == '') {
@@ -273,10 +281,7 @@ class CollectLogic
 
         $content_code = mb_detect_encoding($yuanContent);
         if (mb_detect_encoding($yuanContent) != 'UTF-8') {
-            $content = iconv($content_code, 'UTF-8', $yuanContent);
-            if (empty($content)) {
-                $content = mb_convert_encoding($yuanContent, 'UTF-8', $content_code);
-            }
+            $content = mb_convert_encoding($yuanContent, 'UTF-8', $content_code);
         } else {
             $content = $yuanContent;
         }
