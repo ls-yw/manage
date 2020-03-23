@@ -119,10 +119,10 @@ class CollectLogic
         $url  = $this->getUrl($collect, $targetId, 'collect_urlarticle');
         $yuanHtml = (new HttpCurl())->setUrl($url)->setHeader('Referer: ' . $collect['collect_host'])->isZip()->get();
         $iconv = mb_detect_encoding($yuanHtml, array("ASCII", "UTF-8", "GBK", "GB2312", "BIG5"));
-        $html = iconv($iconv, 'UTF-8', $yuanHtml);
-        if (empty($html)) {
+//        $html = iconv($iconv, 'UTF-8', $yuanHtml);
+//        if (empty($html)) {
             $html = mb_convert_encoding($yuanHtml, 'UTF-8', $iconv);
-        }
+//        }
         if (empty($html)) {
             throw new ManageException($iconv.'采集错误URL：' . $url);
         }
@@ -274,14 +274,16 @@ class CollectLogic
         $content_code = mb_detect_encoding($yuanContent);
         if (mb_detect_encoding($yuanContent) != 'UTF-8') {
             $content = iconv($content_code, 'UTF-8', $yuanContent);
-            if (empty($html)) {
+            if (empty($content)) {
                 $content = mb_convert_encoding($yuanContent, 'UTF-8', $content_code);
             }
+        } else {
+            $content = $yuanContent;
         }
         $content = htmlspecialchars_decode($content);
 
         //文章内容字数
-        $article['wordnumber'] = mb_strlen(strip_tags($content), $content_code);
+        $article['wordnumber'] = mb_strlen(strip_tags($content));
 
         $msg = '错误';
         if ($article['wordnumber'] > 200) {
@@ -547,10 +549,10 @@ class CollectLogic
 
         $yuanHtml = (new HttpCurl())->setUrl($url)->setHeader('Referer: ' . $collect['collect_host'])->isZip()->get();
         $iconv = mb_detect_encoding($yuanHtml, array("ASCII", "UTF-8", "GBK", "GB2312", "BIG5"));
-        $html = iconv($iconv, 'UTF-8', $yuanHtml);
-        if (empty($html)) {
+//        $html = @iconv($iconv, 'UTF-8', $yuanHtml);
+//        if (empty($html)) {
             $html = mb_convert_encoding($yuanHtml, 'UTF-8', $iconv);
-        }
+//        }
         if (empty($html)) {
             throw new ManageException('采集错误URL：' . $url);
         }
