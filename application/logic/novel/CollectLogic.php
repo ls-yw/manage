@@ -117,9 +117,12 @@ class CollectLogic
         }
 
         $url  = $this->getUrl($collect, $targetId, 'collect_urlarticle');
-        $html = (new HttpCurl())->setUrl($url)->setHeader('Referer: ' . $collect['collect_host'])->isZip()->get();
-        $iconv = mb_detect_encoding($html, array("ASCII", "UTF-8", "GBK", "GB2312", "BIG5"));
-        $html = iconv($iconv, 'UTF-8', $html);
+        $yuanHtml = (new HttpCurl())->setUrl($url)->setHeader('Referer: ' . $collect['collect_host'])->isZip()->get();
+        $iconv = mb_detect_encoding($yuanHtml, array("ASCII", "UTF-8", "GBK", "GB2312", "BIG5"));
+        $html = iconv($iconv, 'UTF-8', $yuanHtml);
+        if (empty($html)) {
+            $html = mb_convert_encoding($yuanHtml, 'UTF-8', $iconv);
+        }
         if (empty($html)) {
             throw new ManageException($iconv.'采集错误URL：' . $url);
         }
@@ -196,8 +199,11 @@ class CollectLogic
         $urlindex = $this->getUrl($collect, $targetId, 'collect_urlindex');
         $urlindex = preg_replace('/<{indexlink}>/i', $indexlink, $urlindex);
 
-        $html      = (new HttpCurl())->setUrl($urlindex)->setHeader('Referer: ' . $collect['collect_host'])->isZip()->get();
-        $html      = iconv($collect['collect_iconv'], 'UTF-8', $html);
+        $yuanHtml      = (new HttpCurl())->setUrl($urlindex)->setHeader('Referer: ' . $collect['collect_host'])->isZip()->get();
+        $html      = iconv($collect['collect_iconv'], 'UTF-8', $yuanHtml);
+        if (empty($html)) {
+            $html = mb_convert_encoding($yuanHtml, 'UTF-8', $collect['collect_iconv']);
+        }
         $chapter   = HelperExtend::dealRegular($collect['collect_chapter']);
         $chapterid = HelperExtend::dealRegular($collect['collect_chapterid']);
 
@@ -252,19 +258,25 @@ class CollectLogic
 
         $from = (new CollectFrom())->getOne(['from_book_id' => $bookId, 'from_sort' => ['>', $fromSort], 'from_state' => 0], null, 'from_sort asc');
 
-        $html         = (new HttpCurl())->setUrl($from['from_url'])->setHeader('Referer: ' . $collect['collect_host'])->isZip()->get();
-        $html         = iconv($collect['collect_iconv'], 'UTF-8', $html);
+        $yuanHtml         = (new HttpCurl())->setUrl($from['from_url'])->setHeader('Referer: ' . $collect['collect_host'])->isZip()->get();
+        $html         = iconv($collect['collect_iconv'], 'UTF-8', $yuanHtml);
+        if (empty($html)) {
+            $html = mb_convert_encoding($yuanHtml, 'UTF-8', $collect['collect_iconv']);
+        }
         $content_preg = HelperExtend::dealRegular($collect['collect_content']);
         preg_match_all('/' . $content_preg[0] . $content_preg[3] . $content_preg[1] . '/i', $html, $match);
         if ($match[1] == '') {
             $msg = '<span class="red">' . $from['from_title'] . '（文章内容获取失败：<a href="' . $from['from_url'] . '" target="_blank">' . $from['from_url'] . '</a>）  </span>';
             throw new ManageException($msg);
         }
-        $content = $this->pregContent($collect['collect_contentfilter'], $collect['collect_contentreplace'], $match[1][0]);
+        $yuanContent = $this->pregContent($collect['collect_contentfilter'], $collect['collect_contentreplace'], $match[1][0]);
 
-        $content_code = mb_detect_encoding($content);
-        if (mb_detect_encoding($content) != 'UTF-8') {
-            $content = iconv($content_code, 'UTF-8', $content);
+        $content_code = mb_detect_encoding($yuanContent);
+        if (mb_detect_encoding($yuanContent) != 'UTF-8') {
+            $content = iconv($content_code, 'UTF-8', $yuanContent);
+            if (empty($html)) {
+                $content = mb_convert_encoding($yuanContent, 'UTF-8', $content_code);
+            }
         }
         $content = htmlspecialchars_decode($content);
 
@@ -533,9 +545,12 @@ class CollectLogic
     {
         $collect = $this->getById($collectId);
 
-        $html = (new HttpCurl())->setUrl($url)->setHeader('Referer: ' . $collect['collect_host'])->isZip()->get();
-        $iconv = mb_detect_encoding($html, array("ASCII", "UTF-8", "GB2312", "GBK", "BIG5"));
-        $html = iconv($iconv, 'UTF-8', $html);
+        $yuanHtml = (new HttpCurl())->setUrl($url)->setHeader('Referer: ' . $collect['collect_host'])->isZip()->get();
+        $iconv = mb_detect_encoding($yuanHtml, array("ASCII", "UTF-8", "GBK", "GB2312", "BIG5"));
+        $html = iconv($iconv, 'UTF-8', $yuanHtml);
+        if (empty($html)) {
+            $html = mb_convert_encoding($yuanHtml, 'UTF-8', $iconv);
+        }
         if (empty($html)) {
             throw new ManageException('采集错误URL：' . $url);
         }
