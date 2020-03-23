@@ -1,4 +1,5 @@
 <?php
+
 namespace application\logic\novel;
 
 use application\library\AliyunOss;
@@ -22,7 +23,7 @@ class BookLogic
     public function getCategoryPairs()
     {
         $categorys = (new Category())->getAll([]);
-        $arr = [];
+        $arr       = [];
         if (!empty($categorys)) {
             foreach ($categorys as $val) {
                 $arr[$val['id']] = $val['name'];
@@ -41,12 +42,12 @@ class BookLogic
      */
     public function save(array $data)
     {
-        if(!preg_match('/^(http|https):\/\//i', $data['book_img'])) {
+        if (!preg_match('/^(http|https):\/\//i', $data['book_img'])) {
             throw new ManageException('需补全图片地址');
         }
         $id = $data['id'] ?? 0;
         unset($data['id']);
-        if(empty($id)) {
+        if (empty($id)) {
             return (new Book())->insertData($data);
         } else {
             return (new Book())->updateData($data, ['id' => $id]);
@@ -64,7 +65,7 @@ class BookLogic
     {
         $id = $data['id'] ?? 0;
         unset($data['id']);
-        if(empty($id)) {
+        if (empty($id)) {
             return (new Category())->insertData($data);
         } else {
             return (new Category())->updateData($data, ['id' => $id]);
@@ -106,7 +107,7 @@ class BookLogic
      */
     public function getChapter($bookId, $chapterName = null)
     {
-        $where  = ['book_id' => $bookId];
+        $where = ['book_id' => $bookId];
         if ($chapterName) {
             $where['chapter_name'] = $chapterName;
         }
@@ -136,7 +137,7 @@ class BookLogic
     {
         $id = $data['id'] ?? 0;
         unset($data['id']);
-        if(empty($id)) {
+        if (empty($id)) {
             return (new Chapter())->insertData($data);
         } else {
             return (new Chapter())->updateData($data, ['id' => $id]);
@@ -157,14 +158,14 @@ class BookLogic
     public function getList($type, $keywords, $isCollect = null, $page = null, $row = null)
     {
         $offset = ($page - 1) * $row;
-        $where = ['book_collect_id' => ['!=', 0]];
+        $where  = ['book_collect_id' => ['!=', 0]];
         if (!empty($keywords)) {
-            $where[$type] = ['like', '%'.$keywords.'%'];
+            $where[$type] = ['like', '%' . $keywords . '%'];
         }
         if ($isCollect) {
             $where['book_is_collect'] = $isCollect;
         }
-        $list   = (new Book())->getList($where, 'id desc', $offset, $row);
+        $list = (new Book())->getList($where, 'id desc', $offset, $row);
         return $list;
     }
 
@@ -181,12 +182,12 @@ class BookLogic
     {
         $where = ['book_collect_id' => ['!=', 0]];
         if (!empty($keywords)) {
-            $where[$type] = ['like', '%'.$keywords.'%'];
+            $where[$type] = ['like', '%' . $keywords . '%'];
         }
         if ($isCollect) {
             $where['book_is_collect'] = $isCollect;
         }
-        $list   = (new Book())->getCount($where);
+        $list = (new Book())->getCount($where);
         return $list;
     }
 
@@ -213,7 +214,7 @@ class BookLogic
      */
     public function getCategoryListCount()
     {
-        $list   = (new Category())->getCount([]);
+        $list = (new Category())->getCount([]);
         return $list;
     }
 
@@ -226,7 +227,7 @@ class BookLogic
      */
     public function getCategoryById(int $id)
     {
-        $info   = (new Category())->getById($id);
+        $info = (new Category())->getById($id);
         return $info;
     }
 
@@ -304,7 +305,7 @@ class BookLogic
      * @param string   $order
      * @return array|bool
      */
-    public function getArticleByOssRow(int $bookId, int $isOss = null , int $row = 50, string $order = 'article_sort asc')
+    public function getArticleByOssRow(int $bookId, int $isOss = null, int $row = 50, string $order = 'article_sort asc')
     {
         $where = ['book_id' => $bookId];
         if (null !== $isOss) {
@@ -339,7 +340,7 @@ class BookLogic
     public function getArticleList(int $bookId, string $order, int $page, int $row)
     {
         $offset = ($page - 1) * $row;
-        $where = ['book_id' => $bookId];
+        $where  = ['book_id' => $bookId];
         return (new Article())->getList($where, $order, $offset, $row);
     }
 
@@ -393,26 +394,26 @@ class BookLogic
         unset($data['content']);
         if (empty($articleId)) {
             // 判断是否要更新article_sort
-            $this->updateArticleSort((int)$data['book_id'], (int)$data['article_sort']);
+            $this->updateArticleSort((int) $data['book_id'], (int) $data['article_sort']);
 
-            $articleId =  (new Article())->insertData($data);
+            $articleId = (new Article())->insertData($data);
             if (empty($articleId)) {
                 throw new ManageException('插入数据失败');
             }
             (new Book())->updateData(['book_articlenum' => ['+', 1], 'book_wordsnumber' => ['+', $data['wordnumber']]], ['id' => $data['book_id']]);
         } else {
             $oldArticle = (new Article())->getById($articleId);
-            if ((int)$oldArticle['article_sort'] !== (int)$data['article_sort']) {
-                $this->updateArticleSort((int)$data['book_id'], (int)$data['article_sort']);
+            if ((int) $oldArticle['article_sort'] !== (int) $data['article_sort']) {
+                $this->updateArticleSort((int) $data['book_id'], (int) $data['article_sort']);
             }
-            try{
-                (new AliyunOss())->delFile((int)$data['book_id'], $articleId);
+            try {
+                (new AliyunOss())->delFile((int) $data['book_id'], $articleId);
             } catch (Exception $e) {
-                throw new ManageException('删除oss上文章内容失败'.$e->getMessage());
+                throw new ManageException('删除oss上文章内容失败' . $e->getMessage());
             }
             $data['bk_article'] = 0;
-            $data['url'] = '';
-            $row = (new Article())->updateData($data, ['id' => $articleId]);
+            $data['url']        = '';
+            $row                = (new Article())->updateData($data, ['id' => $articleId]);
             if (empty($row)) {
                 throw new ManageException('更新数据失败');
             }
@@ -459,11 +460,11 @@ class BookLogic
     public function updateBookArticleNumAndWordsNumber(int $bookId)
     {
         $articleCount = (new Article())->getCount(['book_id' => $bookId]);
-        $wordsNumber = (new Article())->getSum(['book_id' => $bookId], ['wordnumber']);
-        if(empty($wordsNumber)){
+        $wordsNumber  = (new Article())->getSum(['book_id' => $bookId], ['wordnumber']);
+        if (empty($wordsNumber)) {
             $wordsNumber['wordnumber_sum'] = 0;
         }
-        return (new Book())->updateData(['book_articlenum' => $articleCount, 'book_wordsnumber' => $wordsNumber['wordnumber_sum']], ['id' => $bookId]);
+        return (new Book())->updateData(['book_articlenum' => $articleCount, 'book_wordsnumber' => (int) $wordsNumber['wordnumber_sum']], ['id' => $bookId]);
     }
 
     /**
@@ -481,7 +482,7 @@ class BookLogic
             throw new ManageException('该小说章节未清空，不能删除小说');
         }
 
-        (new Chapter())->delData(['book_id'=>$bookId]);
-        return (new Book())->delData(['id'=>$bookId]);
+        (new Chapter())->delData(['book_id' => $bookId]);
+        return (new Book())->delData(['id' => $bookId]);
     }
 }
