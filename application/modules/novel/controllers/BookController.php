@@ -148,11 +148,11 @@ class BookController extends BaseController
             $title   = $this->get('title');
             $sort    = (int) $this->get('sort', 'int');
             $article = [];
-            if (!empty($articleId)) {
-                $article = (new BookLogic())->getArticleById($articleId, true);
-            }
-
             $book = (new BookLogic())->getById($bookId);
+
+            if (!empty($articleId)) {
+                $article = (new BookLogic())->getArticleById($book['book_category'], $articleId, true);
+            }
 
             $crumbs   = [];
             $crumbs[] = ['url' => '/novel/book/index.html', 'name' => $book['book_name']];

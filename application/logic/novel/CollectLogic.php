@@ -118,7 +118,7 @@ class CollectLogic
 
         $url  = $this->getUrl($collect, $targetId, 'collect_urlarticle');
         $html = (new HttpCurl())->setUrl($url)->setHeader('Referer: ' . $collect['collect_host'])->isZip()->get();
-        $iconv = mb_detect_encoding($html, array("ASCII", "UTF-8", "GB2312", "GBK", "BIG5"));
+        $iconv = mb_detect_encoding($html, array("ASCII", "UTF-8", "GBK", "GB2312", "BIG5"));
         $html = iconv($iconv, 'UTF-8', $html);
         if (empty($html)) {
             throw new ManageException($iconv.'采集错误URL：' . $url);

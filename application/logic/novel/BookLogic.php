@@ -361,18 +361,23 @@ class BookLogic
      * 获取文章详情
      *
      * @author woodlsy
-     * @param int  $id
-     * @param bool $getContent
+     * @param int       $categoryId
+     * @param int       $id
+     * @param bool|null $getContent
      * @return array|mixed
      */
-    public function getArticleById(int $id, bool $getContent = null)
+    public function getArticleById(int $categoryId, int $id, bool $getContent = null)
     {
         $article = (new Article())->getById($id);
         if (!empty($article) && $getContent) {
-            try {
-                $article['content'] = (new AliyunOss())->getString($article['book_id'], $id);
-            } catch (Exception $e) {
-                $article['content'] = '';
+            if (1 === (int) $article['is_oss']) {
+                try {
+                    $article['content'] = (new AliyunOss())->getString($article['book_id'], $id);
+                } catch (Exception $e) {
+                    $article['content'] = '';
+                }
+            } else {
+                $article['content'] = HelperExtend::getBookText($categoryId, $article['book_id'], $id);
             }
         }
         return $article;
