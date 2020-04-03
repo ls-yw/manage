@@ -288,7 +288,9 @@ class CollectLogic
         $content = htmlspecialchars_decode($content);
 
         //文章内容字数
-        $article['wordnumber'] = mb_strlen(strip_tags($content));
+        preg_match_all('/[\x{4e00}-\x{9fff}]+/u', $content, $matches);
+        $str = join('', $matches[0]);
+        $article['wordnumber'] = mb_strlen($str);
 
         $msg = '错误';
         if ($article['wordnumber'] > 200) {
@@ -623,7 +625,11 @@ class CollectLogic
                     $content = iconv($content_code, 'UTF-8', $content);
                 }
                 $content = htmlspecialchars_decode($content);
-                return ['content' => $content];
+
+                preg_match_all('/[\x{4e00}-\x{9fff}]+/u', $content, $matches);
+                $str = join('', $matches[0]);
+                $wordNum = mb_strlen($str);
+                return ['content' => $content, 'wordNum' => $wordNum];
                 break;
         }
     }
