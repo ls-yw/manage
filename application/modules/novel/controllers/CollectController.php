@@ -243,7 +243,7 @@ class CollectController extends BaseController
             $this->view->act       = 'update';
             $this->view->targetId  = $targetId;
             $this->view->collectId = $collectId;
-            $this->view->indexlink = $book['indexlink'];
+            $this->view->indexlink = $book['indexlink'] ?? '';
             $this->view->id        = $id;
             $this->view->title     = '小说采集';
             $this->view->menuflag  = 'novel-collect-bookList';
