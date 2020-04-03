@@ -6,7 +6,7 @@
             <div class="box-header">
                 <h3 class="box-title"><?= $title ?></h3>
                 <div class="pull-right box-tools">
-                    <a href="/novel/category/set.html" class="btn btn-default"><i class="fa fa-plus"></i></a>
+                    <!--                    <a href="/novel/collect/set.html" class="btn btn-default"><i class="fa fa-plus"></i></a>-->
                 </div>
             </div>
             <!-- /.box-header -->
@@ -15,11 +15,11 @@
                     <thead>
                     <tr>
                         <th width="20">ID</th>
-                        <th>名称</th>
-                        <th>父级ID</th>
-                        <th>排序</th>
-                        <th>更新时间</th>
-                        <th>操作</th>
+                        <th width="60">UID</th>
+                        <th>书名</th>
+                        <th width="100">作者</th>
+                        <th width="140">创建时间</th>
+                        <th width="80">操作</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -27,18 +27,16 @@
                         <?php foreach ($data as $val): ?>
                             <tr>
                                 <td><?= $val['id'] ?></td>
+                                <td><?= $val['uid'] ?></td>
                                 <td><?= $val['name'] ?></td>
-                                <td><?= $val['parent_id'] ?></td>
-                                <td><?= $val['sort'] ?></td>
-                                <td><?= $val['update_at'] ?></td>
+                                <td><?= $val['author'] ?></td>
+                                <td><?= $val['create_at'] == '1970-01-01 08:00:00' ? '' : $val['create_at'] ?></td>
                                 <td>
-                                    <a href="/novel/category/set.html?id=<?=$val['id']?>" title="编辑">修改</a>&nbsp;
-                                    <a href="javascript:if(confirm('确定要删除吗？'))location='/novel/collect/del.html?id=<?=$val['id']?>';" title="删除">删除</a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
                     <?php else:?>
-                        <tr><td colspan="6" class="text-center">暂无数据</td></tr>
+                    <tr><td colspan="6" class="text-center">暂无数据</td></tr>
                     <?php endif; ?>
                     </tbody>
                 </table>

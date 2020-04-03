@@ -25,8 +25,8 @@ class BaseController extends BasicController
     {
         parent::initialize();
 
-        $this->page = (int)$this->get('page', 'int', 1);
-        $this->size = (int)$this->get('size', 'int', 20);
+        $this->page = (int) $this->get('page', 'int', 1);
+        $this->size = (int) $this->get('size', 'int', 20);
 
         $this->token = $this->cookies->get('token')->getValue();
         $this->setAdmin();
@@ -93,6 +93,12 @@ class BaseController extends BasicController
                     ['title' => '采集节点', 'link' => '/novel/collect/index.html', 'flag' => 'novel-collect-index'],
                     ['title' => '采集小说', 'link' => '/novel/collect/bookList.html', 'flag' => 'novel-collect-bookList'],
                 ]],
+                [
+                    'title' => '会员管理', 'link' => '#', 'children' => [
+                    ['title' => '会员列表', 'link' => '/novel/member/index.html', 'flag' => 'novel-member-index'],
+                    ['title' => '收录申请', 'link' => '/novel/member/applyBook.html', 'flag' => 'novel-member-applyBook']
+                ],
+                ],
                 ['title' => '系统设置', 'link' => '/novel/config/index.html', 'flag' => 'novel-config-index'],
             ]],
             ['title' => 'OSS', 'icon' => 'fa fa-folder', 'link' => '#', 'children' => [
