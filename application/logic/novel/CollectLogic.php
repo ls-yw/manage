@@ -373,23 +373,23 @@ class CollectLogic
     private function donumber($number)
     {
         $subchapterid_jia = explode('+', $number);
-        if ($subchapterid_jia['1'] != '') {
+        if (isset($subchapterid_jia['1']) && $subchapterid_jia['1'] != '') {
             return ($subchapterid_jia[0] + $subchapterid_jia[1]);
         }
         $subchapterid_jian = explode('-', $number);
-        if ($subchapterid_jian['1'] != '') {
+        if (isset($subchapterid_jian['1']) && $subchapterid_jian['1'] != '') {
             return ($subchapterid_jian[0] - $subchapterid_jian[1]);
         }
         $subchapterid_chen = explode('*', $number);
-        if ($subchapterid_chen['1'] != '') {
+        if (isset($subchapterid_chen['1']) && $subchapterid_chen['1'] != '') {
             return ($subchapterid_chen[0] * $subchapterid_chen[1]);
         }
         $subchapterid_chu = explode('%%', $number);
-        if ($subchapterid_chu['1'] != '') {
+        if (isset($subchapterid_chu['1']) && $subchapterid_chu['1'] != '') {
             return floor($subchapterid_chu[0] / $subchapterid_chu[1]);
         }
         $subchapterid_chu = explode('%', $number);
-        if ($subchapterid_chu['1'] != '') {
+        if (isset($subchapterid_chu['1']) && $subchapterid_chu['1'] != '') {
             return ($subchapterid_chu[0] % $subchapterid_chu[1]);
         }
 
