@@ -19,7 +19,9 @@ class IndexController extends BaseController
         $url        = $this->get('url', 'string', '/');
         $waitSecond = $this->get('s', 'int', 2);
         $this->view->disableLevel(
-            View::LEVEL_MAIN_LAYOUT
+            [
+                View::LEVEL_LAYOUT => false
+            ]
         );
         if ('-1' === $url) {
             $url = 'javascript:history.go(-1)';
