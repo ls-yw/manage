@@ -32,7 +32,7 @@ class ConfigLogic
         }
         $arr = [];
         foreach ($configs as $val) {
-            $arr[$val['type']][$val['config_key']] = $v['config_value'];
+            $arr[$val['type']][$val['config_key']] = $val['config_value'];
         }
         return $arr;
     }
