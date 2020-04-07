@@ -89,6 +89,14 @@ class BaseController extends BasicController
     {
         return [
             ['title' => '工作台', 'icon' => 'fa fa-dashboard', 'link' => '/index/index/index.html', 'flag' => 'workbench'],
+            [
+                'title' => '博客系统',
+                'icon' => 'fa fa-book',
+                'link' => '#',
+                'children' => [
+                    ['title' => '文章分类', 'link' => '/blog/category/index.html', 'flag' => 'blog-category-index'],
+                ],
+            ],
             ['title' => '小说系统', 'icon' => 'fa fa-book', 'link' => '#', 'children' => [
                 ['title' => '内容管理', 'link' => '#', 'children' => [
                     ['title' => '栏目管理', 'link' => '/novel/category/index.html', 'flag' => 'novel-category-index'],
@@ -106,14 +114,19 @@ class BaseController extends BasicController
                 ],
                 ['title' => '系统设置', 'link' => '/novel/config/index.html', 'flag' => 'novel-config-index'],
             ]],
-            ['title' => 'OSS', 'icon' => 'fa fa-folder', 'link' => '#', 'children' => [
-                ['title' => '文件管理', 'link' => '/aliyun/oss/index.html', 'flag' => 'aliyun-oss-index'],
-            ]],
+            [
+                'title'    => 'OSS',
+                'icon'     => 'fa fa-folder',
+                'link'     => '#',
+                'children' => [
+                    ['title' => '文件管理', 'link' => '/aliyun/oss/index.html', 'flag' => 'aliyun-oss-index'],
+                ]
+            ],
             [
                 'title' => '系统设置',
-                'icon' => 'fa fa-gear',
-                'link' => '/index/config/index.html',
-                'flag' => 'index-config-index'
+                'icon'  => 'fa fa-gear',
+                'link'  => '/index/config/index.html',
+                'flag'  => 'index-config-index'
             ],
         ];
     }
