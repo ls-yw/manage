@@ -18,6 +18,7 @@ class ConfigController extends BaseController
         if ($this->request->isPost()) {
             $data = [
                 'host'                 => $this->post('host'),
+                'm_host'               => $this->post('m_host'),
                 'host_name'            => $this->post('host_name'),
                 'host_seo_name'        => $this->post('host_seo_name'),
                 'host_seo_keywords'    => $this->post('host_seo_keywords'),
