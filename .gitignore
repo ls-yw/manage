@@ -2,3 +2,5 @@
 composer.lock
 vendor/
 public/booktext/
+application/config/aliyun.php
+application/config/database.php
