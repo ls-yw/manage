@@ -3,6 +3,7 @@
 namespace application\base;
 
 use application\library\HelperExtend;
+use application\logic\manage\ConfigLogic;
 use Exception;
 use woodlsy\phalcon\basic\BasicController;
 use woodlsy\phalcon\library\Redis;
@@ -14,6 +15,8 @@ class BaseController extends BasicController
     protected $page  = 1;
 
     protected $size = 20;
+
+    protected $mConfig = [];
 
     /**
      * 初始化
@@ -32,6 +35,8 @@ class BaseController extends BasicController
         $this->setAdmin();
 
         $this->checkLogin();
+
+        $this->getConfig();
 
         $menus                = $this->getMenu();
         $this->view->menus    = $menus;
@@ -104,6 +109,12 @@ class BaseController extends BasicController
             ['title' => 'OSS', 'icon' => 'fa fa-folder', 'link' => '#', 'children' => [
                 ['title' => '文件管理', 'link' => '/aliyun/oss/index.html', 'flag' => 'aliyun-oss-index'],
             ]],
+            [
+                'title' => '系统设置',
+                'icon' => 'fa fa-gear',
+                'link' => '/index/config/index.html',
+                'flag' => 'index-config-index'
+            ],
         ];
     }
 
@@ -117,5 +128,15 @@ class BaseController extends BasicController
     {
         Redis::getInstance()->setex('alert_error', 3600, $msg);
         die('<script>window.history.go(-1);</script>');
+    }
+
+    /**
+     * 获取配置
+     *
+     * @author woodlsy
+     */
+    public function getConfig()
+    {
+        $this->mConfig = (new ConfigLogic())->getAllPairs();
     }
 }

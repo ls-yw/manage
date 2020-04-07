@@ -36,7 +36,8 @@ class Module implements ModuleDefinitionInterface
                 $view = new View();
 
                 $view->setViewsDir("../application/modules/index/views/");
-
+                $view->setLayout('index');
+                $view->setLayoutsDir(APP_PATH.'/views/layouts/');
                 return $view;
             }
         );

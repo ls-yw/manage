@@ -16,9 +16,9 @@ class UploadController extends BaseController
             if (empty($type)) {
                 throw new ManageException('项目错误');
             }
-            $url = $this->config->uploadUrl.$type;
+            $url = $this->mConfig['upload']['url'].'/upload/img?project='.$type;
             $data      = (new Upload())->setMaxSize('1M')->setServerUrl($url)->upload();
-            return $this->ajaxReturn(0, "ok", $this->config->uploadPath.'/'.$data['url']);
+            return $this->ajaxReturn(0, "ok", $this->mConfig['upload']['url'].'/'.$data['url']);
         } catch (ManageException $e) {
             return $this->ajaxReturn(1, $e->getMessage());
         } catch (Exception $e) {

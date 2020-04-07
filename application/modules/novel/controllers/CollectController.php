@@ -181,7 +181,7 @@ class CollectController extends BaseController
     {
         if ($this->request->isPost()) {
             try {
-                $url       = $this->config->uploadPath . '/upload/urlImg?project=' . $this->router->getModuleName() . '&url=' . trim($this->post('book_img', 'string'));
+                $url       = $this->mConfig['upload']['url'] . '/upload/urlImg?project=' . $this->router->getModuleName() . '&url=' . trim($this->post('book_img', 'string'));
                 $res       = (new HttpCurl())->setUrl($url)->isZip()->get();
                 $data      = [
                     'book_name'            => trim($this->post('book_name', 'string')),
@@ -193,7 +193,7 @@ class CollectController extends BaseController
                     'book_is_collect'      => $this->post('monitoring', 'int'),
                     'book_collect_id'      => trim($this->post('id', 'string')),
                     'book_from_article_id' => $this->post('target_id', 'string'),
-                    'book_img'             => $this->config->uploadPath . '/' . HelperExtend::jsonDecode($res)['url'],
+                    'book_img'             => $this->mConfig['upload']['url'] . '/' . HelperExtend::jsonDecode($res)['url'],
                 ];
                 $indexlink = $this->post('indexlink', 'int');
 

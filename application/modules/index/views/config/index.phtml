@@ -1,0 +1,32 @@
+<div class="row">
+    <div class="col-xs-12">
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title"><?=$title?></h3>
+            </div>
+            <!-- /.box-header -->
+            <!-- form start -->
+            <form class="form-horizontal" method="post" action="/index/config/system.html">
+                <div class="box-body">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">图片域名</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="url" class="form-control" value="<?=$systemConfig['url'] ?? ''?>" size="40"/>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.box-body -->
+
+                <div class="box-footer">
+                    <div class="col-sm-2"></div>
+                    <div class="col-sm-10">
+                        <button type="submit" class="btn btn-primary btnSubmit">保存</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!-- /.box -->
+    </div>
+    <!-- /.col -->
+</div>
+<!-- /.row -->
