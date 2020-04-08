@@ -1,3 +1,47 @@
+$(function () {
+    if (typeof (plupload) !== "undefined") {
+        let type = $('#uploadImg').data('type');
+        let uploader = new plupload.Uploader({
+            browse_button: 'uploadImg', //触发文件选择对话框的按钮，为那个元素id
+            url: '/index/upload/img.html?type='+type, //服务器端的上传页面地址
+            flash_swf_url: '/dist/plugins/plupload/Moxie.swf', //swf文件，当需要使用swf方式进行上传时需要配置该参数
+            silverlight_xap_url: '/dist/plugins/plupload/Moxie.xap', //silverlight文件，当需要使用silverlight方式进行上传时需要配置该参数
+            headers: {
+                'token': localStorage.getItem('token')
+            },
+            filters: {
+                mime_types: [ //只允许上传图片
+                    {
+                        title: "Image files",
+                        extensions: "jpg,gif,png,jpeg,bmp"
+                    },
+                ]
+            },
+            resize: {
+                width: 350
+            }
+        });
+        //在实例对象上调用init()方法进行初始化
+        uploader.init();
+        uploader.bind('FilesAdded', function(uploader, file) {
+            uploader.start();
+        });
+        uploader.bind('Error', function(uploader, errObject) {
+            alertMsg('error', errObject.message);
+        });
+        uploader.bind('FileUploaded', function(uploader, file, responseObject) {
+            let result = JSON.parse(responseObject.response);
+            if (result.code != 0) {
+                alertMsg('error', result.msg);
+                return false;
+            } else {
+                $('#uploadImg').attr('src', result.data);
+                $('#uploadImgInput').val(result.data);
+            }
+        });
+    }
+});
+
 function alertMsg(type, content) {
     if($('#alertMsg').length != 0) {
         return false;

@@ -88,13 +88,14 @@ class BaseController extends BasicController
     private function getMenu()
     {
         return [
-            ['title' => '工作台', 'icon' => 'fa fa-dashboard', 'link' => '/index/index/index.html', 'flag' => 'workbench'],
+            ['title' => '工作台', 'icon' => 'fa fa-dashboard', 'link' => '/index/index/index.html', 'flag' => 'index-index-index'],
             [
                 'title' => '博客系统',
-                'icon' => 'fa fa-book',
+                'icon' => 'fa fa-file-word-o',
                 'link' => '#',
                 'children' => [
                     ['title' => '文章分类', 'link' => '/blog/category/index.html', 'flag' => 'blog-category-index'],
+                    ['title' => '文章列表', 'link' => '/blog/article/index.html', 'flag' => 'blog-article-index'],
                 ],
             ],
             ['title' => '小说系统', 'icon' => 'fa fa-book', 'link' => '#', 'children' => [

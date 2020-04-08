@@ -53,7 +53,8 @@
                     <div class="form-group">
                         <label for="inputEmail3" class="col-sm-2 control-label">封面</label>
                         <div class="col-sm-10">
-                            <input type="text" name="book_img" class="book_img" value="<?=$book['book_img'] ?? ''?>" size="80"/> <img src="<?=$book['book_img'] ?? ''?>" id="bookImg" width="40" height="50"/>
+                            <input type="text" name="book_img" id="uploadImgInput" value="<?=$book['book_img'] ?? ''?>" size="80"/>
+                            <img src="<?=$book['book_img'] ?? ''?>" id="uploadImg" width="40" height="50" data-type="novel"/>
                         </div>
                     </div>
                     <div class="form-group">
@@ -97,56 +98,3 @@
 </div>
 <!-- /.row -->
 <script src="/dist/plugins/plupload/plupload.full.min.js"></script>
-<script>
-    $(function () {
-        $('.btnSubmit').click(function(){
-            if($('#name').val() == '') {
-                alertMsg('error', '栏目名称不能为空');
-                return false;
-            }
-        });
-        // $('#bookImg').click(function () {
-        //     $('#uploaderInput').click();
-        // });
-
-        let uploader = new plupload.Uploader({
-            browse_button: 'bookImg', //触发文件选择对话框的按钮，为那个元素id
-            url: '/index/upload/img.html?type=novel', //服务器端的上传页面地址
-            flash_swf_url: '/dist/plugins/plupload/Moxie.swf', //swf文件，当需要使用swf方式进行上传时需要配置该参数
-            silverlight_xap_url: '/dist/plugins/plupload/Moxie.xap', //silverlight文件，当需要使用silverlight方式进行上传时需要配置该参数
-            headers: {
-                'token': localStorage.getItem('token')
-            },
-            filters: {
-                mime_types: [ //只允许上传图片
-                    {
-                        title: "Image files",
-                        extensions: "jpg,gif,png,jpeg,bmp"
-                    },
-                ]
-            },
-            resize: {
-                width: 350
-            }
-        });
-        //在实例对象上调用init()方法进行初始化
-        uploader.init();
-        uploader.bind('FilesAdded', function(uploader, file) {
-            uploader.start();
-        });
-        uploader.bind('Error', function(uploader, errObject) {
-            alertMsg('error', errObject.message);
-        });
-        uploader.bind('FileUploaded', function(uploader, file, responseObject) {
-            let result = JSON.parse(responseObject.response);
-            if (result.code != 0) {
-                alertMsg('error', result.msg);
-                return false;
-            } else {
-                $('#bookImg').attr('src', result.data);
-                $('.book_img').val(result.data);
-            }
-        });
-
-    })
-</script>
