@@ -8,7 +8,6 @@ use application\logic\blog\ArticleLogic;
 use Exception;
 use woodlsy\phalcon\library\Log;
 use woodlsy\phalcon\library\Redis;
-use woodlsy\upload\Upload;
 
 class ArticleController extends BaseController
 {
@@ -19,13 +18,12 @@ class ArticleController extends BaseController
      *
      * @author yls
      */
-    public function IndexAction()
+    public function indexAction()
     {
         $article  = (new ArticleLogic())->getList($this->page, $this->size);
         $category = (new ArticleLogic())->getCategoryPairs(0);
 
         $this->view->totalPage = ceil((new ArticleLogic())->getListCount() / $this->size);
-        $this->view->menuflag = 'article';
         $this->view->page      = $this->page;
         $this->view->pageLink  = '?page={page}';
         $this->view->title    = '文章列表';

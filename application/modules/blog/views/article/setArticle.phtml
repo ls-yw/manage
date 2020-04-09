@@ -30,7 +30,7 @@
                         <div class="col-sm-10">
                             <input type="hidden" name="book_img" id="uploadImgInput" value="<?=$data['img_url'] ?? ''?>"/>
                             <img src="<?=$data['img_url'] ?? '/dist/img/jia.jpg'?>" id="uploadImg" width="100" data-type="blog"/>
-                            <p class="help-block">建议尺寸 240 * 160</p>
+                            <p class="help-block" id="lookImg">查看大图</p>
                         </div>
                     </div>
                     <div class="form-group">
@@ -56,17 +56,15 @@
                     <div class="form-group">
                         <label for="inputEmail3" class="col-sm-2 control-label">发布</label>
                         <div class="col-sm-10">
-                            <div class="form-group">
-                                <div class="radio">
-                                    <label>
-                                        <input type="radio" name="is_push" id="is_push1" value="0" <?php if (!isset($data['is_push']) || $data['is_push'] == 1)echo 'checked'?>>
-                                        是
-                                    </label>
-                                    <label>
-                                        <input type="radio" name="is_push" id="is_push2" value="1" <?php if (isset($data['is_push']) && (int)$data['is_push'] === 0)echo 'checked'?>>
-                                        否
-                                    </label>
-                                </div>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="is_push" id="is_push1" value="0" <?php if (!isset($data['is_push']) || $data['is_push'] == 1)echo 'checked'?>>
+                                    是
+                                </label>
+                                <label>
+                                    <input type="radio" name="is_push" id="is_push2" value="1" <?php if (isset($data['is_push']) && (int)$data['is_push'] === 0)echo 'checked'?>>
+                                    否
+                                </label>
                             </div>
                         </div>
                     </div>
@@ -95,7 +93,15 @@
             return false;
         }
       });
+      $('#lookImg').click(function () {
+          if ($('#uploadImgInput').val() != '') {
+              window.open($('#uploadImgInput').val());
+          }
+      });
         // CKEDITOR.plugins.addExternal('codesnippet','/plugins/codesnippet/');
-        CKEDITOR.replace('editor1',{extraPlugins:'codesnippet'});
+        CKEDITOR.replace('editor1', {
+            filebrowserImageUploadUrl:"/index/upload/editorUpload.html?type=<?=$moduleName?>",
+            //pasteUploadFileApi:"/index/upload/editorUpload.html?type=<?//=$moduleName?>//"
+        });
     })
   </script>

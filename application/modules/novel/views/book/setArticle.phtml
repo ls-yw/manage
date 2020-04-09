@@ -75,6 +75,9 @@
                 return false;
             }
         });
-        CKEDITOR.replace('content',{extraPlugins:'codesnippet'});
+        CKEDITOR.replace('content', {
+            filebrowserImageUploadUrl:"/index/upload/editorUpload.html?type=<?=$moduleName?>",
+            pasteUploadFileApi:"/index/upload/editorUpload.html?type=<?=$moduleName?>"
+        });
     })
 </script>

@@ -41,6 +41,9 @@ class BaseController extends BasicController
         $menus                = $this->getMenu();
         $this->view->menus    = $menus;
         $this->view->menuflag = $this->router->getModuleName() . '-' . $this->router->getControllerName() . '-' . $this->router->getActionName();
+        $this->view->moduleName = $this->router->getModuleName();
+        $this->view->collectName = $this->router->getControllerName();
+        $this->view->actionName = $this->router->getActionName();
 
         $alertError = Redis::getInstance()->get('alert_error');
         if (!empty($alertError)) {
