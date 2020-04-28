@@ -90,7 +90,7 @@ class ArticleController extends BaseController
                 $this->crumbs[] = ['name' => $article['title']];
             }
 
-            $parentCategory       = (new ArticleLogic())->getCategoryPairs();
+            $parentCategory       = (new ArticleLogic())->getCategoryPairs(NULL, 0);
             $this->view->menuflag = 'article';
             $this->view->title    = '编辑文章';
             $this->view->category = $parentCategory;
