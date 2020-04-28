@@ -103,14 +103,18 @@ class ArticleLogic
      *
      * @author woodlsy
      * @param int|null $parentId
+     * @param int|null $deleted
      * @param string   $orderBy
      * @return array|bool
      */
-    public function getCategory(int $parentId = null, string $orderBy = 'pid asc')
+    public function getCategory(int $parentId = null, int $deleted = null, string $orderBy = 'pid asc')
     {
         $where = [];
         if(null !== $parentId) {
             $where['pid'] = $parentId;
+        }
+        if(null !== $deleted) {
+            $where['is_deleted'] = $deleted;
         }
         $fields = ['id', 'name', 'pid', 'is_deleted', 'create_at', 'update_at'];
         return (new Category())->getAll($where, $fields, $orderBy);
@@ -121,11 +125,12 @@ class ArticleLogic
      *
      * @author woodlsy
      * @param int|null $parentId
+     * @param int|null $deleted
      * @return array
      */
-    public function getCategoryPairs(int $parentId = null)
+    public function getCategoryPairs(int $parentId = null, int $deleted = null)
     {
-        return HelperExtend::arrayToKeyValue($this->getCategory($parentId), 'id', 'name');
+        return HelperExtend::arrayToKeyValue($this->getCategory($parentId, $deleted), 'id', 'name');
     }
 
     public function getCategoryById(int $id)
