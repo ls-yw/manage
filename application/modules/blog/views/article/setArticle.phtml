@@ -58,11 +58,11 @@
                         <div class="col-sm-10">
                             <div class="radio">
                                 <label>
-                                    <input type="radio" name="is_push" id="is_push1" value="0" <?php if (!isset($data['is_push']) || $data['is_push'] == 1)echo 'checked'?>>
+                                    <input type="radio" name="is_push" id="is_push1" value="1" <?php if (!isset($data['is_push']) || $data['is_push'] == 1)echo 'checked'?>>
                                     是
                                 </label>
                                 <label>
-                                    <input type="radio" name="is_push" id="is_push2" value="1" <?php if (isset($data['is_push']) && (int)$data['is_push'] === 0)echo 'checked'?>>
+                                    <input type="radio" name="is_push" id="is_push2" value="0" <?php if (isset($data['is_push']) && (int)$data['is_push'] === 0)echo 'checked'?>>
                                     否
                                 </label>
                             </div>
