@@ -277,7 +277,6 @@ class CollectController extends BaseController
                     Redis::getInstance()->setex($key, 600, HelperExtend::jsonEncode($data));
                 }
                 $data = HelperExtend::jsonDecode(Redis::getInstance()->get($key));
-
                 if ('add' === $act) {
                     // 判断是否已采集
                     $collectForm = (new CollectLogic())->getCollectFromCount($bookId);

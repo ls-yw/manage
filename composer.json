@@ -1,6 +1,6 @@
 {
     "require": {
-        "woodlsy/phalcon": "^0.1.0",
+        "woodlsy/phalcon": "^0.2.0",
         "woodlsy/http-client": "^0.1.2",
         "ext-iconv": "*",
         "woodlsy/upload": "^0.2.2",

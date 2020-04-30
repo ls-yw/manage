@@ -344,7 +344,7 @@ class CollectLogic
      * @param string $return_url 需要返回的url
      * @return mixed             返回的url
      */
-    private function getUrl($collect, $targetId, $return_url)
+    public function getUrl($collect, $targetId, $return_url)
     {
         $subarticleid = $collect['collect_subarticleid'];
         $subchapterid = $collect['collect_subchapterid'];
