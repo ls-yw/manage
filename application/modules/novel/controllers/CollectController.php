@@ -419,7 +419,7 @@ class CollectController extends BaseController
             $searchType = 'book_name';
         }
 
-        $data = (new BookLogic())->getList($searchType, $keyword, 1, $this->page, $this->size);
+        $data = (new BookLogic())->getList($searchType, $keyword, null, $this->page, $this->size);
         if (!empty($data)) {
             foreach ($data as &$val) {
                 $val['waitArticleNum'] = (new BookLogic())->getCollectFromCount($val['id'], 0);

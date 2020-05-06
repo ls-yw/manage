@@ -490,4 +490,17 @@ class BookLogic
         (new Chapter())->delData(['book_id' => $bookId]);
         return (new Book())->delData(['id' => $bookId]);
     }
+
+    /**
+     * 设置是否采集
+     *
+     * @author woodlsy
+     * @param int $bookId
+     * @param int $isCollect
+     * @return bool|int
+     */
+    public function setIsCollect(int $bookId, int $isCollect)
+    {
+        return (new Book())->updateData(['book_is_collect' => $isCollect], ['id' => $bookId]);
+    }
 }

@@ -247,4 +247,21 @@ class BookController extends BaseController
         }
 
     }
+
+    /**
+     * 是否采集
+     *
+     * @author woodlsy
+     * @return \Phalcon\Http\ResponseInterface
+     */
+    public function isCollectAction()
+    {
+        $id = (int)$this->post('id');
+        $isCollect = (int)$this->post('isCollect');
+        $row = (new BookLogic())->setIsCollect($id, $isCollect);
+        if (!$row) {
+            return $this->ajaxReturn(1, '更改失败');
+        }
+        return $this->ajaxReturn(0, '更改成功');
+    }
 }

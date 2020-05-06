@@ -18,6 +18,9 @@
 .red{
     color: red;
 }
+.cursor{
+    cursor: pointer;
+}
 .hidden{
     display: none;
 }

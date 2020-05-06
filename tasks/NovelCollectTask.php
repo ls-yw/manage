@@ -15,17 +15,37 @@ class NovelCollectTask extends BaseTask
 
         if (!empty($books)) {
             foreach ($books as $val) {
-                Log::write($val['id'], "========================开始采集【{$val['book_name']}】【{$val['book_id']}】======================", 'collect');
-                $this->start($val);
-                Log::write($val['id'], "========================采集结束【{$val['book_name']}】【{$val['book_id']}】======================", 'collect');
+                Log::write($val['id'], "========================开始采集【{$val['book_name']}】【{$val['id']}】======================", 'collect');
+                try {
+                    $this->_start($val);
+                } catch (Exception $e) {
+                    Log::write($val['id'], '采集文章时错误：' . strip_tags($e->getMessage()), 'collect');
+                }
+                Log::write($val['id'], "========================采集结束【{$val['book_name']}】【{$val['id']}】======================", 'collect');
+
+                sleep(5);
+                Log::write($val['id'], "========================开始上传OSS【{$val['book_name']}】【{$val['id']}】======================", 'collect');
+                $this->_ossUpload((int) $val['id']);
+                Log::write($val['id'], "========================结束上传OSS【{$val['book_name']}】【{$val['id']}】======================", 'collect');
+                sleep(5);
             }
         }
     }
 
+    /**
+     * 开始采集
+     *
+     * @author woodlsy
+     * @param array $book
+     * @return bool
+     * @throws \application\library\ManageException
+     * @throws \woodlsy\httpClient\HttpClientException
+     */
     private function _start(array $book)
     {
-        $indexlink = $this->_getIndexlink((int)$book['book_collect_id'], $book['book_from_article_id']);
-        $key = 'collect_' . $book['book_collect_id'] . '_' . $book['book_from_article_id'] . '_' . $indexlink . '_' . $book['id'];
+//        $indexlink = $this->_getIndexlink((int) $book['book_collect_id'], $book['book_from_article_id']);
+        $indexlink = '';
+        $key       = 'collect_' . $book['book_collect_id'] . '_' . $book['book_from_article_id'] . '_' . $indexlink . '_' . $book['id'];
         if (!Redis::getInstance()->exists($key)) {
             $data = (new CollectLogic())->article($book['book_collect_id'], $book['book_from_article_id'], $indexlink, $book['id']);
             Redis::getInstance()->setex($key, 600, HelperExtend::jsonEncode($data));
@@ -58,9 +78,9 @@ class NovelCollectTask extends BaseTask
                 Log::write($book['id'], '无新内容可采集', 'collect');
                 return true;
             }
-
-
         }
+        $this->_chapter($book);
+        return true;
     }
 
     /**
@@ -71,17 +91,17 @@ class NovelCollectTask extends BaseTask
      * @param     $targetId
      * @return string
      */
-    private function _getIndexlink(int $collectId, $targetId) :string
+/*    private function _getIndexlink(int $collectId, $targetId) : string
     {
         $collect = (new CollectLogic())->getById($collectId);
         if (empty($collect['collect_indexlink'])) {
             return '';
         }
-        $indexlink    = (new CollectLogic())->getUrl($collect, $targetId, 'collect_indexlink');
+        $indexlink = (new CollectLogic())->getUrl($collect, $targetId, 'collect_indexlink');
         if (false === $indexlink) {
             return '';
         }
-        $indexlink    = HelperExtend::dealRegular($indexlink);
+        $indexlink = HelperExtend::dealRegular($indexlink);
         if (false === $indexlink) {
             return '';
         }
@@ -89,10 +109,18 @@ class NovelCollectTask extends BaseTask
         //获取<{indexlink}>
         preg_match('/' . $indexlink[0] . $indexlink[3] . $indexlink[1] . '/i', $html, $result);
         return $result[1];
-    }
+    }*/
 
-    private function _chapter($bookId)
+    /**
+     * 获取章节
+     *
+     * @author woodlsy
+     * @param array $book
+     * @return bool
+     */
+    private function _chapter(array $book)
     {
+        $bookId       = $book['id'];
         $chapterArray = (new BookLogic())->getChapter($bookId, '默认章节');
 
         if (empty($chapterArray)) {
@@ -103,25 +131,64 @@ class NovelCollectTask extends BaseTask
             $chapter['book_name']          = (new BookLogic())->getBookNameById($bookId);
             $chapter['chapter_articlenum'] = 0;
             $chapter['chapter_order']      = 1;
-            $chapterId                     = (new BookLogic())->saveChapter($chapter);
+            $chapterId                     = (int) (new BookLogic())->saveChapter($chapter);
             if (empty($chapterId)) {
                 Log::write($bookId, '新增章节失败', 'collect');
                 return false;
             }
             Log::write($bookId, '新增默认章节', 'collect');
         } else {
-            $chapterId = $chapterArray[0]['id'];
+            $chapterId = (int) $chapterArray[0]['id'];
         }
         //更新最后采集时间
         (new BookLogic())->updateCollectTime($bookId);
+        $this->_article($book, $chapterId);
+        return true;
     }
 
-    private function _article()
+    /**
+     * 文章采集
+     *
+     * @author woodlsy
+     * @param array $book
+     * @param int   $chapterId
+     */
+    private function _article(array $book, int $chapterId)
     {
-        $res = (new CollectLogic())->collectArticle($bookId, $collectId, $chapterId, $categoryId, $fromSort);
+        $fromSort = 0;
+        do {
+            try {
+                $res      = (new CollectLogic())->collectArticle($book['id'], $book['book_collect_id'], $chapterId, $book['book_category'], $fromSort);
+                $fromSort = $res['from_sort'];
+                Log::write($book['id'], strip_tags($res['msg']), 'collect');
+            } catch (Exception $e) {
+                Log::write($book['id'], '采集文章时错误：' . strip_tags($e->getMessage()), 'collect');
+                $res['new_from'] = 0;
+            }
+        } while (!empty($res['new_from']));
+        Log::write($book['id'], '采集完成', 'collect');
+    }
 
-        if (empty($res['new_from'])) {
-            return $this->ajaxReturn(0, '<div class="col-xs-4">' . $res['msg'] . '</div> <div class="col-xs-4">采集完成</div>');
+    /**
+     * 上传OSS
+     *
+     * @author woodlsy
+     * @param int $bookId
+     */
+    private function _ossUpload(int $bookId)
+    {
+        $ossArticles = (new BookLogic())->getArticleByOssAll($bookId, 0, 'article_sort asc');
+        if (empty($ossArticles)) {
+            Log::write('OSS', '该小说无待上传OSS文章', 'collect');
+            return;
+        }
+        foreach ($ossArticles as $val) {
+            try {
+                (new CollectLogic())->uploadOss($bookId, $val);
+                Log::write('OSS', $val['title'] . '上传成功', 'collect');
+            } catch (Exception $e) {
+                Log::write('OSS', $val['title'] . '上传失败，失败原因：' . $e->getMessage(), 'collect');
+            }
         }
     }
 }

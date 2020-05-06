@@ -11,7 +11,7 @@
             </div>
             <!-- /.box-header -->
             <div class="box-body">
-                <table id="example2" class="table table-bordered table-hover">
+                <table id="dList" class="table table-bordered table-hover">
                     <thead>
                     <tr>
                         <th width="20">ID</th>
@@ -24,7 +24,8 @@
                         <th>采集ID</th>
                         <th>来源ID</th>
                         <th>采集时间</th>
-                        <th>操作</th>
+                        <th width="80">是否采集</th>
+                        <th width="150">操作</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -41,8 +42,12 @@
                                 <td><?= $val['book_collect_id'] ?></td>
                                 <td><?= $val['book_from_article_id'] ?></td>
                                 <td><?= $val['book_last_collect_time'] == '1970-01-01 08:00:00' ? '' : $val['book_last_collect_time'] ?></td>
-                                <td><a href="/novel/collect/book.html?id=<?= $val['id'] ?>&collect_id=<?=$val['book_collect_id']?>&target_id=<?=$val['book_from_article_id']?>" title="采集">采集</a>
+                                <td><?=(1 === (int)$val['book_is_collect']) ? '<span class="green cursor isCollect" data-id="'.$val['id'].'" data-collect="1">是</span>' : '<span class="red cursor isCollect" data-id="'.$val['id'].'" data-collect="0">否</span>'?></td>
+                                <td>
+                                    <?php if (1 === (int)$val['book_is_collect']):?>
+                                    <a href="/novel/collect/book.html?id=<?= $val['id'] ?>&collect_id=<?=$val['book_collect_id']?>&target_id=<?=$val['book_from_article_id']?>" title="采集">采集</a>
                                     <a href="/novel/collect/oss.html?book_id=<?= $val['id'] ?>">上传OSS</a>
+                                    <?php endif;?>
                                     <a href="javascript:;" class="clearAll" data-id="<?= $val['id'] ?>">清空</a>
                                 </td>
                             </tr>
@@ -95,6 +100,19 @@
             clearArticle(book_id);
             $('#clear-modal').modal().find('.modal-body').html('');
         });
+        $('#dList').on('click', '.isCollect', function () {
+            var id = $(this).data('id');
+            var isCollect = $(this).data('collect') == 1 ? 0 : 1;
+            var obj = $(this);
+            $.post('/novel/book/isCollect.html', {id:id, isCollect:isCollect}, function (res) {
+                if (res.code == 0) {
+                    var html = '<span class="' + (isCollect == 1 ? 'green' : 'red') + ' cursor isCollect" data-id="'+id+'" data-collect="'+isCollect+'">' + (isCollect == 1 ? '是' : '否') + '</span>';
+                    obj.closest('td').html(html);
+                } else {
+                    alertMsg('error', res.msg)
+                }
+            })
+        })
     })
     
     function clearArticle(id) {
