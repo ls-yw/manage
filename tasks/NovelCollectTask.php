@@ -32,6 +32,11 @@ class NovelCollectTask extends BaseTask
         }
     }
 
+    public function testAction()
+    {
+        echo '我是测试'.PHP_EOL;
+    }
+
     /**
      * 开始采集
      *
