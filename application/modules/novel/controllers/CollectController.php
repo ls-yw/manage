@@ -428,7 +428,7 @@ class CollectController extends BaseController
         }
 
         $this->view->data      = $data;
-        $this->view->totalPage = ceil((new BookLogic())->getListCount($searchType, $keyword, 1) / $this->size);
+        $this->view->totalPage = ceil((new BookLogic())->getListCount($searchType, $keyword, null) / $this->size);
         $this->view->page      = $this->page;
         $this->view->pageLink  = '?page={page}&keyword=' . $keyword . '&type=' . $type;
         $this->view->title     = '采集小说';
