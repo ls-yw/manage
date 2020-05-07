@@ -36,7 +36,9 @@
                                 <td><?= $val['url'] ?></td>
                                 <td><?= $val['create_at'] == '1970-01-01 08:00:00' ? '' : $val['create_at'] ?></td>
                                 <td><?= $val['update_at'] == '1970-01-01 08:00:00' ? '' : $val['update_at'] ?></td>
-                                <td><a href="javascript:;" onclick="invalid(<?= $val['id'] ?>)" title="已采集">已采集</a>
+                                <td>
+                                    <a href="javascript:;" onclick="invalid(<?= $val['id'] ?>)" title="已采集">已采集</a>
+                                    <a href="/novel/book/setArticle.html?book_id=<?= $val['from_book_id'] ?>&title=<?= $val['from_title'] ?>&sort=<?= $val['from_sort'] ?>" target="_blank">添加</a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
