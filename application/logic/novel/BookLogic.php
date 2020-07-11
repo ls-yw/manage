@@ -416,7 +416,7 @@ class BookLogic
             } catch (Exception $e) {
                 throw new ManageException('删除oss上文章内容失败' . $e->getMessage());
             }
-            $data['bk_article'] = 0;
+            //$data['bk_article'] = 0;
             $data['url']        = '';
             $row                = (new Article())->updateData($data, ['id' => $articleId]);
             if (empty($row)) {
