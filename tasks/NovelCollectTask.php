@@ -171,7 +171,7 @@ class NovelCollectTask extends BaseTask
             try {
                 $res      = (new CollectLogic())->collectArticle($book['id'], $book['book_collect_id'], $chapterId, $book['book_category'], $fromSort);
                 $fromSort = $res['from_sort'];
-                Log::write($book['id'], strip_tags($res['msg']), 'collect');
+                Log::write($res['from_sort'], strip_tags($res['msg']), 'collect');
             } catch (Exception $e) {
                 Log::write($book['id'], '采集文章时错误：' . strip_tags($e->getMessage()), 'collect');
                 $res['new_from'] = 0;

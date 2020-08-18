@@ -4,6 +4,7 @@ namespace application\modules\index\controllers;
 
 use application\base\BaseController;
 use Phalcon\Mvc\View;
+use woodlsy\phalcon\library\Redis;
 
 class IndexController extends BaseController
 {
@@ -29,6 +30,14 @@ class IndexController extends BaseController
         $this->view->message    = $message;
         $this->view->url        = $url;
         $this->view->waitSecond = $waitSecond;
+    }
+
+    public function delRedisAction()
+    {
+        $key = $this->get('key');
+        if (!empty($key)) {
+            echo Redis::getInstance()->del($key);
+        }
     }
 
 }
