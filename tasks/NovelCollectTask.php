@@ -11,7 +11,7 @@ class NovelCollectTask extends BaseTask
 {
     public function mainAction()
     {
-        $this->_taskLock(18000);
+        $this->_taskLock(86400);
 
         try {
             $books = (new BookLogic())->getList(null, null, 1);
