@@ -11,24 +11,30 @@ class NovelCollectTask extends BaseTask
 {
     public function mainAction()
     {
-        $books = (new BookLogic())->getList(null, null, 1);
+        $this->_taskLock(18000);
 
-        if (!empty($books)) {
-            foreach ($books as $val) {
-                Log::write($val['id'], "========================开始采集【{$val['book_name']}】【{$val['id']}】======================", 'collect');
-                try {
-                    $this->_start($val);
-                } catch (Exception $e) {
-                    Log::write($val['id'], '采集文章时错误：' . strip_tags($e->getMessage()), 'collect');
+        try {
+            $books = (new BookLogic())->getList(null, null, 1);
+
+            if (!empty($books)) {
+                foreach ($books as $val) {
+                    Log::write($val['id'], "========================开始采集【{$val['book_name']}】【{$val['id']}】======================", 'collect');
+                    try {
+                        $this->_start($val);
+                    } catch (Exception $e) {
+                        Log::write($val['id'], '采集文章时错误：' . strip_tags($e->getMessage()), 'collect');
+                    }
+                    Log::write($val['id'], "========================采集结束【{$val['book_name']}】【{$val['id']}】======================", 'collect');
+
+                    sleep(5);
+                    Log::write($val['id'], "========================开始上传OSS【{$val['book_name']}】【{$val['id']}】======================", 'collect');
+                    $this->_ossUpload((int) $val['id']);
+                    Log::write($val['id'], "========================结束上传OSS【{$val['book_name']}】【{$val['id']}】======================", 'collect');
+                    sleep(5);
                 }
-                Log::write($val['id'], "========================采集结束【{$val['book_name']}】【{$val['id']}】======================", 'collect');
-
-                sleep(5);
-                Log::write($val['id'], "========================开始上传OSS【{$val['book_name']}】【{$val['id']}】======================", 'collect');
-                $this->_ossUpload((int) $val['id']);
-                Log::write($val['id'], "========================结束上传OSS【{$val['book_name']}】【{$val['id']}】======================", 'collect');
-                sleep(5);
             }
+        } catch (Exception $e) {
+            Log::write('NovelCollect', $e->getMessage().'|'.$e->getFile().'|'.$e->getLine(), 'error');
         }
     }
 
