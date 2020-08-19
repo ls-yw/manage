@@ -503,4 +503,17 @@ class BookLogic
     {
         return (new Book())->updateData(['book_is_collect' => $isCollect], ['id' => $bookId]);
     }
+
+    /**
+     * 更改质量
+     *
+     * @author yls
+     * @param int $bookId
+     * @param int $quality
+     * @return bool|int
+     */
+    public function changeQuality(int $bookId, int $quality)
+    {
+        return (new Book())->updateData(['quality' => $quality], ['id' => $bookId]);
+    }
 }

@@ -611,6 +611,26 @@ class CollectLogic
                 return $book;
                     break;
             case 2:
+                $chapter   = HelperExtend::dealRegular($collect['collect_chapter']);
+                $chapterid = HelperExtend::dealRegular($collect['collect_chapterid']);
+
+                preg_match_all('/' . $chapter[0] . $chapter[3] . $chapter[1] . '/i', $html, $result);
+                preg_match_all('/' . $chapterid[0] . $chapterid[3] . $chapterid[1] . '/i', $html, $resultId);
+
+                //获取链接地址
+                $result[2] = preg_replace('/(.*)(href=\")([^\"]+)(\"[\s\S]*)/i', '$3', $result[0]);
+
+                //补全链接地址    $link[0]为超链接地址 $link[1]为章节序号 $link[2]为章节名称
+                $link[0] = HelperExtend::expandlinks($result[2], $url, $collect['collect_host']);
+                $link[1] = $resultId[1];
+                $link[2] = $result[1];
+                $data = [];
+                foreach ($link[0] as $key => $value) {
+                    $data[] = [
+                        $value.' '.$link[2][$key]
+                    ];
+                }
+                return $data;
                 break;
             case 3:
                 $content_preg = HelperExtend::dealRegular($collect['collect_content']);

@@ -148,7 +148,7 @@ class BookController extends BaseController
             $title   = $this->get('title');
             $sort    = (int) $this->get('sort', 'int');
             $article = [];
-            $book = (new BookLogic())->getById($bookId);
+            $book    = (new BookLogic())->getById($bookId);
 
             if (!empty($articleId)) {
                 $article = (new BookLogic())->getArticleById($book['book_category'], $articleId, true);
@@ -168,7 +168,7 @@ class BookController extends BaseController
     }
 
     /**
-     * 情况小说文章
+     * 清空小说文章
      *
      * @author woodlsy
      * @return \Phalcon\Http\ResponseInterface
@@ -256,9 +256,26 @@ class BookController extends BaseController
      */
     public function isCollectAction()
     {
-        $id = (int)$this->post('id');
-        $isCollect = (int)$this->post('isCollect');
-        $row = (new BookLogic())->setIsCollect($id, $isCollect);
+        $id        = (int) $this->post('id');
+        $isCollect = (int) $this->post('isCollect');
+        $row       = (new BookLogic())->setIsCollect($id, $isCollect);
+        if (!$row) {
+            return $this->ajaxReturn(1, '更改失败');
+        }
+        return $this->ajaxReturn(0, '更改成功');
+    }
+
+    /**
+     * 更改质量
+     *
+     * @author yls
+     * @return \Phalcon\Http\ResponseInterface
+     */
+    public function changeQualityAction()
+    {
+        $id      = (int) $this->post('id');
+        $quality = (int) $this->post('quality');
+        $row       = (new BookLogic())->changeQuality($id, $quality);
         if (!$row) {
             return $this->ajaxReturn(1, '更改失败');
         }

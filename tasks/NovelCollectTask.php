@@ -11,10 +11,11 @@ class NovelCollectTask extends BaseTask
 {
     public function mainAction()
     {
+        // $lockKey = 'manage-cli_cli_novel-collect_main';
         $this->_taskLock(86400);
 
         try {
-            $books = (new BookLogic())->getList(null, null, 1);
+            $books = (new BookLogic())->getList(null, null, 1, 1, 30);
 
             if (!empty($books)) {
                 foreach ($books as $val) {

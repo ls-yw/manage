@@ -24,6 +24,7 @@
                         <th>采集ID</th>
                         <th>来源ID</th>
                         <th>采集时间</th>
+                        <th width="100">质量</th>
                         <th width="80">是否采集</th>
                         <th width="150">操作</th>
                     </tr>
@@ -42,6 +43,14 @@
                                 <td><?= $val['book_collect_id'] ?></td>
                                 <td><?= $val['book_from_article_id'] ?></td>
                                 <td><?= $val['book_last_collect_time'] == '1970-01-01 08:00:00' ? '' : $val['book_last_collect_time'] ?></td>
+                                <td>
+                                    <select class="quality" onchange="changeQuality(<?=$val['id']?>, this)">
+                                        <option value="0">请选择</option>
+                                        <?php for($i=1;$i<=5;$i++):?>
+                                            <option value="<?=$i?>" <?php if ((int)$i === (int)$val['quality'])echo 'selected'?>><?=$i?></option>
+                                        <?php endfor;?>
+                                    </select>
+                                </td>
                                 <td><?=(1 === (int)$val['book_is_collect']) ? '<span class="green cursor isCollect" data-id="'.$val['id'].'" data-collect="1">是</span>' : '<span class="red cursor isCollect" data-id="'.$val['id'].'" data-collect="0">否</span>'?></td>
                                 <td>
                                     <?php if (1 === (int)$val['book_is_collect']):?>
@@ -125,6 +134,16 @@
                 $('#clear-modal .modal-body').append(res.msg);
             } else {
                 $('#clear-modal .modal-body').append(res.msg);
+            }
+        });
+    }
+    function changeQuality(id, obj) {
+        var quality = $(obj).val();
+        $.post('/novel/book/changeQuality.html', {id:id,quality:quality},function (res) {
+            if (res.code == 0) {
+                alertMsg('success', '更改成功');
+            }  else {
+                alertMsg('success', '更改失败');
             }
         });
     }
