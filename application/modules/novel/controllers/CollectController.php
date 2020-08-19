@@ -411,6 +411,7 @@ class CollectController extends BaseController
     public function bookListAction()
     {
         $type    = $this->get('type');
+        $isCollect    = $this->get('is_collect');
         $keyword = $this->get('keyword', 'string');
 
         if ('author' === $type) {
@@ -418,8 +419,12 @@ class CollectController extends BaseController
         } else {
             $searchType = 'book_name';
         }
-
-        $data = (new BookLogic())->getList($searchType, $keyword, null, $this->page, $this->size);
+        if ('' === $isCollect || null === $isCollect) {
+            $isCollect = null;
+        } else {
+            $isCollect = (int)$isCollect;
+        }
+        $data = (new BookLogic())->getList($searchType, $keyword, $isCollect, $this->page, $this->size);
         if (!empty($data)) {
             foreach ($data as &$val) {
                 $val['waitArticleNum'] = (new BookLogic())->getCollectFromCount($val['id'], 0);
@@ -434,6 +439,7 @@ class CollectController extends BaseController
         $this->view->title     = '采集小说';
         $this->view->type      = $type;
         $this->view->keyword   = $keyword;
+        $this->view->isCollect   = $isCollect;
     }
 
     /**

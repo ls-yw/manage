@@ -162,7 +162,7 @@ class BookLogic
         if (!empty($keywords)) {
             $where[$type] = ['like', '%' . $keywords . '%'];
         }
-        if ($isCollect) {
+        if (null !== $isCollect) {
             $where['book_is_collect'] = $isCollect;
         }
         $list = (new Book())->getList($where, 'id desc', $offset, $row);

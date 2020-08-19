@@ -11,6 +11,21 @@
             </div>
             <!-- /.box-header -->
             <div class="box-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <form class="form-inline" method="get">
+                            <div class="form-group">
+                                <label for="exampleInputName2">是否采集</label>
+                                <select name="is_collect" class="form-control">
+                                    <option value="">全部</option>
+                                    <option value="1" <?php if (1 === $isCollect)echo 'selected="selected"'?>>是</option>
+                                    <option value="0" <?php if (0 === $isCollect)echo 'selected="selected"'?>>否</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-default">搜索</button>
+                        </form>
+                    </div>
+                </div>
                 <table id="dList" class="table table-bordered table-hover">
                     <thead>
                     <tr>
