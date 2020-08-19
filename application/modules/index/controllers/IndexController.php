@@ -32,12 +32,17 @@ class IndexController extends BaseController
         $this->view->waitSecond = $waitSecond;
     }
 
-    public function delRedisAction()
+    public function redisAction()
     {
         $key = $this->get('key');
-        if (!empty($key)) {
-            echo Redis::getInstance()->del($key);
+        $delKey = $this->get('delkey');
+        if (!empty($key) && Redis::getInstance()->exists($key)) {
+            print_r(['value' => Redis::getInstance()->get($key), 'ttl' => Redis::getInstance()->ttl($key)]);
         }
+        if (!empty($delKey)) {
+            echo Redis::getInstance()->del($delKey);
+        }
+        exit;
     }
 
 }
