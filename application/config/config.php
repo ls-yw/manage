@@ -31,6 +31,12 @@ return [
         'aliyun',
         'blog',
     ],
+    'redis'          => [
+        'host'     => 'redis',
+        'port'     => '6379',
+        'password' => '', //密码 默认为空
+        'prefix'   => 'app_', //KEY的前缀 默认 空
+    ],
     'db'            => require_once APP_PATH . '/config/database.php',
     'csrf'          => false,
     'limit_request' => false,

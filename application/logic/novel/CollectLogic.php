@@ -495,6 +495,18 @@ class CollectLogic
     }
 
     /**
+     * 批量确认已采集
+     *
+     * @author yls
+     * @param array $id
+     * @return bool|int
+     */
+    public function batchConfirmFrom(array $id)
+    {
+        return (new CollectFrom())->updateData(['from_state' => 1], ['id' => $id]);
+    }
+
+    /**
      * 采集文章列表
      *
      * @author woodlsy

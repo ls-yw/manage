@@ -11,6 +11,7 @@
                 <table id="example2" class="table table-bordered table-hover">
                     <thead>
                     <tr>
+                        <th width="20"></th>
                         <th width="20">ID</th>
                         <th width="60">小说ID</th>
                         <th>章节名称</th>
@@ -27,6 +28,7 @@
                     <?php if (!empty($data)): ?>
                         <?php foreach ($data as $val): ?>
                             <tr>
+                                <td><input type="checkbox" class="from_checkbox" value="<?= $val['id'] ?>"></td>
                                 <td><?= $val['id'] ?></td>
                                 <td><?= $val['from_book_id'] ?></td>
                                 <td><?= $val['from_title'] ?></td>
@@ -46,6 +48,24 @@
                         <tr><td colspan="10" class="text-center">暂无数据</td></tr>
                     <?php endif; ?>
                     </tbody>
+                    <tfoot>
+                    <tr>
+                        <td colspan="11">
+                            <span style="margin-right:5px "><label><input type="checkbox" id="allSelect"> 全选</label></span>
+
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-default">批量</button>
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                    <span class="caret"></span>
+                                    <span class="sr-only">Toggle Dropdown</span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a href="#" id="batchCollected">已采集</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    </tfoot>
                 </table>
                 <div class="row text-center" id="pageList">
                 </div>
@@ -62,6 +82,29 @@
 <script>
     $(function () {
         pageHtml(<?=$page?>, <?=$totalPage?>, '<?=$pageLink?>');
+        $('#allSelect').click(function () {
+            var isChecked = $(this).prop('checked');
+            $('.from_checkbox').each(function () {
+                $(this).prop('checked',isChecked);
+            });
+        });
+        $('#batchCollected').click(function () {
+            var idArr = [];
+            if ($('.from_checkbox:checked').length == 0) {
+                alertMsg('error', '请先选择章节');
+                return false;
+            }
+            $('.from_checkbox:checked').each(function () {
+                idArr.push($(this).val());
+            });
+            $.post('/novel/collect/batchConfirmFrom.html',{'id':idArr},function (res) {
+                if (res.code == 0) {
+                    window.location.reload();
+                } else {
+                    alertMsg('error', res.msg)
+                }
+            });
+        });
     })
     function invalid(id) {
         if (!confirm('是否确定已采集？')) {

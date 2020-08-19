@@ -514,6 +514,32 @@ class CollectController extends BaseController
     }
 
     /**
+     * 批量确认已采集
+     *
+     * @author yls
+     * @return \Phalcon\Http\ResponseInterface
+     */
+    public function batchConfirmFromAction()
+    {
+        try {
+            $id = (array)$this->post('id');
+            if (empty($id)) {
+                throw new ManageException('参数错误');
+            }
+            $row = (new CollectLogic())->batchConfirmFrom($id);
+            if (!$row) {
+                throw new ManageException('确认失败');
+            }
+            return $this->ajaxReturn(0, 'ok');
+        } catch (ManageException $e) {
+            return $this->ajaxReturn(1, $e->getMessage());
+        } catch (Exception $e) {
+            Log::write($this->controllerName . '|' . $this->actionName, $e->getMessage() . $e->getFile() . $e->getLine(), 'error');
+            return $this->ajaxReturn(1, '系统错误');
+        }
+    }
+
+    /**
      * 待采集章节列表
      *
      * @author woodlsy

@@ -32,3 +32,6 @@ h1.t_nav span{
     padding: 0.5em;
     background: #F0F0F0;
 }
+#pageList{
+    margin: 0;
+}
