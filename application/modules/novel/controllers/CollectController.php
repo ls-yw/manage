@@ -295,10 +295,11 @@ class CollectController extends BaseController
                     $add_from = array();
                     foreach ($data as $key => $value) {
                         if (isset($from[$key]) && $value['from_article_id'] == $from[$key]['from_article_id']) {
-                            if ($from[$key]['from_state'] == 0) $new_from[] = $from[$key];
+                            if ($from[$key]['from_state'] == 0)
+                                $new_from[] = $from[$key];
                         } else {
-                            $new_from[]     = $value;  //需要重新采集的内容
-                            $add_from[$key] = $value;  //需要新增如数据库的内容
+                            $new_from[] = $value;  //需要重新采集的内容
+                            $add_from[] = $value;  //需要新增如数据库的内容
                         }
                     }
 
@@ -410,9 +411,9 @@ class CollectController extends BaseController
      */
     public function bookListAction()
     {
-        $type    = $this->get('type');
-        $isCollect    = $this->get('is_collect');
-        $keyword = $this->get('keyword', 'string');
+        $type      = $this->get('type');
+        $isCollect = $this->get('is_collect');
+        $keyword   = $this->get('keyword', 'string');
 
         if ('author' === $type) {
             $searchType = 'book_author';
@@ -422,7 +423,7 @@ class CollectController extends BaseController
         if ('' === $isCollect || null === $isCollect) {
             $isCollect = null;
         } else {
-            $isCollect = (int)$isCollect;
+            $isCollect = (int) $isCollect;
         }
         $data = (new BookLogic())->getList($searchType, $keyword, $isCollect, $this->page, $this->size);
         if (!empty($data)) {
@@ -439,7 +440,7 @@ class CollectController extends BaseController
         $this->view->title     = '采集小说';
         $this->view->type      = $type;
         $this->view->keyword   = $keyword;
-        $this->view->isCollect   = $isCollect;
+        $this->view->isCollect = $isCollect;
     }
 
     /**
@@ -528,7 +529,7 @@ class CollectController extends BaseController
     public function batchConfirmFromAction()
     {
         try {
-            $id = (array)$this->post('id');
+            $id = (array) $this->post('id');
             if (empty($id)) {
                 throw new ManageException('参数错误');
             }

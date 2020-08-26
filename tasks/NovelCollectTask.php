@@ -35,13 +35,13 @@ class NovelCollectTask extends BaseTask
                 }
             }
         } catch (Exception $e) {
-            Log::write('NovelCollect', $e->getMessage().'|'.$e->getFile().'|'.$e->getLine(), 'error');
+            Log::write('NovelCollect', $e->getMessage() . '|' . $e->getFile() . '|' . $e->getLine(), 'error');
         }
     }
 
     public function testAction()
     {
-        echo '我是测试'.PHP_EOL;
+        echo '我是测试' . PHP_EOL;
     }
 
     /**
@@ -55,7 +55,7 @@ class NovelCollectTask extends BaseTask
      */
     private function _start(array $book)
     {
-//        $indexlink = $this->_getIndexlink((int) $book['book_collect_id'], $book['book_from_article_id']);
+        //        $indexlink = $this->_getIndexlink((int) $book['book_collect_id'], $book['book_from_article_id']);
         $indexlink = '';
         $key       = 'collect_' . $book['book_collect_id'] . '_' . $book['book_from_article_id'] . '_' . $indexlink . '_' . $book['id'];
         if (!Redis::getInstance()->exists($key)) {
@@ -75,10 +75,11 @@ class NovelCollectTask extends BaseTask
             $add_from = array();
             foreach ($data as $key => $value) {
                 if (isset($from[$key]) && $value['from_article_id'] == $from[$key]['from_article_id']) {
-                    if ($from[$key]['from_state'] == 0) $new_from[] = $from[$key];
+                    if ($from[$key]['from_state'] == 0)
+                        $new_from[] = $from[$key];
                 } else {
-                    $new_from[]     = $value;  //需要重新采集的内容
-                    $add_from[$key] = $value;  //需要新增如数据库的内容
+                    $new_from[] = $value;  //需要重新采集的内容
+                    $add_from[] = $value;  //需要新增如数据库的内容
                 }
             }
 
@@ -103,25 +104,25 @@ class NovelCollectTask extends BaseTask
      * @param     $targetId
      * @return string
      */
-/*    private function _getIndexlink(int $collectId, $targetId) : string
-    {
-        $collect = (new CollectLogic())->getById($collectId);
-        if (empty($collect['collect_indexlink'])) {
-            return '';
-        }
-        $indexlink = (new CollectLogic())->getUrl($collect, $targetId, 'collect_indexlink');
-        if (false === $indexlink) {
-            return '';
-        }
-        $indexlink = HelperExtend::dealRegular($indexlink);
-        if (false === $indexlink) {
-            return '';
-        }
-        $result = '';
-        //获取<{indexlink}>
-        preg_match('/' . $indexlink[0] . $indexlink[3] . $indexlink[1] . '/i', $html, $result);
-        return $result[1];
-    }*/
+    /*    private function _getIndexlink(int $collectId, $targetId) : string
+        {
+            $collect = (new CollectLogic())->getById($collectId);
+            if (empty($collect['collect_indexlink'])) {
+                return '';
+            }
+            $indexlink = (new CollectLogic())->getUrl($collect, $targetId, 'collect_indexlink');
+            if (false === $indexlink) {
+                return '';
+            }
+            $indexlink = HelperExtend::dealRegular($indexlink);
+            if (false === $indexlink) {
+                return '';
+            }
+            $result = '';
+            //获取<{indexlink}>
+            preg_match('/' . $indexlink[0] . $indexlink[3] . $indexlink[1] . '/i', $html, $result);
+            return $result[1];
+        }*/
 
     /**
      * 获取章节
