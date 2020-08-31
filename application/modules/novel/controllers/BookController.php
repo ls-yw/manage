@@ -168,6 +168,38 @@ class BookController extends BaseController
     }
 
     /**
+     * 删除章节
+     *
+     * @author yls
+     * @return \Phalcon\Http\ResponseInterface
+     */
+    public function delArticleAction()
+    {
+        if ($this->request->isPost()) {
+            $articleId = (int) $this->get('id');
+            if (empty($articleId)) {
+                Redis::getInstance()->setex('alert_error', 3600, '参数错误');
+                die('<script>window.history.go(-1);</script>');
+            }
+            $article = (new BookLogic())->getArticleById(0, $articleId);
+
+            try {
+                (new AliyunOss())->delFile((int)$article['book_id'], $articleId);
+            } catch (Exception $e) {
+                Redis::getInstance()->setex('alert_error', 3600, '删除oss章节失败');
+                die('<script>window.history.go(-1);</script>');
+            }
+            $row = (new BookLogic())->delArticleById($articleId);
+            if (empty($row)) {
+                Redis::getInstance()->setex('alert_error', 3600, '删除失败');
+                die('<script>window.history.go(-1);</script>');
+            }
+            (new BookLogic())->updateBookArticleNumAndWordsNumber((int)$article['book_id']);
+            return $this->ajaxReturn(0, '删除成功');
+        }
+    }
+
+    /**
      * 清空小说文章
      *
      * @author woodlsy

@@ -456,6 +456,18 @@ class BookLogic
     }
 
     /**
+     * 删除章节根据ID
+     *
+     * @author yls
+     * @param int $articleId
+     * @return bool|int
+     */
+    public function delArticleById(int $articleId)
+    {
+        return (new Article())->delData(['id' => $articleId]);
+    }
+
+    /**
      * 更新小说章节数和字数
      *
      * @author woodlsy
