@@ -59,18 +59,18 @@
 <script>
     $(function () {
         pageHtml(<?=$page?>, <?=$totalPage?>, '<?=$pageLink?>');
-        function delArticle(id) {
-            $.post("/novel/book/delArticle.html", {id:id},function (res) {
-                if (res.code == 0) {
-                    alertMsg('success', res.msg)
-                    window.location.reload();
-                } else if(res.code == 200) {
-                    alertMsg('error', res.msg)
-                    setTimeout(function(){ window.location.reload(); }, 2000);
-                } else {
-                    alertMsg('error', res.msg)
-                }
-            });
-        }
     })
+    function delArticle(id) {
+        $.post("/novel/book/delArticle.html", {id:id},function (res) {
+            if (res.code == 0) {
+                alertMsg('success', res.msg)
+                window.location.reload();
+            } else if(res.code == 200) {
+                alertMsg('error', res.msg)
+                setTimeout(function(){ window.location.reload(); }, 2000);
+            } else {
+                alertMsg('error', res.msg)
+            }
+        });
+    }
 </script>
