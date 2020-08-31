@@ -176,23 +176,19 @@ class BookController extends BaseController
     public function delArticleAction()
     {
         if ($this->request->isPost()) {
-            $articleId = (int) $this->get('id');
+            $articleId = (int) $this->post('id');
             if (empty($articleId)) {
-                Redis::getInstance()->setex('alert_error', 3600, '参数错误');
-                die('<script>window.history.go(-1);</script>');
+                return $this->ajaxReturn(1, '参数错误');
             }
             $article = (new BookLogic())->getArticleById(0, $articleId);
-
             try {
                 (new AliyunOss())->delFile((int)$article['book_id'], $articleId);
             } catch (Exception $e) {
-                Redis::getInstance()->setex('alert_error', 3600, '删除oss章节失败');
-                die('<script>window.history.go(-1);</script>');
+                return $this->ajaxReturn(1, '删除oss章节失败');
             }
             $row = (new BookLogic())->delArticleById($articleId);
             if (empty($row)) {
-                Redis::getInstance()->setex('alert_error', 3600, '删除失败');
-                die('<script>window.history.go(-1);</script>');
+                return $this->ajaxReturn(1, '删除失败');
             }
             (new BookLogic())->updateBookArticleNumAndWordsNumber((int)$article['book_id']);
             return $this->ajaxReturn(0, '删除成功');
