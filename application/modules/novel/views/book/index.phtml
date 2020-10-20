@@ -6,7 +6,7 @@
             <div class="box-header">
                 <h3 class="box-title"><?= $title ?></h3>
                 <div class="pull-right box-tools">
-<!--                    <a href="/novel/collect/set.html" class="btn btn-default"><i class="fa fa-plus"></i></a>-->
+                    <a href="/novel/book/set.html" class="btn btn-default"><i class="fa fa-plus"></i></a>
                 </div>
             </div>
             <!-- /.box-header -->
@@ -36,6 +36,7 @@
                         <th width="80">小说封面</th>
                         <th>小说名称</th>
                         <th width="100">作者</th>
+                        <th width="60">分卷数</th>
                         <th width="60">章节数</th>
                         <th width="60">浏览量</th>
                         <th width="60">状态</th>
@@ -54,6 +55,7 @@
                                 <td><img src="<?= empty($val['book_img']) ? '/dist/img/booknopic.gif' : $val['book_img'] ?>" width="40"></td>
                                 <td><?= $val['book_name'] ?></td>
                                 <td><?= $val['book_author'] ?></td>
+                                <td><a href="/novel/book/chapter.html?book_id=<?= $val['id'] ?>" title="分卷"><?= $val['chapter_num'] ?></a></td>
                                 <td><a href="/novel/book/article.html?book_id=<?= $val['id'] ?>" title="章节"><?= $val['book_articlenum'] ?></a></td>
                                 <td><?= $val['book_click'] ?></td>
                                 <td><?= $val['book_state'] == 0 ? '<span class="red">连载</span>' : '<span class="green">完本</span>' ?></td>

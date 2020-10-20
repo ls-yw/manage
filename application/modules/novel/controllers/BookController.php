@@ -38,40 +38,53 @@ class BookController extends BaseController
     public function setAction()
     {
         $id   = (int) $this->get('id');
-        $book = (new BookLogic())->getById($id);
-        if (!$book) {
-            Redis::getInstance()->setex('alert_error', 3600, '小说不存在');
-            die('<script>window.history.go(-1);</script>');
-        }
-        if ($this->request->isPost()) {
-            $data = [
-                'id'              => $id,
-                'book_name'       => trim($this->post('book_name', 'string')),
-                'book_category'   => (int) $this->post('book_category', 'int'),
-                'book_author'     => trim($this->post('book_author', 'string')),
-                'book_state'      => $this->post('book_state', 'int'),
-                'book_keyword'    => trim($this->post('book_keyword', 'string')),
-                'book_intro'      => trim($this->post('book_intro', 'string')),
-                'book_is_collect' => $this->post('monitoring', 'int'),
-                'book_img'        => trim($this->post('book_img', 'string')),
-                'is_recommend'    => (int) $this->post('is_recommend', 'int'),
-                'quality'         => (int) $this->post('quality', 'int'),
-            ];
-
-            $row = (new BookLogic())->save($data);
-            if (!$row) {
-                Redis::getInstance()->setex('alert_error', 3600, '保存小说失败');
+        $book = [];
+        if (!empty($id)) {
+            $book = (new BookLogic())->getById($id);
+            if (!$book) {
+                Redis::getInstance()->setex('alert_error', 3600, '小说不存在');
                 die('<script>window.history.go(-1);</script>');
             }
-            Redis::getInstance()->setex('alert_success', 3600, '保存成功');
-            return $this->response->redirect('/novel/book/index.html');
+        }
+        if ($this->request->isPost()) {
+            try {
+                $data = [
+                    'id'              => $id,
+                    'book_name'       => trim($this->post('book_name', 'string')),
+                    'book_category'   => (int) $this->post('book_category', 'int'),
+                    'book_author'     => trim($this->post('book_author', 'string')),
+                    'book_state'      => (int) $this->post('book_state', 'int'),
+                    'book_keyword'    => trim($this->post('book_keyword', 'string')),
+                    'book_intro'      => trim($this->post('book_intro', 'string')),
+                    'book_is_collect' => (int) $this->post('monitoring', 'int'),
+                    'book_img'        => trim($this->post('book_img', 'string')),
+                    'is_recommend'    => (int) $this->post('is_recommend', 'int'),
+                    'quality'         => (int) $this->post('quality', 'int'),
+                ];
+
+                if (empty($data['book_img'])) {
+                    Redis::getInstance()->setex('alert_error', 3600, '请上传小说封面图片');
+                    die('<script>window.history.go(-1);</script>');
+                }
+
+                $row = (new BookLogic())->save($data);
+                if (!$row) {
+                    Redis::getInstance()->setex('alert_error', 3600, '保存小说失败');
+                    die('<script>window.history.go(-1);</script>');
+                }
+                Redis::getInstance()->setex('alert_success', 3600, '保存成功');
+                return $this->response->redirect('/novel/book/index.html');
+            } catch (Exception $e) {
+                Redis::getInstance()->setex('alert_error', 3600, $e->getMessage());
+                die('<script>window.history.go(-1);</script>');
+            }
         } else {
 
             $this->view->moduleName = $this->router->getModuleName();
             $this->view->config     = $this->config;
             $this->view->category   = (new BookLogic())->getCategoryPairs();
             $this->view->book       = $book;
-            $this->view->title      = '编辑《' . $book['book_name'] . '》';
+            $this->view->title      = empty($id) ? '新增小说' : '编辑《' . $book['book_name'] . '》';
             $this->view->menuflag   = 'novel-book-index';
         }
     }
@@ -101,6 +114,22 @@ class BookController extends BaseController
         $this->view->crumbs    = $crumbs;
     }
 
+    public function chapterAction()
+    {
+        $bookId = (int) $this->get('book_id');
+        $book   = (new BookLogic())->getById($bookId);
+
+        $crumbs   = [];
+        $crumbs[] = ['url' => '/novel/book/index.html', 'name' => $book['book_name']];
+
+        $this->view->data     = (new BookLogic())->getChapter($bookId);
+        $this->view->page     = $this->page;
+        $this->view->title    = '分卷管理 ';
+        $this->view->book_id  = $bookId;
+        $this->view->menuflag = 'novel-book-index';
+        $this->view->crumbs   = $crumbs;
+    }
+
     /**
      * 编辑文章
      *
@@ -118,7 +147,7 @@ class BookController extends BaseController
 
                 $data               = [
                     'title'        => $this->post('title'),
-                    'chapter_id'   => $this->post('chapter_id'),
+                    'chapter_id'   => (int)$this->post('chapter_id'),
                     'article_sort' => $this->post('article_sort'),
                     'content'      => $this->post('content'),
                     'book_id'      => $bookId,
@@ -127,6 +156,19 @@ class BookController extends BaseController
                 if (empty($data['content'])) {
                     Redis::getInstance()->setex('alert_error', 3600, '文章内容不能为空');
                     die('<script>window.history.go(-1);</script>');
+                }
+
+                $oldChapterId  = 0;
+                $newChapterId = $data['chapter_id'];
+                if (!empty($articleId)) {
+                    $article = (new BookLogic())->getArticleById(0, $articleId);
+                    $oldChapterId = (int)$article['chapter_id'];
+                }
+                if ($oldChapterId !== $newChapterId) {
+                    if(!empty($oldChapterId)) {
+                        (new BookLogic())->updateChapterArticleNum((int)$oldChapterId, 'decr', 1);
+                    }
+                    (new BookLogic())->updateChapterArticleNum((int)$newChapterId, 'incr', 1);
                 }
 
                 $row = (new BookLogic())->saveArticle($data, $articleId);
@@ -167,6 +209,56 @@ class BookController extends BaseController
         }
     }
 
+    public function setChapterAction()
+    {
+        $bookId    = (int) $this->get('book_id');
+        $chapterId = (int) $this->get('id');
+        $book      = (new BookLogic())->getById($bookId);
+        if ($this->request->isPost()) {
+            $data = [
+                'chapter_name'  => $this->post('chapter_name'),
+                'chapter_order' => (int) $this->post('chapter_order'),
+                'book_name'     => $book['book_name'],
+                'book_id'       => $bookId,
+                'id'            => $chapterId
+            ];
+            try {
+
+                if (empty($data['chapter_name'])) {
+                    throw new ManageException('分卷名称不能为空');
+                }
+
+                $row = (new BookLogic())->saveChapter($data);
+                if (empty($row)) {
+                    throw new ManageException('保存失败');
+                }
+                Redis::getInstance()->setex('alert_success', 3600, '保存成功');
+                return $this->response->redirect('/novel/book/chapter.html?book_id=' . $bookId);
+            } catch (ManageException $e) {
+                Redis::getInstance()->setex('alert_error', 3600, $e->getMessage());
+                die('<script>window.history.go(-1);</script>');
+            } catch (Exception $e) {
+                Log::write($this->controllerName . '|' . $this->actionName, $e->getMessage() . $e->getFile() . $e->getLine(), 'error');
+                Redis::getInstance()->setex('alert_error', 3600, '系统错误');
+                die('<script>window.history.go(-1);</script>');
+            }
+        } else {
+            $chapter = [];
+
+            if (!empty($chapterId)) {
+                $chapter = (new BookLogic())->getChapterById($chapterId);
+            }
+
+            $crumbs   = [];
+            $crumbs[] = ['url' => '/novel/book/index.html', 'name' => $book['book_name']];
+
+            $this->view->chapter  = $chapter;
+            $this->view->title    = '编辑分卷';
+            $this->view->menuflag = 'novel-book-index';
+            $this->view->crumbs   = $crumbs;
+        }
+    }
+
     /**
      * 删除章节
      *
@@ -182,7 +274,7 @@ class BookController extends BaseController
             }
             $article = (new BookLogic())->getArticleById(0, $articleId);
             try {
-                (new AliyunOss())->delFile((int)$article['book_id'], $articleId);
+                (new AliyunOss())->delFile((int) $article['book_id'], $articleId);
             } catch (Exception $e) {
                 return $this->ajaxReturn(1, '删除oss章节失败');
             }
@@ -190,7 +282,33 @@ class BookController extends BaseController
             if (empty($row)) {
                 return $this->ajaxReturn(1, '删除失败');
             }
-            (new BookLogic())->updateBookArticleNumAndWordsNumber((int)$article['book_id']);
+            (new BookLogic())->updateChapterArticleNum((int)$article['chapter_id'], 'decr', 1);
+            (new BookLogic())->updateBookArticleNumAndWordsNumber((int) $article['book_id']);
+            return $this->ajaxReturn(0, '删除成功');
+        }
+    }
+
+    /**
+     * 删除分卷
+     *
+     * @author yls
+     * @return \Phalcon\Http\ResponseInterface
+     */
+    public function delChapterAction()
+    {
+        if ($this->request->isPost()) {
+            $id = (int) $this->post('id');
+            if (empty($id)) {
+                return $this->ajaxReturn(1, '参数错误');
+            }
+            $chapter = (new BookLogic())->getChapterById($id);
+            if (!empty($chapter['chapter_articlenum'])) {
+                return $this->ajaxReturn(1, '该分卷下还有章节，请先清空章节再删分卷');
+            }
+            $row = (new BookLogic())->delChapterById($id);
+            if (empty($row)) {
+                return $this->ajaxReturn(1, '删除失败');
+            }
             return $this->ajaxReturn(0, '删除成功');
         }
     }
@@ -303,7 +421,7 @@ class BookController extends BaseController
     {
         $id      = (int) $this->post('id');
         $quality = (int) $this->post('quality');
-        $row       = (new BookLogic())->changeQuality($id, $quality);
+        $row     = (new BookLogic())->changeQuality($id, $quality);
         if (!$row) {
             return $this->ajaxReturn(1, '更改失败');
         }

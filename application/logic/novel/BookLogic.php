@@ -111,7 +111,19 @@ class BookLogic
         if ($chapterName) {
             $where['chapter_name'] = $chapterName;
         }
-        return (new Chapter())->getAll($where);
+        return (new Chapter())->getAll($where, null, 'chapter_order asc');
+    }
+
+    /**
+     * 获取分卷详情
+     *
+     * @author yls
+     * @param int $chapterId
+     * @return array|mixed
+     */
+    public function getChapterById(int $chapterId)
+    {
+        return (new Chapter())->getById($chapterId);
     }
 
     /**
@@ -158,7 +170,7 @@ class BookLogic
     public function getList($type, $keywords, $isCollect = null, $page = null, $row = null)
     {
         $offset = ($page - 1) * $row;
-        $where  = ['book_collect_id' => ['!=', 0]];
+        $where  = [];
         if (!empty($keywords)) {
             $where[$type] = ['like', '%' . $keywords . '%'];
         }
@@ -166,6 +178,11 @@ class BookLogic
             $where['book_is_collect'] = $isCollect;
         }
         $list = (new Book())->getList($where, 'id desc', $offset, $row);
+        if(!empty($list)) {
+            foreach ($list as &$value) {
+                $value['chapter_num'] = (new Chapter())->getCount(['book_id' => $value['id']]);
+            }
+        }
         return $list;
     }
 
@@ -468,6 +485,18 @@ class BookLogic
     }
 
     /**
+     * 删除分卷根据ID
+     *
+     * @author yls
+     * @param int $id
+     * @return bool|int
+     */
+    public function delChapterById(int $id)
+    {
+        return (new Chapter())->delData(['id' => $id]);
+    }
+
+    /**
      * 更新小说章节数和字数
      *
      * @author woodlsy
@@ -527,5 +556,19 @@ class BookLogic
     public function changeQuality(int $bookId, int $quality)
     {
         return (new Book())->updateData(['quality' => $quality], ['id' => $bookId]);
+    }
+
+    /**
+     * 更新分卷下章节数
+     *
+     * @author yls
+     * @param int    $chapterId
+     * @param string $type
+     * @param int    $num
+     * @return bool|int
+     */
+    public function updateChapterArticleNum(int $chapterId, string $type, int $num)
+    {
+        return (new Chapter())->updateData(['chapter_articlenum' => [('decr' == $type ? '-' : '+'), $num]], ['id' => $chapterId]);
     }
 }

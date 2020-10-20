@@ -6,7 +6,7 @@
             <div class="box-header">
                 <h3 class="box-title"><?= $title ?></h3>
                 <div class="pull-right box-tools">
-                    <a href="/novel/book/setArticle.html?book_id=<?=$book_id?>" class="btn btn-default"><i class="fa fa-plus"></i></a>
+                    <a href="/novel/book/setChapter.html?book_id=<?=$book_id?>" class="btn btn-default"><i class="fa fa-plus"></i></a>
                 </div>
             </div>
             <!-- /.box-header -->
@@ -15,10 +15,9 @@
                     <thead>
                     <tr>
                         <th width="20">ID</th>
-                        <th>文章标题</th>
-                        <th>所属章节</th>
-                        <th>文章排序</th>
-                        <th>是否OSS</th>
+                        <th>分卷名称</th>
+                        <th>章节数</th>
+                        <th>排序</th>
                         <th>更新时间</th>
                         <th width="120">操作</th>
                     </tr>
@@ -28,13 +27,12 @@
                         <?php foreach ($data as $val): ?>
                             <tr>
                                 <td><?= $val['id'] ?></td>
-                                <td><?= $val['title'] ?></td>
-                                <td><?= $chapters[$val['chapter_id']] ?? '' ?></td>
-                                <td><?= $val['article_sort'] ?></td>
-                                <td><?= (int)$val['is_oss'] === 0 ? '<span class="red">否</span>' : '<span class="green">是</span>' ?></td>
+                                <td><?= $val['chapter_name'] ?></td>
+                                <td><a href="/novel/book/article.html?book_id=<?= $val['book_id'] ?>" title="章节"><?= $val['chapter_articlenum'] ?? '0' ?></a></td>
+                                <td><?= $val['chapter_order'] ?></td>
                                 <td><?= $val['update_at'] ?></td>
                                 <td>
-                                    <a href="/novel/book/setArticle.html?book_id=<?=$book_id?>&id=<?= $val['id'] ?>" title="编辑">编辑</a>
+                                    <a href="/novel/book/setChapter.html?book_id=<?=$book_id?>&id=<?= $val['id'] ?>" title="编辑">编辑</a>
                                     <a href="javascript:;" onclick="delArticle(<?= $val['id'] ?>)" title="删除">删除</a>
                                 </td>
                             </tr>
@@ -44,8 +42,6 @@
                     <?php endif; ?>
                     </tbody>
                 </table>
-                <div class="row text-center" id="pageList">
-                </div>
             </div>
             <!-- /.box-body -->
         </div>
@@ -57,14 +53,11 @@
 <script src="/dist/plugins/datatables.net/js/jquery.dataTables.min.js"></script>
 <script src="/dist/plugins/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
 <script>
-    $(function () {
-        pageHtml(<?=$page?>, <?=$totalPage?>, '<?=$pageLink?>');
-    })
     function delArticle(id) {
         if (!confirm('是否确定删除？')) {
             return false;
         }
-        $.post("/novel/book/delArticle.html", {id:id},function (res) {
+        $.post("/novel/book/delChapter.html", {id:id},function (res) {
             if (res.code == 0) {
                 alertMsg('success', res.msg)
                 window.location.reload();

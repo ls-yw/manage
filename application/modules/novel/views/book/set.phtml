@@ -20,7 +20,7 @@
                             <select name="book_category">
                                 <option value="0">请选择分类</option>
                                 <?php if(!empty($category)):foreach ($category as $key => $val):?>
-                                    <option value="<?=$key?>" <?php if ((int)$key === (int)$book['book_category'])echo 'selected'?>><?=$val?></option>
+                                    <option value="<?=$key?>" <?php if ( isset($book['book_category']) && (int)$key === (int)$book['book_category'])echo 'selected'?>><?=$val?></option>
                                 <?php endforeach;endif;?>
                             </select>
                         </div>
@@ -34,8 +34,8 @@
                     <div class="form-group">
                         <label for="inputEmail3" class="col-sm-2 control-label">状态</label>
                         <div class="col-sm-10">
-                            <label><input type="radio" name="book_state" value="0" <?php if((int)$book['book_state'] === 0)echo 'checked="checked"'?>> 连载中</label>
-                            <label><input type="radio" name="book_state" value="1" <?php if((int)$book['book_state'] === 1)echo 'checked="checked"'?>> 已完成</label>
+                            <label><input type="radio" name="book_state" value="0" <?php if(!isset($book['book_state']) || (int)$book['book_state'] === 0)echo 'checked="checked"'?>> 连载中</label>
+                            <label><input type="radio" name="book_state" value="1" <?php if(isset($book['book_state']) && (int)$book['book_state'] === 1)echo 'checked="checked"'?>> 已完成</label>
                         </div>
                     </div>
                     <div class="form-group">
@@ -54,7 +54,7 @@
                         <label for="inputEmail3" class="col-sm-2 control-label">封面</label>
                         <div class="col-sm-10">
                             <input type="text" name="book_img" id="uploadImgInput" value="<?=$book['book_img'] ?? ''?>" size="80"/>
-                            <img src="<?=$book['book_img'] ?? ''?>" id="uploadImg" width="40" height="50" data-type="novel"/>
+                            <img src="<?=$book['book_img'] ?? '/dist/img/jia.jpg'?>" id="uploadImg" width="40" data-type="novel"/>
                         </div>
                     </div>
                     <div class="form-group">
@@ -63,7 +63,7 @@
                             <select name="quality">
                                 <option value="0">请选择采集质量等级</option>
                                 <?php for($i=1;$i<=5;$i++):?>
-                                    <option value="<?=$i?>" <?php if ((int)$i === (int)$book['quality'])echo 'selected'?>><?=$i?></option>
+                                    <option value="<?=$i?>" <?php if (isset($book['quality']) && (int)$i === (int)$book['quality'])echo 'selected'?>><?=$i?></option>
                                 <?php endfor;?>
                             </select>
                         </div>
@@ -71,14 +71,14 @@
                     <div class="form-group">
                         <label for="inputEmail3" class="col-sm-2 control-label">属性</label>
                         <div class="col-sm-10">
-                            <label><input type="checkbox" name="is_recommend" value="1" <?php if((int)$book['is_recommend'] === 1)echo 'checked="checked"'?>> 推荐首页</label>
+                            <label><input type="checkbox" name="is_recommend" value="1" <?php if(isset($book['is_recommend']) && (int)$book['is_recommend'] === 1)echo 'checked="checked"'?>> 推荐首页</label>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="inputEmail3" class="col-sm-2 control-label">监控采集</label>
                         <div class="col-sm-10">
-                            <label><input type="radio" name="monitoring" value="1" <?php if((int)$book['book_is_collect'] === 1)echo 'checked="checked"'?> > 监控</label>
-                            <label><input type="radio" name="monitoring" value="0" <?php if((int)$book['book_is_collect'] === 0)echo 'checked="checked"'?>> 不监控</label>
+                            <label><input type="radio" name="monitoring" value="1" <?php if(isset($book['book_is_collect']) && (int)$book['book_is_collect'] === 1)echo 'checked="checked"'?> > 监控</label>
+                            <label><input type="radio" name="monitoring" value="0" <?php if(isset($book['book_is_collect']) &&(int)$book['book_is_collect'] === 0)echo 'checked="checked"'?>> 不监控</label>
                         </div>
                     </div>
                 </div>
